@@ -1,0 +1,26 @@
+# humanstxt.org
+
+/* TEAM */
+Author: Jonathan D.A. Jewell (hyperpolymath)
+Contact: j.d.a.jewell@open.ac.uk
+From: United Kingdom
+
+/* THANKS */
+The Agda developers, for a proof assistant honest enough to refuse
+unsound shortcuts (--safe --without-K, no postulates).
+The echo-types and ephapax projects, whose loss-with-residue and
+echo-obligation work this library's EchoBridge composes with.
+The standards / a2ml / k9-svc estate tooling, the engineering target
+for the ProofTransport attestation layer.
+
+/* SITE */
+Last update: 2026-06-15
+Standards: RSR (Rhodium Standard Repository)
+Version: 0.1.0 (prototype)
+Components: Agda formalization of standpoint-indexed modal / epistemic
+  / echo-like type formers; favours mathematical honesty over a large
+  API. Constructive, no standard library (Agda.Builtin.* only).
+Languages: Agda (source), a2ml + Nickel/k9 (machine-readable), AsciiDoc (docs)
+Tools: just, Agda 2.8.0
+Build: just check  ==  agda --no-libraries -i src src/EpistemicTypes/All.agda
+CI: not enabled (see AUDIT.adoc)

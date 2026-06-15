@@ -1,17 +1,41 @@
-project "epistemic-types" {
-  purpose: "Agda prototypes for modal, epistemic, and echo-like type formers."
+# 0-AI-MANIFEST.a2ml — AI-assistant context for the 6a2 directory
+# epistemic-types: directory manifest, modeling rules, and the typecheck command.
 
-  rules {
-    mathematical_honesty: "Do not postulate laws silently."
-    factivity: "Separate factive knowledge from non-factive belief."
-    warrants: "Use explicit warrant objects where possible."
-    scope: "Keep modules small and type-check frequently."
-    echo_distinction: "Echo-types are min-plus-graded loss/residue modalities; epistemic types are standpoint/warrant/access modalities."
-    no_collapse: "Do not collapse Echo r A and E kappa A. Their composition is meaningful, but they are not the same modality."
-  }
+[manifest]
+project = "epistemic-types"
+repo = "hyperpolymath/epistemic-types"
+version = "0.1.0"
+status = "prototype"
+last-updated = "2026-06-15"
+author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
 
-  typecheck {
-    command: "agda --no-libraries -i src src/EpistemicTypes/All.agda"
-    just_target: "just check"
-  }
-}
+[purpose]
+summary = "Agda prototypes for standpoint-indexed modal, epistemic, and echo-like type formers."
+stance = "Favours mathematical honesty over a large API."
+detail = "A small, deliberately honest Agda formalization. Constructive; compiles under {-# OPTIONS --safe --without-K #-}. No postulates. No Agda standard library (built with 'agda --no-libraries', using only Agda.Builtin.* / Agda.Primitive)."
+core-form = "E : K -> Set ℓ -> Set ℓ. E κ A reads 'A is epistemically available at standpoint κ'."
+base-interface = "A plain indexed endofunctor (map only) — NOT a monad/comonad; no generic return/reflect."
+
+[rules]
+# Modeling rules the assistant MUST respect when editing this repo.
+mathematical_honesty = "Do not postulate laws silently. No Agda postulates; laws appear as explicit fields when not derivable."
+factivity = "Separate factive knowledge from non-factive belief."
+warrants = "Use explicit warrant objects where possible."
+scope = "Keep modules small and type-check frequently; keep to a single-tool Agda library checked by 'just check'."
+echo_distinction = "Echo-types are min-plus-graded loss/residue modalities; epistemic types are standpoint/warrant/access modalities."
+no_collapse = "Do not collapse Echo r A and E κ A. Their composition is meaningful, but they are not the same modality."
+
+[typecheck]
+command = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+just-target = "just check"
+agda-version = "2.8.0"
+
+[canonical-locations]
+# The 6a2 directory is authoritative for this repo's machine-readable metadata.
+# Present in this directory (right-sized for a small formal-methods prototype):
+present = [ "0-AI-MANIFEST.a2ml", "STATE.a2ml", "README.adoc" ]
+
+[invariants]
+single-source-of-truth = "This directory is authoritative; no duplicate metadata in the root directory."
+no-stale-metadata = true
+ci = "Not enabled (see AUDIT.adoc)."

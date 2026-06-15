@@ -1,0 +1,103 @@
+# META.a2ml — Project meta-level information
+# Architecture decisions, design rationale, governance.
+
+[metadata]
+version = "0.1.0"
+last-updated = "2026-06-15"
+
+[project-info]
+name = "epistemic-types"
+repository = "hyperpolymath/epistemic-types"
+type = "library"
+languages = [ "agda" ]
+license = "MPL-2.0"
+author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
+status = "prototype"
+summary = "A small, deliberately honest Agda formalization of standpoint-indexed modal / epistemic / echo-like type formers. Favours mathematical honesty over a large API."
+
+[architecture-decisions]
+# ADR format: status = proposed | accepted | deprecated | superseded | rejected
+adrs = [
+  { id = "ADR-001", title = "No postulates: laws are record fields when not derivable", status = "accepted", date = "2026-06-15" },
+  { id = "ADR-002", title = "Separate FactiveModality from BeliefModality; no generic reflect/return", status = "accepted", date = "2026-06-15" },
+  { id = "ADR-003", title = "Compile under --safe --without-K", status = "accepted", date = "2026-06-15" },
+  { id = "ADR-004", title = "No Agda standard library; build with agda --no-libraries", status = "accepted", date = "2026-06-15" },
+  { id = "ADR-005", title = "Keep Echo grades distinct from epistemic standpoints", status = "accepted", date = "2026-06-15" },
+  { id = "ADR-006", title = "ProofTransport: no smuggling by construction", status = "accepted", date = "2026-06-15" }
+]
+
+[architecture-decisions.ADR-001]
+title = "No postulates: laws are record fields when not derivable"
+status = "accepted"
+context = "Agda formalizations often hide unproven assumptions behind `postulate`, which silently asserts inhabitants and undermines the value of mechanical checking."
+decision = "Use zero Agda postulates. Where a law is not derivable, it appears as an explicit record field that an instance must supply, so any assumption is a visible obligation rather than a hidden axiom."
+consequence = "The API is smaller and lawful instances are rarer, but every dependency on an unproved property is on the page. `LawfulModality` and friends carry their laws as fields."
+
+[architecture-decisions.ADR-002]
+title = "Separate FactiveModality from BeliefModality; no generic reflect/return"
+status = "accepted"
+context = "Knowledge is factive (`E κ A` implies `A`) but belief is not. A single modality with a generic `return`/`reflect` would conflate the two and let belief masquerade as knowledge."
+decision = "The base interface `E : K -> Set ℓ -> Set ℓ` is a plain indexed endofunctor (`map` only). Factivity lives only in `FactiveModality`; non-factive belief lives in `BeliefModality`. There is no generic `return`/`reflect` on the base modality."
+consequence = "No monad/comonad structure is assumed. Factive extraction is available exactly where factivity has been declared, and nowhere else."
+
+[architecture-decisions.ADR-003]
+title = "Compile under --safe --without-K"
+status = "accepted"
+context = "`--safe` rejects postulates and unsafe pragmas; `--without-K` keeps the development compatible with proof-relevant / HoTT-friendly foundations."
+decision = "Every module carries `{-# OPTIONS --safe --without-K #-}` and the aggregate `All.agda` type-checks under those options."
+consequence = "Reinforces ADR-001 mechanically (no `--safe`-violating escape hatches) and constrains pattern matching to be K-free."
+
+[architecture-decisions.ADR-004]
+title = "No Agda standard library; build with agda --no-libraries"
+status = "accepted"
+context = "Depending on `agda-stdlib` adds a large surface and a version-pinning burden for a deliberately small prototype."
+decision = "Build with `agda --no-libraries`, using only `Agda.Builtin.*` and `Agda.Primitive`. No third-party Agda library is imported."
+consequence = "The project is self-contained and reproducible with just an Agda binary, at the cost of re-deriving small primitives in-tree."
+
+[architecture-decisions.ADR-005]
+title = "Keep Echo grades distinct from epistemic standpoints"
+status = "accepted"
+context = "`EchoBridge` provides a min-plus-graded loss/residue modality `Echo r A`. It is tempting to identify the grade `r` with an epistemic standpoint `κ`, collapsing two different ideas."
+decision = "`Echo r A` (graded loss/residue) and `E κ A` (standpoint-indexed epistemic availability) are kept as separate type formers. Their composition is meaningful and intended, but they are never the same modality."
+consequence = "The echo bridge can be extended without dragging in a full graded comonad, and standpoint reasoning stays independent of loss accounting."
+
+[architecture-decisions.ADR-006]
+title = "ProofTransport: no smuggling by construction"
+status = "accepted"
+context = "When attestations cross trust boundaries, a naive design lets a sender's proof be replayed as a receiver's certificate, smuggling certification across agents."
+decision = "`View : Agent -> Artifact -> Status -> Claim -> Set` is standpoint-indexed. `transmit` downgrades a sender's `Proof` to a receiver's `Receipt`; `verify` upgrades `Data -> Proof` only with the receiver's OWN checker and evidence (`proofNeedsChecker`). Public views are portable, designated views are receiver-bound, and receipt-only views never certify."
+consequence = "No-smuggling holds structurally rather than by side-condition. The engineering rendering for a2ml/k9 lives in `.machine_readable/proof-transport/`; the worked attestation is `ProofTransportExample` (issuer K9SVC, receiver Alice, third party Bob, claim ActionWasPerformed, artifact AttestationBlob)."
+
+[development-practices]
+build-tool = "just"
+build-command = "just check"
+check-command = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+agda-version = "2.8.0"
+package-manager = "none (single agda-lib; no external Agda dependencies)"
+ci-platform = "none (billing wall; see AUDIT.adoc)"
+container-runtime = "none"
+
+[design-rationale]
+posture = "Mathematical honesty over API size. The library is small on purpose: every law is either proved or an explicit obligation, and nothing is postulated."
+base-interface = "`E : K -> Set ℓ -> Set ℓ`, read `E κ A` = 'A is epistemically available at standpoint κ'. The base is a plain indexed endofunctor (map only) — not a monad or comonad — so no return/reflect is assumed for free."
+factivity = "Factive knowledge and non-factive belief are distinct interfaces (FactiveModality vs BeliefModality), preventing belief from being read as knowledge."
+access = "`Access` adds a preorder over standpoints and an `AccessibleModality` whose `increase` transports availability along the preorder."
+echo = "`EchoBridge` supplies a min-plus-graded loss/residue modality `Echo r A`, kept structurally distinct from epistemic availability; the two compose but never collapse (see ADR-005)."
+surreal = "`SurrealBridge` offers an abstract `SurrealAccess` carrier with a `GradedSurrealModality` and a finite-birthday tower `daySurrealAccess`, as instances of the abstract access interface rather than a full surreal-number library."
+proof-transport = "`ProofTransport` formalizes standpoint-indexed proof transport across trust boundaries with statuses Data/Code/Claimed/Receipt/Proof/ProofUnder and modes Public/Designated/IssuerMediated/EnvironmentMediated/OpaqueReceipt; no-smuggling is by construction (see ADR-006)."
+modules = "Base, Warrant, Access, EchoBridge, SurrealBridge, Examples, ProofTransport, ProofTransportExample, with All re-exporting the development."
+
+[ecosystem]
+# Real sibling projects in the estate.
+siblings = [
+  { name = "echo-types", relation = "Agda loss-with-residue formalism; EchoBridge composes with it." },
+  { name = "ephapax", relation = "Sibling formal language; four-layer redesign carries echo obligations." },
+  { name = "standards", relation = "Estate RSR/standards plus k9-svc and a2ml tooling." },
+  { name = "a2ml + k9", relation = "Machine-readable and contractile tooling; ProofTransport's engineering target." }
+]
+
+[docs]
+# Existing doc files keep their existing lowercase names; do not rename or duplicate.
+readme = "readme.adoc"
+explainme = "explainme.adoc"
+format = "asciidoc"

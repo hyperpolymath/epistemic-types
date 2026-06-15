@@ -1,0 +1,34 @@
+# ai.txt - AI interaction policy
+# See: https://site.spawning.ai/spawning-ai-txt
+
+User-Agent: *
+Disallow-Training: yes
+Disallow-Summarization: no
+Disallow-Generation: yes
+
+# epistemic-types is a small, deliberately honest Agda formalization of
+# standpoint-indexed modal / epistemic / echo-like type formers. It favours
+# mathematical honesty over a large API: a constructive development checked
+# under {-# OPTIONS --safe --without-K #-}, with no postulates and no use of
+# the Agda standard library (built with 'agda --no-libraries', relying only
+# on Agda.Builtin.* and Agda.Primitive).
+#
+# AI agents may read and analyze this code to assist contributors, to reason
+# about the proofs, and to answer questions about the formalization.
+# AI agents must NOT use this code for model training without explicit consent.
+# AI agents must not introduce postulates, must not depend on the Agda standard
+# library, and must not weaken the --safe --without-K guarantees.
+#
+# For AI agent integration instructions, see:
+#   .machine_readable/6a2/0-AI-MANIFEST.a2ml   (universal AI entry point)
+#   .machine_readable/6a2/STATE.a2ml           (structured project state)
+#   .machine_readable/proof-transport/         (a2ml + k9 rendering of the
+#                                               ProofTransport attestation model)
+#
+# Human-facing docs: readme.adoc, explainme.adoc
+#
+# Build / check: 'just check'
+#   == agda --no-libraries -i src src/EpistemicTypes/All.agda  (Agda 2.8.0)
+#
+# No CI is enabled for this repository (see AUDIT.adoc); there are no
+# GitHub Actions workflows, badges, containers, or external pipelines.

@@ -1,0 +1,39 @@
+# epistemic-types - Editor Configuration
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.adoc]
+trim_trailing_whitespace = false
+
+[*.agda]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.agda-lib]
+indent_size = 2
+
+[*.a2ml]
+indent_size = 2
+
+[*.ncl]
+indent_size = 2
+
+[Justfile]
+indent_style = space
+indent_size = 4

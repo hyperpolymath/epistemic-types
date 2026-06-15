@@ -1,0 +1,50 @@
+# ECOSYSTEM.a2ml — Ecosystem position
+
+[metadata]
+project = "epistemic-types"
+ecosystem = "hyperpolymath"
+version = "0.1.0"
+status = "prototype"
+last-updated = "2026-06-15"
+
+[position]
+type = "formal-methods-library"
+purpose = "A small, deliberately honest Agda formalization of standpoint-indexed modal / epistemic / echo-like type formers. Favours mathematical honesty over a large API: constructive, no postulates, no standard library."
+
+[stack]
+language = "Agda 2.8.0"
+options = "--safe --without-K"
+libraries = "none — built with 'agda --no-libraries' against Agda.Builtin.* and Agda.Primitive only"
+machine-readable = "a2ml + Nickel/k9"
+docs = "AsciiDoc"
+check = "just check  ==  agda --no-libraries -i src src/EpistemicTypes/All.agda"
+notes = "Single-tool Agda library. No JS/TS/Python, no containers, no CI (see AUDIT.adoc)."
+
+[core]
+form = "E : K -> Set ℓ -> Set ℓ   (E κ A = 'A is epistemically available at standpoint κ')"
+base-interface = "A plain indexed endofunctor (map only). NOT a monad/comonad; no generic return/reflect."
+modules = [
+  "EpistemicTypes.Base — Modality / LawfulModality / FactiveModality / BeliefModality / ReturnModality",
+  "EpistemicTypes.Warrant — Warrant / Epi / SoundWarrant",
+  "EpistemicTypes.Access — Preorder + AccessibleModality transport 'increase'",
+  "EpistemicTypes.EchoBridge — min-plus graded loss/residue 'Echo r A', kept distinct from E κ A",
+  "EpistemicTypes.SurrealBridge — SurrealAccess carrier + GradedSurrealModality + daySurrealAccess finite birthday tower",
+  "EpistemicTypes.Examples",
+  "EpistemicTypes.ProofTransport — standpoint-indexed proof transport across trust boundaries",
+  "EpistemicTypes.ProofTransportExample — a K9-SVC / A2ML attestation scenario",
+  "EpistemicTypes.All — re-export aggregator"
+]
+
+[proof-transport]
+purpose = "Proofhood is standpoint-indexed: transmission across a trust boundary moves bytes (von Neumann), not proofhood (Curry-Howard). A receiver recovers proofhood only with its OWN checker plus evidence."
+engineering-rendering = ".machine_readable/proof-transport/ — a2ml + k9 rendering of the ProofTransport core for machine consumption."
+attestation-scenario = "issuer K9SVC, receiver Alice, third party Bob, claim ActionWasPerformed, artifact AttestationBlob."
+no-smuggling = "proofNeedsChecker: no checker-free Proof -> Proof transport is exported; enforced structurally by View's constructors."
+
+[related-projects]
+projects = [
+  { name = "echo-types", relationship = "sibling-formalism", notes = "Agda loss-with-residue (min-plus graded) formalism. EpistemicTypes.EchoBridge's 'Echo r A' composes with it; kept deliberately distinct from the epistemic E κ A modality (no collapse)." },
+  { name = "ephapax", relationship = "sibling-formal-language", notes = "Sibling formal language; its four-layer redesign carries echo obligations. Echo / standpoint vocabulary is shared at the conceptual level, not via a code dependency." },
+  { name = "standards", relationship = "estate-foundation", notes = "Estate RSR / standards repo plus k9-svc and a2ml tooling. Supplies the 6a2 layout and the contractile / k9 rendering conventions this repo's .machine_readable mirrors." },
+  { name = "a2ml + k9", relationship = "rendering-target", notes = "Machine-readable a2ml + Nickel/k9 contractile tooling. The engineering rendering target for ProofTransport: the standpoint-indexed proof-transport core is rendered to a2ml/k9 under .machine_readable/proof-transport/." }
+]

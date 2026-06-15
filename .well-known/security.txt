@@ -1,0 +1,14 @@
+# RFC 9116 - security.txt
+# https://securitytxt.org/
+#
+# epistemic-types: a small, deliberately honest Agda formalization of
+# standpoint-indexed modal / epistemic / echo-like type formers.
+# This is a single-tool Agda library (checked by 'just check'); it ships
+# no runtime, services, network endpoints, or CI. Security reports should
+# concern the library source, its proofs, or the machine-readable artifacts.
+
+Contact: mailto:j.d.a.jewell@open.ac.uk
+Expires: 2027-06-15T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://github.com/hyperpolymath/epistemic-types/blob/main/.well-known/security.txt
+Policy: https://github.com/hyperpolymath/epistemic-types/blob/main/SECURITY.md

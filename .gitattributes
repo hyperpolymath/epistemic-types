@@ -1,0 +1,38 @@
+# RSR-compliant .gitattributes for epistemic-types
+
+* text=auto eol=lf
+
+# Source (Agda)
+*.agda    text eol=lf linguist-language=Agda
+*.lagda   text eol=lf linguist-language=Agda
+
+# Machine-readable (a2ml + Nickel/k9)
+*.a2ml  text eol=lf linguist-language=TOML
+*.ncl   text eol=lf
+*.nix   text eol=lf
+
+# Docs
+*.adoc  text eol=lf linguist-documentation
+*.md    text eol=lf diff=markdown
+*.txt   text eol=lf
+
+# Data
+*.json  text eol=lf
+*.toml  text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+
+# Config
+.gitignore     text eol=lf
+.gitattributes text eol=lf
+Justfile       text eol=lf
+justfile       text eol=lf
+
+# Binary
+*.png   binary
+*.jpg   binary
+*.gif   binary
+*.pdf   binary
+
+# Lock files
+flake.lock  text eol=lf -diff
