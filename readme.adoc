@@ -92,6 +92,46 @@ This is still not the full Conway proper class of all surreals as an Agda
 `Set`; it is the first set-sized fragment where the access grade does real
 type-level work.
 
+== Proof transport across trust boundaries
+
+`EpistemicTypes.ProofTransport` adds a small, compositional core for
+*standpoint-indexed proof transport*.  It distinguishes one artefact read three
+ways: as von Neumann data/code, as a Curry–Howard proof, and as an epistemic
+status relative to a receiver.
+
+----
+View : Agent -> Artifact -> Status -> Claim -> Set
+----
+
+A sender may hold `View sender artifact Proof claim` while a receiver initially
+holds only `Data`, `Claimed`, or `Receipt`.  Transmission moves bytes, not
+proofhood:
+
+----
+transmit : (b : Boundary) -> View (from b) a Proof c -> View (to b) a Receipt c
+----
+
+Proofhood is recovered on the receiver's side only with the receiver's own
+checker and evidence:
+
+----
+verify : Checker holder m a c -> Evidence m a c -> View holder a Data c
+       -> Either Gap (View holder a Proof c)
+----
+
+Public attestations are transferable (`publicIsPortable`); designated
+attestations are receiver-bound (`designatedBindsHolder`); receipt-only
+attestations never certify the claim (`opaqueNotCertifying`,
+`verifyReceiptIsGap`).  `proofNeedsChecker` states the no-smuggling property:
+every proof a holder possesses carries that holder's own checker and evidence,
+so no checker-free `View sender a Proof c -> View receiver a Proof c` is
+exported.  `EpistemicTypes.ProofTransportExample` works a K9-SVC/A2ML-style
+attestation (issuer `K9SVC`, receiver `Alice`, third party `Bob`).
+
+An engineering rendering of the same model — for A2ML/K9 tooling — lives in
+`.machine_readable/proof-transport/` (`ProofTransport.a2ml` and the
+Kennel-level `proof-transport.k9.ncl`).
+
 == Roadmap
 
 1. Keep the current prototype small and type-checking.

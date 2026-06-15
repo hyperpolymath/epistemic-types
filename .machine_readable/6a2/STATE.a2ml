@@ -7,7 +7,9 @@ state "prototype" {
     "EpistemicTypes.Access",
     "EpistemicTypes.SurrealBridge",
     "EpistemicTypes.EchoBridge",
-    "EpistemicTypes.Examples"
+    "EpistemicTypes.Examples",
+    "EpistemicTypes.ProofTransport",
+    "EpistemicTypes.ProofTransportExample"
   ]
   roadmap: [
     "Add concrete Kripke-style semantics.",

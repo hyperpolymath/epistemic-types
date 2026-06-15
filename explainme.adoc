@@ -63,6 +63,23 @@ would require a universe-indexed or class-like treatment, not a single ordinary
 Agda `Set`.  The included `daySurrealAccess` instance is a finite birthday
 tower: the grade is the number of birthday/refinement steps.
 
+== Proof transport
+
+One artefact can be read three ways at once: as von Neumann data/code, as a
+Curry–Howard proof object, and as an epistemic status relative to a receiver.
+`EpistemicTypes.ProofTransport` keeps these apart.
+
+The honesty point mirrors the rest of the library: a receiver does not get
+`Proof claim` for free.  `transmit` carries a sender's proof across a trust
+boundary as a mere `Receipt`; the receiver re-establishes proofhood only by
+running its own `Checker` over `Evidence` (`verify`).  Public verification is
+portable to anyone; a designated checker is pinned to its holder, so a third
+party cannot reconstruct it; a receipt-only attestation never certifies the
+underlying claim.  This is the proof-carrying-code pattern made
+standpoint-relative: the certificate is data and travels, but the verification
+standpoint must be re-supplied by the receiver.  An engineering rendering for
+A2ML/K9 tooling lives under `.machine_readable/proof-transport/`.
+
 == Roadmap
 
 * First keep the tiny core stable and type-checking.
