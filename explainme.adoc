@@ -44,15 +44,24 @@ track standpoint-relative access, belief, knowledge, or warrant.  The bridge
 
 == Surreal bridge
 
-The surreal bridge uses an abstract set-sized carrier with an order.  This is
-enough to use surreal-like values as epistemic standpoints and to prove the same
-separation results: factive knowledge needs `reflect`, belief has no generic
-reflection, and warrant tokens do not expose their claims without separate
-soundness.
+The surreal bridge uses an abstract set-sized carrier with an order and a
+grade-valued access loss.  The loss is used by `GradedSurrealModality`:
+
+----
+E x (Echo r A) -> E y (Echo (gradePlus r (magnitude-loss p)) A)
+----
+
+for `p : x ≤♯ y`.  This is the point where surreal-like magnitude does work in
+the type: moving across access accumulates a tropical loss grade.
+
+The bridge still proves the same separation results: factive knowledge needs
+`reflect`, belief has no generic reflection, and warrant tokens do not expose
+their claims without separate soundness.
 
 The bridge is not a formalization of the full class of Conway surreals.  That
 would require a universe-indexed or class-like treatment, not a single ordinary
-Agda `Set`.
+Agda `Set`.  The included `daySurrealAccess` instance is a finite birthday
+tower: the grade is the number of birthday/refinement steps.
 
 == Roadmap
 
@@ -61,6 +70,6 @@ Agda `Set`.
   semantics, and observation rules.
 * Then add law-bearing records for proven functoriality, access transport, and
   optional soundness.
-* Add day-bounded surreal fragments as concrete bridge instances.
+* Add richer day-bounded surreal fragments as concrete bridge instances.
 * Finally connect to the larger echo-type story through bridge modules that
   preserve the distinction between grades and standpoints.

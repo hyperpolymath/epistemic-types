@@ -65,22 +65,32 @@ irrecoverability grade `r`.  The prototype does not collapse `Echo r A` and
 == Surreal standpoints
 
 `EpistemicTypes.SurrealBridge` adds an abstract, set-sized surrogate for using
-surreal-like values as standpoints.  It provides a carrier, an order, and
-preorder laws:
+surreal-like values as standpoints.  It is stronger than a plain preorder: each
+access proof carries a tropical grade measuring the access loss/refinement:
 
 ----
-record SurrealSet : Set ... where
+record SurrealAccess : Set ... where
   field
     Carrier : Set ...
     _≤♯_    : Carrier -> Carrier -> Set ...
     refl♯   : ...
     trans♯  : ...
+    magnitude-loss : x ≤♯ y -> Grade
+    loss-refl      : magnitude-loss refl♯ ≡ finite zero
+    loss-trans     : magnitude-loss (trans♯ p q)
+                       ≡ gradePlus (magnitude-loss p) (magnitude-loss q)
 ----
 
 The module proves that this order can be used as epistemic accessibility and
 that the knowledge/belief/warrant separation still holds over such standpoints.
-It does not claim to construct the full Conway proper class of all surreals as
-an Agda `Set`.
+It also defines `GradedSurrealModality`, where transport across `p : x ≤♯ y`
+turns `E x (Echo r A)` into `E y (Echo (gradePlus r (magnitude-loss p)) A)`.
+
+A concrete `daySurrealAccess` instance models the finite birthday tower with
+`Nat` standpoints and grade equal to the number of birthday/refinement steps.
+This is still not the full Conway proper class of all surreals as an Agda
+`Set`; it is the first set-sized fragment where the access grade does real
+type-level work.
 
 == Roadmap
 
@@ -90,7 +100,7 @@ an Agda `Set`.
 4. Explore warrant soundness as an optional interface, not as a default.
 5. Connect to echo-types via graded bridge modules without importing the full
    echo library.
-6. Add concrete day-bounded surreal fragments as instances of `SurrealSet`.
+6. Add richer day-bounded surreal fragments as instances of `SurrealAccess`.
 7. Later, evaluate whether any specific epistemic modality deserves monadic or
    comonadic structure.
 
