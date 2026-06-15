@@ -1,0 +1,17 @@
+project "epistemic-types" {
+  purpose: "Agda prototypes for modal, epistemic, and echo-like type formers."
+
+  rules {
+    mathematical_honesty: "Do not postulate laws silently."
+    factivity: "Separate factive knowledge from non-factive belief."
+    warrants: "Use explicit warrant objects where possible."
+    scope: "Keep modules small and type-check frequently."
+    echo_distinction: "Echo-types are min-plus-graded loss/residue modalities; epistemic types are standpoint/warrant/access modalities."
+    no_collapse: "Do not collapse Echo r A and E kappa A. Their composition is meaningful, but they are not the same modality."
+  }
+
+  typecheck {
+    command: "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+    just_target: "just check"
+  }
+}

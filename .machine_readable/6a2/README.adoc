@@ -1,0 +1,4 @@
+= Machine-readable project notes
+
+The A2ML files in this directory summarize the repository intent, modeling
+rules, and current state for automated agents.

@@ -1,0 +1,17 @@
+state "prototype" {
+  status: "small exploratory Agda prototype"
+  assumptions: "No Agda postulates. Laws appear as fields when not derivable."
+  modules: [
+    "EpistemicTypes.Base",
+    "EpistemicTypes.Warrant",
+    "EpistemicTypes.Access",
+    "EpistemicTypes.EchoBridge",
+    "EpistemicTypes.Examples"
+  ]
+  roadmap: [
+    "Add concrete Kripke-style semantics.",
+    "Add evidence-state and observation-rule examples.",
+    "Add lawful instances only after proving or explicitly assuming laws.",
+    "Extend the echo bridge without importing a full graded comonad."
+  ]
+}

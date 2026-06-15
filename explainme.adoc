@@ -1,0 +1,53 @@
+= Explain Me: Epistemic Types
+
+This project is a compact Agda sketch of standpoint-indexed epistemic modal
+types.  It favors mathematical honesty over a large API.
+
+== Core choice
+
+The central form is:
+
+----
+E κ A
+----
+
+Read this as "`A` is epistemically available at standpoint `κ`."  The base
+record only requires a family `E` and a `map` operation.  It does not assume
+that availability is truth, that truth is automatically available, or that
+epistemic availability composes monadically.
+
+== Factive and non-factive variants
+
+Knowledge is represented by `FactiveModality`, which has:
+
+----
+reflect : E κ A -> A
+----
+
+Belief is represented by `BeliefModality`, which does not have that field.  The
+example belief type can contain a belief in contradiction, so a polymorphic
+belief-reflection function would produce an inhabitant of the empty type.
+
+== Warrant
+
+`Warrant κ A` is proof-relevant: it tells us what counts as an evidence token
+for `A` at `κ`.  `Epi κ A` packages a warrant and a token.  This still does not
+prove `A`.  A sound warrant is a separate record with an explicit soundness
+function.
+
+== Echo distinction
+
+Echo-types track loss, residue, or irrecoverability grades.  Epistemic types
+track standpoint-relative access, belief, knowledge, or warrant.  The bridge
+`E κ (Echo r A)` says that a standpoint has access to a lossy/residual echo of
+`A`; it is not the same as directly having `E κ A`.
+
+== Roadmap
+
+* First keep the tiny core stable and type-checking.
+* Next add small concrete models: Kripke accessibility, evidence-state
+  semantics, and observation rules.
+* Then add law-bearing records for proven functoriality, access transport, and
+  optional soundness.
+* Finally connect to the larger echo-type story through bridge modules that
+  preserve the distinction between grades and standpoints.
