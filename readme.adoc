@@ -62,6 +62,26 @@ meaning that standpoint `κ` has epistemic access to an echo of `A` at
 irrecoverability grade `r`.  The prototype does not collapse `Echo r A` and
 `E κ A`; their composition is meaningful, but they are not the same modality.
 
+== Surreal standpoints
+
+`EpistemicTypes.SurrealBridge` adds an abstract, set-sized surrogate for using
+surreal-like values as standpoints.  It provides a carrier, an order, and
+preorder laws:
+
+----
+record SurrealSet : Set ... where
+  field
+    Carrier : Set ...
+    _≤♯_    : Carrier -> Carrier -> Set ...
+    refl♯   : ...
+    trans♯  : ...
+----
+
+The module proves that this order can be used as epistemic accessibility and
+that the knowledge/belief/warrant separation still holds over such standpoints.
+It does not claim to construct the full Conway proper class of all surreals as
+an Agda `Set`.
+
 == Roadmap
 
 1. Keep the current prototype small and type-checking.
@@ -70,7 +90,8 @@ irrecoverability grade `r`.  The prototype does not collapse `Echo r A` and
 4. Explore warrant soundness as an optional interface, not as a default.
 5. Connect to echo-types via graded bridge modules without importing the full
    echo library.
-6. Later, evaluate whether any specific epistemic modality deserves monadic or
+6. Add concrete day-bounded surreal fragments as instances of `SurrealSet`.
+7. Later, evaluate whether any specific epistemic modality deserves monadic or
    comonadic structure.
 
 == What remains intentionally unformalized

@@ -42,6 +42,18 @@ track standpoint-relative access, belief, knowledge, or warrant.  The bridge
 `E κ (Echo r A)` says that a standpoint has access to a lossy/residual echo of
 `A`; it is not the same as directly having `E κ A`.
 
+== Surreal bridge
+
+The surreal bridge uses an abstract set-sized carrier with an order.  This is
+enough to use surreal-like values as epistemic standpoints and to prove the same
+separation results: factive knowledge needs `reflect`, belief has no generic
+reflection, and warrant tokens do not expose their claims without separate
+soundness.
+
+The bridge is not a formalization of the full class of Conway surreals.  That
+would require a universe-indexed or class-like treatment, not a single ordinary
+Agda `Set`.
+
 == Roadmap
 
 * First keep the tiny core stable and type-checking.
@@ -49,5 +61,6 @@ track standpoint-relative access, belief, knowledge, or warrant.  The bridge
   semantics, and observation rules.
 * Then add law-bearing records for proven functoriality, access transport, and
   optional soundness.
+* Add day-bounded surreal fragments as concrete bridge instances.
 * Finally connect to the larger echo-type story through bridge modules that
   preserve the distinction between grades and standpoints.

@@ -5,12 +5,14 @@ state "prototype" {
     "EpistemicTypes.Base",
     "EpistemicTypes.Warrant",
     "EpistemicTypes.Access",
+    "EpistemicTypes.SurrealBridge",
     "EpistemicTypes.EchoBridge",
     "EpistemicTypes.Examples"
   ]
   roadmap: [
     "Add concrete Kripke-style semantics.",
     "Add evidence-state and observation-rule examples.",
+    "Add day-bounded surreal fragments as instances of the abstract SurrealSet interface.",
     "Add lawful instances only after proving or explicitly assuming laws.",
     "Extend the echo bridge without importing a full graded comonad."
   ]
