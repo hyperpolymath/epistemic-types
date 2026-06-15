@@ -1,103 +1,97 @@
-spec "proof-transport" {
-  title: "Standpoint-indexed proof transport across trust boundaries"
-  research_module: "EpistemicTypes.ProofTransport"
-  research_source: "src/EpistemicTypes/ProofTransport.agda"
-  example_module: "EpistemicTypes.ProofTransportExample"
-  example_source: "src/EpistemicTypes/ProofTransportExample.agda"
-  engineering_k9: ".machine_readable/proof-transport/proof-transport.k9.ncl"
+[spec]
+id = "proof-transport"
+title = "Standpoint-indexed proof transport across trust boundaries"
+research_module = "EpistemicTypes.ProofTransport"
+research_source = "src/EpistemicTypes/ProofTransport.agda"
+example_module = "EpistemicTypes.ProofTransportExample"
+example_source = "src/EpistemicTypes/ProofTransportExample.agda"
+engineering_k9 = ".machine_readable/proof-transport/proof-transport.k9.ncl"
 
-  thesis: "Proofhood is standpoint-indexed. Transmission across a trust boundary moves bytes (von Neumann), not proofhood (Curry-Howard). A receiver recovers proofhood only with its own checker (verifier) plus evidence (certificate)."
+thesis = "Proofhood is standpoint-indexed. Transmission across a trust boundary moves bytes (von Neumann), not proofhood (Curry-Howard). A receiver recovers proofhood only with its own checker (verifier) plus evidence (certificate)."
 
-  entities {
-    Agent: "Who holds a standpoint / view."
-    Claim: "What is asserted."
-    Artifact: "The von Neumann object: bytes, code, certificate."
-    Boundary: "A directed trust boundary, from a sender to a receiver."
-    Mode: "How an attestation is verified."
-    Status: "Epistemic status of an artefact for a holder w.r.t. a claim."
-    Gap: "A reason an upgrade to Proof fails."
-    Checker: "A holder's capability to verify, in a mode, that an artefact certifies a claim."
-    Evidence: "The certificate payload; plain data that crosses the boundary freely."
-    View: "The judgement View holder artifact status claim."
-  }
+[entities]
+Agent = "Who holds a standpoint / view."
+Claim = "What is asserted."
+Artifact = "The von Neumann object: bytes, code, certificate."
+Boundary = "A directed trust boundary, from a sender to a receiver."
+Mode = "How an attestation is verified."
+Status = "Epistemic status of an artefact for a holder w.r.t. a claim."
+Gap = "A reason an upgrade to Proof fails."
+Checker = "A holder's capability to verify, in a mode, that an artefact certifies a claim."
+Evidence = "The certificate payload; plain data that crosses the boundary freely."
+View = "The judgement View holder artifact status claim."
 
-  statuses: [
-    "Data",
-    "Code",
-    "Claimed",
-    "Receipt",
-    "Proof",
-    "ProofUnder"
-  ]
+[statuses]
+values = [
+  "Data",
+  "Code",
+  "Claimed",
+  "Receipt",
+  "Proof",
+  "ProofUnder"
+]
 
-  modes {
-    Public:              "Publicly checkable; transferable; the checker is portable to any agent."
-    Designated:          "Bound to one designated party; the checker is receiver-bound (deniable to third parties)."
-    IssuerMediated:      "Requires the holder to trust the issuer."
-    EnvironmentMediated: "Requires a runtime / environment context."
-    OpaqueReceipt:       "Acknowledges receipt only; never certifies the underlying claim."
-  }
+[modes]
+Public = "Publicly checkable; transferable; the checker is portable to any agent."
+Designated = "Bound to one designated party; the checker is receiver-bound (deniable to third parties)."
+IssuerMediated = "Requires the holder to trust the issuer."
+EnvironmentMediated = "Requires a runtime / environment context."
+OpaqueReceipt = "Acknowledges receipt only; never certifies the underlying claim."
 
-  gaps: [
-    "TrivialGap",
-    "DesignatedGap",
-    "EnvironmentGap",
-    "IssuerTrustGap",
-    "OpaqueGap",
-    "MissingChecker",
-    "MissingEvidence",
-    "MissingContext"
-  ]
+[gaps]
+values = [
+  "TrivialGap",
+  "DesignatedGap",
+  "EnvironmentGap",
+  "IssuerTrustGap",
+  "OpaqueGap",
+  "MissingChecker",
+  "MissingEvidence",
+  "MissingContext"
+]
 
-  judgement {
-    view: "View : Agent -> Artifact -> Status -> Claim -> Set"
-    intro_cheap: "Data, Code, Claimed, Receipt are freely introducible."
-    intro_proof: "ProofUnder m requires Certifying m, Checker holder m, and Evidence m; Proof is reached only by forgetting the mode of a ProofUnder."
-  }
+[judgement]
+view = "View : Agent -> Artifact -> Status -> Claim -> Set"
+intro_cheap = "Data, Code, Claimed, Receipt are freely introducible."
+intro_proof = "ProofUnder m requires Certifying m, Checker holder m, and Evidence m; Proof is reached only by forgetting the mode of a ProofUnder."
 
-  operations {
-    transmit:    "Boundary -> View (from b) a Proof c -> View (to b) a Receipt c   (transport downgrades proof to receipt)."
-    verify:      "Checker holder m a c -> Evidence m a c -> View holder a Data c -> Either Gap (View holder a Proof c)."
-    tryUpgrade:  "Maybe Checker -> Maybe Evidence -> View Data -> Either Gap (View Proof)   (names MissingChecker / MissingEvidence)."
-  }
+[operations]
+transmit = "Boundary -> View (from b) a Proof c -> View (to b) a Receipt c   (transport downgrades proof to receipt)."
+verify = "Checker holder m a c -> Evidence m a c -> View holder a Data c -> Either Gap (View holder a Proof c)."
+tryUpgrade = "Maybe Checker -> Maybe Evidence -> View Data -> Either Gap (View Proof)   (names MissingChecker / MissingEvidence)."
 
-  theorems {
-    checkableTransportUpgrades: "Sender proof + boundary + receiver data + receiver checker + evidence => Either Gap (receiver Proof). The sender proof and boundary are unused: only the receiver-side checker + evidence justify the upgrade."
-    publicTransfer:    "A public checker + public evidence upgrades data to proof."
-    publicIsPortable:  "Checker r Public a c -> Checker q Public a c   (public verification is not bound to one receiver)."
-    designatedTransfer: "The designated receiver can verify a designated attestation addressed to it."
-    designatedBindsHolder: "Checker holder (Designated d) a c -> d = holder   (no third party can hold a checker for another's designation)."
-    opaqueNotCertifying: "There is no Certifying instance for OpaqueReceipt."
-    verifyReceiptIsGap: "verify receiptCheck ev v = left OpaqueGap."
-    proofNeedsChecker: "Every View holder a Proof c yields the holder's own mode, Certifying witness, checker, and evidence — so no checker-free Proof -> Proof transport is exported (no smuggling)."
-  }
+[theorems]
+checkableTransportUpgrades = "Sender proof + boundary + receiver data + receiver checker + evidence => Either Gap (receiver Proof). The sender proof and boundary are unused: only the receiver-side checker + evidence justify the upgrade."
+publicTransfer = "A public checker + public evidence upgrades data to proof."
+publicIsPortable = "Checker r Public a c -> Checker q Public a c   (public verification is not bound to one receiver)."
+designatedTransfer = "The designated receiver can verify a designated attestation addressed to it."
+designatedBindsHolder = "Checker holder (Designated d) a c -> d = holder   (no third party can hold a checker for another's designation)."
+opaqueNotCertifying = "There is no Certifying instance for OpaqueReceipt."
+verifyReceiptIsGap = "verify receiptCheck ev v = left OpaqueGap."
+proofNeedsChecker = "Every View holder a Proof c yields the holder's own mode, Certifying witness, checker, and evidence — so no checker-free Proof -> Proof transport is exported (no smuggling)."
 
-  honesty {
-    no_smuggling: "The receiver never gets Proof claim without checker/evidence premises present (enforced structurally by View's constructors)."
-    conservative_transport: "transmit yields only Receipt; no exported function View sender a Proof c -> View receiver a Proof c."
-    options: "Compiles under --safe --without-K; no postulates; no standard library (agda --no-libraries)."
-  }
+[honesty]
+no_smuggling = "The receiver never gets Proof claim without checker/evidence premises present (enforced structurally by View's constructors)."
+conservative_transport = "transmit yields only Receipt; no exported function View sender a Proof c -> View receiver a Proof c."
+options = "Compiles under --safe --without-K; no postulates; no standard library (agda --no-libraries)."
 
-  mapping {
-    von_neumann: "Artifact + Data/Code: a program / proof object can cross the wall as data."
-    curry_howard: "Proof / ProofUnder: a checked program can be a proof of a proposition."
-    proof_carrying_code: "Evidence = certificate (travels); Checker = the consumer-side re-checker."
-    epistemic_types: "Proofhood is standpoint-indexed and must be transported/upgraded for the receiver, not assumed to transfer automatically."
-  }
+[mapping]
+von_neumann = "Artifact + Data/Code: a program / proof object can cross the wall as data."
+curry_howard = "Proof / ProofUnder: a checked program can be a proof of a proposition."
+proof_carrying_code = "Evidence = certificate (travels); Checker = the consumer-side re-checker."
+epistemic_types = "Proofhood is standpoint-indexed and must be transported/upgraded for the receiver, not assumed to transfer automatically."
 
-  scenario "k9-svc-attestation" {
-    issuer: "K9SVC"
-    receiver: "Alice"
-    third_party: "Bob"
-    claim: "ActionWasPerformed"
-    artifact: "AttestationBlob"
-    case_1: "AttestationBlob is raw Data for Alice."
-    case_2: "Alice upgrades to Proof ActionWasPerformed with her designated checker + evidence."
-    case_3: "Bob has only Receipt K9SVC ActionWasPerformed across the boundary, and cannot hold the Alice-designated checker — unless the attestation is public, which is portable."
-  }
+[scenario]
+id = "k9-svc-attestation"
+issuer = "K9SVC"
+receiver = "Alice"
+third_party = "Bob"
+claim = "ActionWasPerformed"
+artifact = "AttestationBlob"
+case_1 = "AttestationBlob is raw Data for Alice."
+case_2 = "Alice upgrades to Proof ActionWasPerformed with her designated checker + evidence."
+case_3 = "Bob has only Receipt K9SVC ActionWasPerformed across the boundary, and cannot hold the Alice-designated checker — unless the attestation is public, which is portable."
 
-  scope {
-    intentionally_small: "This is a compositional core, not a full PCC system; cryptography, A2ML, and K9-SVC are not fully modelled."
-    future: "Concrete checkers, issuer-trust contexts, and a graded/Echo bridge for partial proofs."
-  }
-}
+[scope]
+intentionally_small = "This is a compositional core, not a full PCC system; cryptography, A2ML, and K9-SVC are not fully modelled."
+future = "Concrete checkers, issuer-trust contexts, and a graded/Echo bridge for partial proofs."

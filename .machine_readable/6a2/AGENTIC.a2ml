@@ -1,0 +1,67 @@
+# AGENTIC.a2ml — AI agent constraints and capabilities
+# Defines what AI agents can and cannot do in this repository.
+# Scope: epistemic-types is a single-tool Agda library checked by `just check`.
+
+[metadata]
+repository = "hyperpolymath/epistemic-types"
+author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
+version = "0.1.0"
+status = "prototype"
+last-updated = "2026-06-15"
+
+[agent-permissions]
+can-edit-source = true        # Agda modules under src/EpistemicTypes/
+can-edit-docs = true          # readme.adoc, explainme.adoc, AsciiDoc docs
+can-edit-machine-readable = true  # .machine_readable/ (6a2, proof-transport)
+can-edit-build = true         # Justfile, epistemic-types.agda-lib, .gitignore
+can-create-files = true
+can-edit-license = false      # LICENSE / SPDX are owner-manual — agents MUST NOT touch
+can-add-spdx-headers = false  # repo is intentionally SPDX-free; keep it consistent
+
+[agent-constraints]
+# What AI agents must NOT do in this repository:
+# Honesty discipline (the whole point of the library):
+# - Never add a postulate. There are zero postulates and that is load-bearing.
+# - Never weaken the pragma: keep {-# OPTIONS --safe --without-K #-} everywhere.
+# - Never import an Agda standard library. Build stays `agda --no-libraries`;
+#   only Agda.Builtin.* and Agda.Primitive are permitted.
+# - Never introduce a too-strong rule. The base interface E : K -> Set ℓ -> Set ℓ
+#   is a plain indexed endofunctor (map only). Do NOT add a generic return,
+#   reflect, join, or extract that is not justified by an explicit field or proof.
+#   Laws appear as fields when not derivable; they are never assumed silently.
+# - Never collapse Echo r A (min-plus graded loss/residue) into E κ A. Their
+#   composition is meaningful; they are not the same modality.
+# - Never break the ProofTransport no-smuggling discipline: verify upgrades
+#   Data -> Proof only with the receiver's OWN checker + evidence; transmit
+#   downgrades a sender's Proof to a receiver's Receipt; receipt-only never
+#   certifies. Do not weaken proofNeedsChecker.
+# Repository hygiene:
+# - Never place state files in the repository root. Machine-readable state lives
+#   under .machine_readable/ (6a2, proof-transport).
+# - Never edit LICENSE or add SPDX-License-Identifier / copyright headers.
+#   Licensing (classified MPL-2.0 as the owner's sole repo) is owner-manual only.
+# - Never commit secrets or credentials.
+# - Keep docs in AsciiDoc; do not rename or duplicate readme.adoc / explainme.adoc.
+# - Do not add CI / GitHub Actions workflows or badges (not enabled; see AUDIT.adoc).
+
+[maintenance-integrity]
+fail-closed = true
+require-evidence-per-step = true
+allow-silent-skip = false
+require-rerun-after-fix = true
+release-claim-requires-hard-pass = true
+# A change is only "done" when `just check` type-checks the whole library clean.
+
+[verification]
+# The single source of truth for "does it hold".
+command = "just check"
+underlying = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+agda-version = "2.8.0"
+entrypoint = "src/EpistemicTypes/All.agda"
+expected = "type-checks clean, no postulates, no warnings"
+
+[automation-hooks]
+# on-enter: Read 0-AI-MANIFEST.a2ml, then STATE.a2ml.
+# on-commit: Run `just check` — must type-check clean before any commit.
+# on-exit: Update STATE.a2ml with session outcomes.
+on-commit = "just check"

@@ -1,0 +1,259 @@
+= RSR Compliance Audit: epistemic-types
+Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+v0.1.0, 2026-06-15
+:toc:
+:toclevels: 2
+:sectnums:
+
+== Purpose
+
+This document is the repo-local RSR (Repository Standards & Readiness) audit
+gate for `hyperpolymath/epistemic-types`. It records, honestly and in one
+place, which Bronze and Silver requirements are *present*, which are
+*owner-pending* (deliberately not actionable by an automated agent), and which
+are *intentionally omitted* with a stated rationale.
+
+Canonical standards live in the `standards` repository. This file does not
+restate them; it states where this specific repository sits against them.
+
+`epistemic-types` is a small, deliberately honest Agda formalization of
+standpoint-indexed modal / epistemic / echo-like type formers. It favours
+mathematical honesty over a large API. It is constructive, compiles under
+`{-# OPTIONS --safe --without-K #-}`, has no postulates, and uses no Agda
+standard library (built with `agda --no-libraries`, only `Agda.Builtin.*` and
+`Agda.Primitive`). The audit posture below is sized for *a single-tool Agda
+library checked by `just check`*, not for an application stack.
+
+[IMPORTANT]
+====
+*Current tier: approaching Bronze.* Every structural and documentation
+requirement under our control is either present or part of the current
+documentation pass. The single gating item for Bronze is `LICENSE`, which is
+*owner-manual* (see <<owner-pending>>). Silver is a later target and is tracked
+here for direction only.
+====
+
+== Status vocabulary
+
+PRESENT:: The artefact exists in the repository (or is authored as part of this
+documentation pass) and is consistent with the repo's actual state.
+OWNER-PENDING:: A real requirement that an automated agent *must not* fulfil.
+Reserved for the human owner under estate policy. Each entry explains why.
+INTENTIONALLY-OMITTED:: Not applicable to a pure Agda library, or owned
+elsewhere in the estate. Each entry explains why omission is correct, not
+accidental debt.
+
+== Bronze requirements
+
+[cols="3,1,5",options="header"]
+|===
+| Requirement | Status | Notes
+
+| Project entry doc (`readme.adoc`)
+| PRESENT
+| Lowercase `readme.adoc`. Existing name is kept deliberately; not renamed or
+duplicated to `README.adoc`.
+
+| Plain-language explainer (`explainme.adoc`)
+| PRESENT
+| Lowercase `explainme.adoc` (EXPLAINME role). Existing name kept; not renamed
+to `EXPLAINME.adoc`.
+
+| 6a2 machine-readable set (`.machine_readable/6a2/`)
+| PRESENT
+| `0-AI-MANIFEST.a2ml`, `STATE.a2ml`, `README.adoc`. `STATE.a2ml` declares the
+`prototype` status, the eight `EpistemicTypes.*` modules, and the roadmap.
+
+| `CONTRIBUTING`
+| PRESENT
+| `CONTRIBUTING.md` (Markdown permitted by GitHub community-health special
+casing). Right-sized: how to run `just check`, the no-postulates rule, and the
+echo/epistemic no-collapse rule.
+
+| `SECURITY`
+| PRESENT
+| `SECURITY.md`. A formal Agda library has a small surface; the policy is
+correspondingly small (coordinate disclosure to the owner; no runtime, no
+network, no secrets).
+
+| `CODE_OF_CONDUCT`
+| PRESENT
+| `CODE_OF_CONDUCT.md`.
+
+| `CHANGELOG`
+| PRESENT
+| `CHANGELOG.md`. Opens at `0.1.0` (`prototype`).
+
+| `GOVERNANCE`
+| PRESENT
+| `GOVERNANCE.adoc`. Single-owner governance; decisions and merges rest with
+the owner.
+
+| `MAINTAINERS`
+| PRESENT
+| `MAINTAINERS.adoc`. Sole maintainer: Jonathan D.A. Jewell (hyperpolymath).
+
+| `.well-known/` estate metadata
+| PRESENT
+| Repository self-description for estate tooling.
+
+| `.editorconfig`
+| PRESENT
+| Editor normalisation across `.agda`, `.a2ml`, `.ncl`, and `.adoc`.
+
+| `.gitattributes`
+| PRESENT
+| Line-ending and language attributes; keeps Agda Unicode and `.adoc` text
+consistent.
+
+| Coordination contract (`coordination.k9`)
+| PRESENT
+| Repo-level k9 coordination descriptor for estate agents.
+
+| Narrative docs (`docs/`)
+| PRESENT
+| Longer-form design notes that would crowd `readme.adoc`.
+
+| Reproducible check entrypoint (`Justfile`)
+| PRESENT
+| `just check` == `agda --no-libraries -i src src/EpistemicTypes/All.agda`
+(Agda 2.8.0). `default` aliases `check`.
+
+| Agda library descriptor (`epistemic-types.agda-lib`)
+| PRESENT
+| `name: epistemic-types`, `include: src`.
+
+| Source builds with the declared discipline
+| PRESENT
+| `src/EpistemicTypes/All.agda` re-exports the tree and type-checks under
+`--safe --without-K`, no postulates, no stdlib.
+
+| `LICENSE`
+| OWNER-PENDING
+| *Gating item for Bronze.* See <<owner-pending>>.
+
+| SPDX headers on all files
+| OWNER-PENDING
+| See <<owner-pending>>. The repository is currently SPDX-free and is kept
+internally consistent on purpose.
+|===
+
+== Silver requirements (direction, not yet claimed)
+
+These are tracked so the next steps are visible. None is claimed as met.
+
+[cols="3,1,5",options="header"]
+|===
+| Requirement | Status | Notes
+
+| Concrete model instances (Kripke / evidence-state)
+| OWNER-PENDING
+| Roadmap item. The prototype intentionally exposes interfaces
+(`Modality`, `LawfulModality`, `FactiveModality`, `BeliefModality`,
+`ReturnModality`) and abstract access (`Preorder`, `AccessibleModality`)
+without committing to a single semantics. Lawful instances are added only once
+laws are proved or explicitly assumed.
+
+| Echo-types cross-formalism linkage
+| PRESENT
+| `EpistemicTypes.EchoBridge` provides a min-plus graded loss/residue
+`Echo r A`, kept distinct from `E κ A`, designed to compose with the sibling
+`echo-types` library *without importing it*. Deeper linkage is a Silver-level
+commitment.
+
+| Surreal access fragment
+| PRESENT
+| `EpistemicTypes.SurrealBridge` gives `SurrealAccess`,
+`GradedSurrealModality`, and a finite `daySurrealAccess` birthday tower. Richer
+day-bounded fragments remain roadmap.
+
+| Proof-transport engineering rendering
+| PRESENT
+| `EpistemicTypes.ProofTransport` / `ProofTransportExample` plus the
+`.machine_readable/proof-transport/` a2ml + k9 rendering. Full k9-svc / a2ml
+tooling integration is a later, estate-level commitment.
+
+| Per-file SPDX + verified provenance
+| OWNER-PENDING
+| Blocked on the same owner-manual licence decision as Bronze.
+|===
+
+[#owner-pending]
+== Owner-pending items (why an agent must not auto-apply)
+
+Under estate licence policy, *licence and SPDX changes are manual, file-by-file,
+and owner-only*. An automated agent must not create a `LICENSE` file, must not
+add `SPDX-License-Identifier` lines, and must not add copyright header lines —
+*even when the policy-correct answer is known*.
+
+LICENSE::
+The correct classification for this repository is *MPL-2.0* (owner's sole
+repo). This is recorded here only as a recommendation. The agent does not write
+it. Rationale for the hard rule: a single mis-stamped header can seed an
+invented repository "story" that later sweeps treat as law; licence drift across
+the estate has been costly to unwind; and several sibling repos carry
+*intentional* non-default licensing (for example son-shared AGPL repos) that a
+naive sweep would corrupt. The blast radius of an automated licence edit is
+therefore disproportionate to its apparent simplicity, so it is reserved to the
+owner.
+
+SPDX headers::
+Same rationale. The repository is currently SPDX-free and is deliberately kept
+that way until the owner applies headers as one manual, consistent action
+alongside `LICENSE`. Partial or agent-applied SPDX would make the tree
+inconsistent and would pre-empt the owner's licence decision.
+
+Because both items are owner-manual, *Bronze cannot be auto-completed*. This is
+expected and is not a defect in this audit.
+
+== Intentionally omitted (with rationale)
+
+GitHub Actions CI workflows (CodeQL, Scorecard, etc.)::
+*Omitted on purpose.* There is an estate-wide GitHub Actions billing wall, and
+the Scorecard workflow is known-broken across the estate. Adding workflows here
+would produce red, non-running, or unbillable jobs and would imply a CI posture
+that does not exist. The real gate is local: `just check`. No CI badges are
+claimed anywhere in this repository.
+
+Container / devcontainer (`Dockerfile`, `.devcontainer/`)::
+*Not applicable.* This is a pure Agda library with no runtime, service, or
+deployment target. The only toolchain dependency is Agda 2.8.0 invoked with
+`--no-libraries`. A container would add weight without adding reproducibility
+beyond the `Justfile` + `.agda-lib`.
+
+Contractiles (`Intent`/`Must`/`Trust`/`Adjust`/`Dust`/`Bust` files)::
+*Owned elsewhere.* The canonical contractile layout lives as the trident master
+in the `standards` subdir. Duplicating contractile scaffolding into a small
+prototype would be over-scope and would risk re-propagating stale copies. This
+repository defers to the estate canon.
+
+`guix.scm` / `flake.nix` packaging::
+*Future, not yet done.* The library is not yet packaged for Guix or Nix. This
+is honest deferral, not hidden debt; the `Justfile` entrypoint is sufficient for
+the prototype tier. Packaging may be added once the API stabilises beyond
+`prototype`.
+
+Application-stack artefacts (fuzzing, benchmarks, CADRE, Elixir, CRDTs, Deno,
+container orchestration)::
+*Not applicable* to a single-tool Agda formalization. None is implied or
+claimed.
+
+== Honest tier statement
+
+`epistemic-types` is *approaching Bronze*. All structural, documentation, and
+machine-readable requirements within agent control are present (or authored in
+this pass), the source type-checks under a strict, honesty-first discipline,
+and every omission above is deliberate and justified.
+
+The *single gating item* for Bronze is `LICENSE` (with accompanying SPDX), which
+is *owner-manual* by estate policy. The recommendation on record is *MPL-2.0*.
+Until the owner applies it, this repository should not be described as Bronze,
+`stable`, or released, and no automated agent should attempt to close the gap.
+
+== Bot requirement
+
+Agents operating in this repository must treat this document as a key root audit
+gate. In particular they must not: create or edit `LICENSE`; add SPDX or
+copyright headers; add GitHub Actions workflows or CI badges; rename
+`readme.adoc` or `explainme.adoc`; or make release/readiness claims that
+conflict with the tier statement above.

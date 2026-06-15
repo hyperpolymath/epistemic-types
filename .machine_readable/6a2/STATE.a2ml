@@ -1,21 +1,96 @@
-state "prototype" {
-  status: "small exploratory Agda prototype"
-  assumptions: "No Agda postulates. Laws appear as fields when not derivable."
-  modules: [
-    "EpistemicTypes.Base",
-    "EpistemicTypes.Warrant",
-    "EpistemicTypes.Access",
-    "EpistemicTypes.SurrealBridge",
-    "EpistemicTypes.EchoBridge",
-    "EpistemicTypes.Examples",
-    "EpistemicTypes.ProofTransport",
-    "EpistemicTypes.ProofTransportExample"
-  ]
-  roadmap: [
-    "Add concrete Kripke-style semantics.",
-    "Add evidence-state and observation-rule examples.",
-    "Add richer day-bounded surreal fragments as instances of the abstract SurrealAccess interface.",
-    "Add lawful instances only after proving or explicitly assuming laws.",
-    "Extend the echo bridge without importing a full graded comonad."
-  ]
-}
+[metadata]
+project = "epistemic-types"
+version = "0.1.0"
+last-updated = "2026-06-15"
+status = "prototype"  # prototype | active | paused | archived
+
+[project-context]
+name = "epistemic-types"
+owner = "Jonathan D.A. Jewell (hyperpolymath)"
+repo = "hyperpolymath/epistemic-types"
+purpose = "A small, deliberately honest Agda formalization of standpoint-indexed modal / epistemic / echo-like type formers. Favours mathematical honesty over a large API: the base interface E : K -> Set ℓ -> Set ℓ is a plain indexed endofunctor (map only), NOT a monad/comonad — no generic return/reflect."
+completion-percentage = 35
+
+[position]
+phase = "design"           # design | implementation | testing | maintenance | archived
+maturity = "experimental"  # experimental | alpha | beta | production | lts
+
+[constraints]
+discipline = "Constructive. Compiles under {-# OPTIONS --safe --without-K #-}. No postulates. No Agda standard library (built with 'agda --no-libraries'; only Agda.Builtin.* / Agda.Primitive)."
+honesty-rule = "Laws appear as explicit fields when not derivable; lawful instances are added only after proving or explicitly assuming the laws. No smuggling."
+
+[build]
+checker = "Agda 2.8.0"
+command = "just check"
+expands-to = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+aggregator = "src/EpistemicTypes/All.agda re-exports every module."
+
+[modules]
+# Agda modules under src/EpistemicTypes/.
+list = [
+  "EpistemicTypes.Base",
+  "EpistemicTypes.Warrant",
+  "EpistemicTypes.Access",
+  "EpistemicTypes.SurrealBridge",
+  "EpistemicTypes.EchoBridge",
+  "EpistemicTypes.Examples",
+  "EpistemicTypes.ProofTransport",
+  "EpistemicTypes.ProofTransportExample",
+]
+
+[modules.detail]
+base = "Modality / LawfulModality / FactiveModality / BeliefModality / ReturnModality. The base form E κ A reads 'A is epistemically available at standpoint κ'."
+warrant = "Warrant / Epi / SoundWarrant."
+access = "Preorder + AccessibleModality transport 'increase'."
+echo-bridge = "Min-plus graded loss/residue 'Echo r A', kept deliberately distinct from E κ A."
+surreal-bridge = "SurrealAccess carrier + GradedSurrealModality + daySurrealAccess finite birthday tower."
+examples = "Worked instances exercising the interfaces."
+proof-transport = "Standpoint-indexed proof transport across trust boundaries. View : Agent -> Artifact -> Status -> Claim -> Set; statuses Data/Code/Claimed/Receipt/Proof/ProofUnder; modes Public/Designated/IssuerMediated/EnvironmentMediated/OpaqueReceipt. transmit downgrades a sender's Proof to a receiver's Receipt; verify upgrades Data->Proof only with the receiver's OWN checker+evidence; public is portable, designated is receiver-bound, receipt-only never certifies; proofNeedsChecker = structural no-smuggling."
+proof-transport-example = "A K9-SVC / A2ML attestation: issuer K9SVC, receiver Alice, third party Bob, claim ActionWasPerformed, artifact AttestationBlob."
+
+[route-to-mvp]
+milestones = [
+  { name = "Base indexed-endofunctor interface (E, Modality and law-fields)", completion = 100 },
+  { name = "Warrant / Access / EchoBridge / SurrealBridge formers", completion = 100 },
+  { name = "ProofTransport core (View, statuses, modes, transmit/verify)", completion = 100 },
+  { name = "Concrete Kripke-style semantics", completion = 0 },
+  { name = "Evidence-state and observation-rule examples", completion = 0 },
+  { name = "Richer day-bounded surreal fragments as SurrealAccess instances", completion = 0 },
+  { name = "Lawful instances (only after proving or explicitly assuming laws)", completion = 0 },
+]
+
+[roadmap]
+items = [
+  "Add concrete Kripke-style semantics.",
+  "Add evidence-state and observation-rule examples.",
+  "Add richer day-bounded surreal fragments as instances of the abstract SurrealAccess interface.",
+  "Add lawful instances only after proving or explicitly assuming laws.",
+  "Extend the echo bridge without importing a full graded comonad.",
+]
+
+[progress-summary]
+note = "Prototype. The base interface and all eight modules typecheck under 'just check' (Agda 2.8.0, --safe --without-K, --no-libraries, no postulates). The endofunctor/Modality formers, Warrant, Access transport, EchoBridge residue, SurrealBridge tower, ProofTransport, and its K9-SVC/A2ML attestation example are in place. Remaining work is semantics and lawful instances — see [roadmap]."
+
+[blockers-and-issues]
+# No active blockers.
+
+[critical-next-actions]
+actions = [
+  "Add concrete Kripke-style semantics for the standpoint-indexed formers.",
+  "Add evidence-state and observation-rule worked examples.",
+  "Prove or explicitly assume modality laws before exposing lawful instances.",
+  "Extend the echo bridge without importing a full graded comonad.",
+]
+
+[ci]
+enabled = false
+note = "CI is not enabled (see AUDIT.adoc). Checking is local via 'just check'."
+
+[ecosystem]
+part-of = ["RSR Framework", "echo / epistemic formal-methods siblings"]
+siblings = [
+  { name = "echo-types", relation = "Agda loss-with-residue formalism; EchoBridge composes with it." },
+  { name = "ephapax", relation = "Sibling formal language; four-layer redesign carries echo obligations." },
+  { name = "standards", relation = "Estate RSR/standards + k9-svc + a2ml tooling." },
+  { name = "a2ml + k9", relation = "Machine-readable + contractile tooling; the engineering target for ProofTransport (see .machine_readable/proof-transport/)." },
+]

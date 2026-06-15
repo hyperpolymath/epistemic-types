@@ -1,0 +1,68 @@
+= Maintainers
+:toc: preamble
+
+Maintainers of `epistemic-types` — a small Agda formalization of
+standpoint-indexed modal / epistemic / echo-like type formers.
+
+== Current Maintainers
+
+[cols="2,2,3",options="header"]
+|===
+| Name | Role | Contact
+
+| Jonathan D.A. Jewell (hyperpolymath)
+| Lead maintainer
+| mailto:j.d.a.jewell@open.ac.uk[j.d.a.jewell@open.ac.uk] · https://github.com/hyperpolymath[@hyperpolymath]
+|===
+
+This is a sole-maintainer project. All responsibilities below rest with the
+lead maintainer.
+
+== Areas of Responsibility
+
+* *Core interface* (`Base`, `Warrant`, `Access`) — the indexed endofunctor
+  `E : K -> Set ℓ -> Set ℓ` and its lawful / factive / belief / return
+  variants; keeping the base interface honestly `map`-only.
+* *Echo + Surreal bridges* (`EchoBridge`, `SurrealBridge`) — the min-plus
+  graded loss/residue `Echo r A`, kept distinct from `E κ A`, and the
+  graded surreal access tower. Cross-checked against sibling `echo-types`.
+* *Proof transport* (`ProofTransport`, `ProofTransportExample`) — the
+  standpoint-indexed transport of attestations across trust boundaries
+  (statuses, transmit/verify, no-smuggling), plus its a2ml/k9 engineering
+  rendering under `.machine_readable/proof-transport/`.
+* *Build + honesty invariants* — that `just check` stays green
+  (`agda --no-libraries -i src src/EpistemicTypes/All.agda`, Agda 2.8.0),
+  under `--safe --without-K`, with no postulates and no standard library.
+* *Documentation* — `readme.adoc`, `explainme.adoc`, and the machine-readable
+  6a2 / contractile descriptors.
+
+== Contribution Process
+
+Contributions are welcome via:
+
+1. *Issues* — report errors, suggest formers or lemmas, ask questions.
+2. *Pull Requests* — submit changes for review.
+
+Every change must keep `just check` green and preserve the honesty
+invariants (no postulates, no stdlib, `--safe --without-K`). All
+contributions are reviewed by the lead maintainer.
+
+== Decision Making
+
+* Routine fixes and small lemmas: decided by the maintainer.
+* New type formers or interface changes: discussed in an issue first,
+  with attention to whether they belong here or upstream in `echo-types`.
+* Anything weakening the honesty invariants: out of scope by default.
+
+== Contact
+
+For governance or design questions, open a GitHub issue or contact the lead
+maintainer at mailto:j.d.a.jewell@open.ac.uk[j.d.a.jewell@open.ac.uk].
+
+== See Also
+
+* link:readme.adoc[Readme]
+* link:explainme.adoc[Explainme]
+* link:CONTRIBUTING.md[Contributing Guide]
+* link:CODE_OF_CONDUCT.md[Code of Conduct]
+* link:AUDIT.adoc[Audit] — CI is not enabled; see the audit for rationale.

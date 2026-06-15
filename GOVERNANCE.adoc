@@ -1,0 +1,233 @@
+= Governance Model
+:toc: preamble
+
+This document describes how `epistemic-types` (`hyperpolymath/epistemic-types`)
+is governed. It is a small, deliberately honest Agda formalization, so the
+model is intentionally lightweight and matches the size of the project.
+
+== Overview
+
+`epistemic-types` follows a **single-maintainer, benevolent-steward** model.
+
+* One maintainer, **Jonathan D.A. Jewell (hyperpolymath)**
+  `<j.d.a.jewell@open.ac.uk>`, holds final authority over the project.
+* The maintainer acts as a steward: the goal is to keep the formalization
+  small, honest, and type-checking, not to grow a large API.
+* Proposals, issues, and pull requests are welcome and are reviewed on
+  technical merit.
+* Decisions are recorded in the open, through GitHub issues, pull requests,
+  and `CHANGELOG.md`.
+
+The project's stewardship bias is the same one stated in `readme.adoc`: it
+**favours mathematical honesty over a large API**. Governance exists mainly to
+protect that bias.
+
+== Core principles
+
+[cols="1,2"]
+|===
+| Principle | Description
+
+| **Honesty over surface area**
+| A change that adds convenience but hides an unproved assumption is declined.
+  Postulates and a dependence on the Agda standard library are out of scope by
+  design (the build runs `agda --no-libraries` under `--safe --without-K`).
+
+| **Stewardship, not gatekeeping**
+| The maintainer has the final say but prefers to merge well-scoped, honest
+  contributions and to explain declines.
+
+| **Merit**
+| Contributions are judged on the mathematics and the proof, not on who sent
+  them.
+
+| **Transparency**
+| Significant decisions are documented in the issue, PR, or `CHANGELOG.md`.
+
+| **Open contribution**
+| Anyone may fork and open a pull request.
+|===
+
+== Roles
+
+[cols="1,2,2"]
+|===
+| Role | Permissions | Who
+
+| **Maintainer / steward**
+| Merge rights, admin, release
+| Jonathan D.A. Jewell (hyperpolymath)
+
+| **Contributors**
+| Fork, open issues and PRs
+| Any GitHub user
+
+| **Users**
+| Use the library, read the proofs, report issues
+| Any GitHub user
+|===
+
+There are no co-maintainers at present. The project is a prototype
+(version 0.1.0), and a single steward is the right size for it.
+
+== Graduated trust (kept lightweight)
+
+Rather than a formal committee structure, trust is graduated by track record,
+and kept deliberately informal:
+
+. **First contribution** — reviewed closely by the maintainer; the bar is that
+  it type-checks under `just check` and does not introduce a postulate or a
+  hidden assumption.
+. **Repeat contributor** — a contributor with a history of honest, accurate
+  patches gets faster review and the benefit of the doubt on scope.
+. **Trusted reviewer (future)** — if contribution volume ever warrants it, the
+  maintainer may invite a trusted contributor to review or co-maintain. This
+  has not happened yet and is not promised; it is recorded here only so the
+  path is visible.
+
+This mirrors, very loosely, the project's own subject matter: the
+`ProofTransport` module is precisely about not smuggling proofhood across a
+trust boundary. Governance does the same thing socially — trust is earned and
+checked locally, never assumed.
+
+== Decision making
+
+=== Routine decisions
+
+* Documentation fixes (in `readme.adoc`, `explainme.adoc`, or the other docs)
+* Small proof clarifications that keep the same statements
+* Typos, comment fixes, formatting
+
+**Process:** the maintainer reviews and merges if it type-checks and is honest.
+
+=== Significant changes
+
+* New modules under `src/EpistemicTypes/`
+* New interfaces (for example, a new modality record alongside `Base`)
+* Changes to a public statement, signature, or law
+* New bridge modules toward `echo-types`, `ephapax`, or the `a2ml`/`k9`
+  engineering rendering in `.machine_readable/proof-transport/`
+
+**Process:**
+
+. Open an issue describing the change and the mathematics it commits to.
+. Discuss; the maintainer checks it against the "honesty over API" bias and
+  against what `readme.adoc` lists as *intentionally unformalized*.
+. The maintainer decides and records the rationale in the issue or PR.
+
+=== Structural decisions
+
+* Repository purpose, renaming, or archival
+* Licence classification
+* Ownership transfer
+
+**Process:** the maintainer decides, and the decision is recorded in
+`CHANGELOG.md`. Licence and SPDX matters are handled manually by the owner and
+are out of scope for automated changes.
+
+== Contribution lifecycle
+
+[cols="1,2"]
+|===
+| Stage | What happens
+
+| **Idea**
+| Open an issue. Worth checking the *roadmap* and *what remains intentionally
+  unformalized* sections of `readme.adoc` first — some omissions are deliberate.
+
+| **Development**
+| Fork, implement, and make it type-check: `just check`
+  (i.e. `agda --no-libraries -i src src/EpistemicTypes/All.agda`, Agda 2.8.0).
+  No postulates; no Agda standard library.
+
+| **Review**
+| Open a PR. The maintainer reviews on a best-effort basis (this is a personal
+  research prototype, not a staffed project).
+
+| **Merge**
+| The maintainer merges or requests changes.
+
+| **Release**
+| The maintainer tags and updates `CHANGELOG.md`. There is no automated release
+  pipeline.
+|===
+
+== Conflict resolution
+
+. Discuss in the relevant issue or PR, with the mathematics on the table.
+. The maintainer mediates and decides.
+. The decision is documented and may be revisited later if new evidence or a
+  cleaner proof appears.
+
+== Project policies
+
+* **Licence:** the repository is the owner's sole work and is classified
+  MPL-2.0 at the estate level. The working tree is currently SPDX-free by
+  choice; licence files and SPDX headers are added manually by the owner and
+  are not part of automated changes. See `AUDIT.adoc`.
+* **Code of conduct:** see `CODE_OF_CONDUCT.md`.
+* **Security:** see `SECURITY.md`.
+* **Contributing:** see `CONTRIBUTING.md`.
+
+== Repository conventions
+
+[cols="1,2"]
+|===
+| Convention | Description
+
+| **Build**
+| `just check` is the single source of truth. A change that does not
+  type-check is not merged.
+
+| **No postulates, no stdlib**
+| The formalization stays constructive and self-contained
+  (`Agda.Builtin.*` / `Agda.Primitive` only).
+
+| **Docs**
+| AsciiDoc (`.adoc`) is the default. Existing docs keep their lowercase names
+  (`readme.adoc`, `explainme.adoc`). Only `CONTRIBUTING.md`,
+  `CODE_OF_CONDUCT.md`, `SECURITY.md`, and `CHANGELOG.md` are Markdown, for
+  GitHub community-health recognition.
+
+| **Machine-readable**
+| `a2ml` + Nickel/`k9` artefacts live under `.machine_readable/`, including the
+  engineering rendering of `ProofTransport` in
+  `.machine_readable/proof-transport/`.
+
+| **CI/CD**
+| Not enabled. There are no GitHub Actions workflows or status badges; see
+  `AUDIT.adoc` for the reasons.
+|===
+
+== Ecosystem position
+
+`epistemic-types` is a sibling, not a dependency, of the related estate
+formalizations. The `EchoBridge` module is written so it can compose with
+`echo-types` (the loss-with-residue formalism) without importing it; `ephapax`
+shares the echo-obligation framing; the `a2ml`/`k9` tooling in `standards` is
+the engineering target for `ProofTransport`. Governance of those repositories
+is separate and lives in their own `GOVERNANCE` documents.
+
+== Governance evolution
+
+If the project grows, this model may change — for example by adding a
+co-maintainer or a trusted reviewer (see *graduated trust* above). Any such
+change is itself a structural decision and is recorded in `CHANGELOG.md`.
+
+== See also
+
+* link:readme.adoc[readme] — what the prototype is and how to type-check it
+* link:explainme.adoc[explainme] — the longer-form explanation
+* link:CONTRIBUTING.md[Contributing]
+* link:CODE_OF_CONDUCT.md[Code of Conduct]
+* link:SECURITY.md[Security policy]
+* link:AUDIT.adoc[Audit] — build, CI, and licence status
+
+== Changelog
+
+[cols="1,1,1"]
+|===
+| Date | Change | By
+
+| 2026-06-15 | Initial governance model established | hyperpolymath
+|===

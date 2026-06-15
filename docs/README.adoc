@@ -1,0 +1,66 @@
+= Documentation Index — epistemic-types
+Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+v0.1.0, 2026-06-15: prototype
+
+`epistemic-types` is a small, deliberately honest Agda formalization of
+standpoint-indexed modal / epistemic / echo-like type formers.  It favours
+mathematical honesty over a large API.  This page is a map to the prose and
+machine-readable material; the Agda source under `src/EpistemicTypes/` is the
+authority.
+
+== Where to start
+
+[cols="1,3"]
+|===
+| Document | What it covers
+
+| `readme.adoc` (repo root)
+| Project overview: the core form `E : K -> Set ℓ -> Set ℓ`, the module layout,
+  and the `just check` build (`agda --no-libraries -i src src/EpistemicTypes/All.agda`).
+
+| `explainme.adoc` (repo root)
+| Gentler, narrative explanation of the ideas — why `E κ A` is a plain indexed
+  endofunctor (map only) and *not* a monad/comonad, and what "epistemically
+  available at standpoint κ" is meant to capture.
+
+| `docs/proof-transport.adoc`
+| Focused walkthrough of `EpistemicTypes.ProofTransport`: how `transmit`
+  downgrades a sender's `Proof` to a receiver's `Receipt`, how `verify` upgrades
+  `Data` to `Proof` only with the receiver's own checker plus evidence, and the
+  public / designated / receipt distinctions.
+|===
+
+== Machine-readable specs
+
+The `.machine_readable/` tree mirrors the prose for a2ml / Nickel-k9 tooling.
+The Agda modules remain authoritative; these files restate them as data.
+
+[cols="1,3"]
+|===
+| Path | Role
+
+| `.machine_readable/6a2/`
+| Project-level notes for automated agents: `0-AI-MANIFEST.a2ml`, `STATE.a2ml`,
+  and a short `README.adoc`.
+
+| `.machine_readable/proof-transport/`
+| Engineering rendering of `ProofTransport`: `ProofTransport.a2ml` (entities,
+  statuses, modes, laws, and the K9-SVC scenario) and `proof-transport.k9.ncl`
+  (the same model as a `'Kennel`-leash Nickel datum).  See its `README.adoc`
+  for the research-to-engineering correspondence table.
+|===
+
+== Source modules (authority)
+
+The library lives in `src/EpistemicTypes/` and re-exports through `All.agda`:
+`Base`, `Warrant`, `Access`, `EchoBridge`, `SurrealBridge`, `Examples`,
+`ProofTransport`, and `ProofTransportExample`.  It is constructive, compiles
+under `{-# OPTIONS --safe --without-K #-}`, uses no postulates, and depends on
+no Agda standard library — only `Agda.Builtin.*` / `Agda.Primitive` (Agda 2.8.0).
+
+== Notes
+
+* `EchoBridge` (min-plus graded loss/residue `Echo r A`) is kept deliberately
+  distinct from `E κ A`; it composes with the sibling `echo-types` formalism.
+* Continuous integration is not enabled for this prototype; the build is the
+  single `just check` invocation.

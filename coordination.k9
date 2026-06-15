@@ -1,0 +1,114 @@
+# Thin coordination bindings for central session-management standards
+#
+# Repo: epistemic-types (hyperpolymath/epistemic-types)
+# A small, deliberately honest Agda formalization of standpoint-indexed
+# modal / epistemic / echo-like type formers. Single Agda library, no app stack.
+
+session_management:
+  source_of_truth: "standards/session-management-standards"
+  canonical_commands:
+    - "intake repo <path>"
+    - "checkpoint change <path>"
+    - "verify maintenance <path>"
+    - "verify substantial <path>"
+    - "verify release <path>"
+    - "close planned <path>"
+    - "close urgent <path>"
+    - "recover repo <path>"
+    - "handover full <path>"
+    - "handover split <path>"
+    - "handover model <path>"
+    - "handover human <path>"
+
+signals:
+  - name: "session.intake"
+    command: "intake repo <path>"
+  - name: "session.checkpoint"
+    command: "checkpoint change <path>"
+  - name: "session.verify.maintenance"
+    command: "verify maintenance <path>"
+  - name: "session.verify.substantial"
+    command: "verify substantial <path>"
+  - name: "session.verify.release"
+    command: "verify release <path>"
+  - name: "session.close.planned"
+    command: "close planned <path>"
+  - name: "session.close.urgent"
+    command: "close urgent <path>"
+  - name: "session.recover"
+    command: "recover repo <path>"
+  - name: "session.handover.full"
+    command: "handover full <path>"
+  - name: "session.handover.split"
+    command: "handover split <path>"
+  - name: "session.handover.model"
+    command: "handover model <path>"
+  - name: "session.handover.human"
+    command: "handover human <path>"
+
+# ---------------------------------------------------------------------------
+# Repo-local binding. Concrete identifiers for this repository, consumed by the
+# session-management signals above. Strictly descriptive of the current tree.
+# ---------------------------------------------------------------------------
+
+repo:
+  name: "epistemic-types"
+  slug: "hyperpolymath/epistemic-types"
+  owner: "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
+  version: "0.1.0"
+  status: "prototype"
+  last_updated: "2026-06-15"
+  kind: "single-tool Agda library"
+
+# Paths the session machinery must treat as load-bearing. Changes under these
+# require a verify pass (build green) before checkpoint/close.
+protected_paths:
+  - path: "src/"
+    role: "Agda sources (the formalization)"
+  - path: "src/EpistemicTypes/All.agda"
+    role: "re-export aggregator; the check entry point"
+  - path: ".machine_readable/"
+    role: "a2ml + Nickel/k9 machine-readable surface (6a2/, proof-transport/)"
+  - path: "Justfile"
+    role: "canonical build recipe"
+  - path: "epistemic-types.agda-lib"
+    role: "library declaration"
+
+# Invariants every verify/close must uphold. Honesty over API surface.
+invariants:
+  - id: "build-green"
+    statement: "The library typechecks: `just check` succeeds."
+    command: "just check"
+    expands_to: "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+    tool: "Agda 2.8.0"
+  - id: "no-postulates"
+    statement: "No postulates. Compiles under {-# OPTIONS --safe --without-K #-}; constructive throughout."
+  - id: "no-stdlib"
+    statement: "No Agda standard library. Built with `agda --no-libraries`; only Agda.Builtin.* and Agda.Primitive are imported."
+  - id: "licence-owner-manual"
+    statement: "Licence/SPDX are owner-manual. The tree is intentionally SPDX-free; do not add LICENSE, SPDX headers, or copyright lines in any automated pass. Classification (owner sole repo => MPL-2.0) is flagged separately for the owner."
+  - id: "honesty-over-api"
+    statement: "Favour mathematical honesty over a large API. The base E : K -> Set ℓ -> Set ℓ is a plain indexed endofunctor (map only) — not a monad/comonad; no generic return/reflect. Echo r A is kept distinct from E κ A."
+
+# CI is intentionally absent (estate Actions billing wall; Scorecard known-broken
+# estate-wide). Verification is local-only via `just check`. See AUDIT.adoc.
+ci:
+  enabled: false
+  note: "No CI; not enabled (see AUDIT.adoc). Verification is local via `just check`."
+
+# Real ecosystem siblings this repo coordinates with.
+ecosystem:
+  siblings:
+    - name: "echo-types"
+      relationship: "EchoBridge (min-plus graded loss/residue) composes with echo-types' loss-with-residue formalism."
+    - name: "ephapax"
+      relationship: "Sibling formal language; four-layer redesign carries echo obligations."
+    - name: "standards"
+      relationship: "Estate RSR/standards + k9-svc + a2ml tooling; source of truth for session-management."
+    - name: "a2ml + k9"
+      relationship: "Machine-readable + contractile tooling; ProofTransport's engineering target (.machine_readable/proof-transport/)."
+
+# Docs keep their existing lowercase names; do not rename or duplicate.
+docs:
+  - "readme.adoc"
+  - "explainme.adoc"

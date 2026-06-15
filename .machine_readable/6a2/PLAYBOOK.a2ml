@@ -1,0 +1,63 @@
+# PLAYBOOK.a2ml — Operational playbook
+# Runbook for epistemic-types: a single-tool Agda library checked by `just check`.
+# Concise and specific to this repo. There is no service to deploy and no CI.
+
+[metadata]
+version = "0.1.0"
+status = "prototype"
+last-updated = "2026-06-15"
+repo = "hyperpolymath/epistemic-types"
+single-tool = "agda"
+
+[deployment]
+method = "library (no deploy)"
+target = "library"
+notes = "Constructive Agda formalization consumed by reading and re-checking the source. Nothing is built into an artifact, served, or shipped. Downstream use = import the modules and typecheck."
+ci = "not enabled (see AUDIT.adoc)"
+
+[gate]
+# The single source of truth for 'is the library healthy?'.
+command = "just check"
+expands-to = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+agda-version = "2.8.0"
+options = "--safe --without-K"
+dependencies = "none (only Agda.Builtin.* / Agda.Primitive; no standard library; no postulates)"
+green-means = "All.agda re-exports every module and the whole library typechecks."
+
+[incident-response]
+# 'Incident' here = the library stopped typechecking.
+steps = [
+  "1. Read .machine_readable/6a2/STATE.a2ml for current status, assumptions, and the module list.",
+  "2. Run `just check` to reproduce the failure (same as `agda --no-libraries -i src src/EpistemicTypes/All.agda`).",
+  "3. Read the Agda error: it names the failing module under src/EpistemicTypes/ and the offending goal or type.",
+  "4. Open and inspect that failing module; fix the definition or the field standing in for a not-yet-derived law.",
+  "5. Re-run `just check` until green; the whole library must typecheck via All.agda."
+]
+honesty-rule = "Never silence a failure with a postulate or by weakening --safe/--without-K. Laws appear as explicit fields when they are not derivable."
+boundary-rule = "Do not collapse Echo r A (min-plus graded loss/residue) into E κ A (standpoint/warrant/access). Their composition is meaningful; they are not the same modality."
+
+[release-process]
+steps = [
+  "1. Bump version in .machine_readable/6a2/STATE.a2ml and META.a2ml.",
+  "2. Run `just check` and confirm it is green.",
+  "3. Update CHANGELOG.md with the changes for this version.",
+  "4. Tag the release at the green commit."
+]
+preconditions = "`just check` is green; no postulates introduced; --safe --without-K still hold."
+
+[maintenance-operations]
+gate = "`just check`"
+description = "`just check` is the maintenance gate. Any change to src/EpistemicTypes/** is only complete once `just check` is green again."
+routine = [
+  "After editing any module, run `just check`.",
+  "When adding a module, re-export it from EpistemicTypes.All so the gate covers it.",
+  "Keep modules small and typecheck frequently (incremental, one module at a time)."
+]
+no-build-system = "There is no separate build, lint, test, container, or security pipeline beyond the typechecker; the proof obligation IS the test."
+
+[ecosystem]
+# Sibling repos this library relates to (no automated coupling).
+echo-types = "Agda loss-with-residue formalism; EpistemicTypes.EchoBridge composes with it."
+ephapax = "Sibling formal language (four-layer redesign with echo obligations)."
+standards = "Estate RSR/standards, k9-svc, and a2ml tooling."
+a2ml-k9 = "Machine-readable + contractile tooling; the engineering target rendered under .machine_readable/proof-transport/ for ProofTransport."
