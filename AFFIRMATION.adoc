@@ -1,0 +1,321 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= AFFIRMATION — epistemic-types, as of 2026-06-16
+:toc: macro
+:toclevels: 2
+
+_the No-Bullshit file: what we affirm was true and checkable at this moment_
+
+[NOTE]
+====
+*Genre.* An *affirmation* is a solemn declaration of the truth of a statement,
+made by someone who _declines to swear an oath_. That is exactly what this is:
+our truth-as-best-believed at a stamped instant — binding on our honesty, not a
+claim of infallibility. It is not the README and not the EXPLAINME:
+
+[cols="1,3,2",options="header"]
+|===
+| File | Answers | Tense
+| `readme.adoc`      | _Where is this going, and why?_ — state of thinking, steering, intent | future / aspirational
+| `explainme.adoc`   | _How is it built, and what's the evidence?_ — engineering underpinnings | descriptive / mechanism
+| *`AFFIRMATION.adoc`* (this file) | _What can we honestly affirm was *true and checkable* at a stamped moment?_ | a frozen instant, falsifiable
+|===
+
+This repo deliberately keeps the README/EXPLAINME files lowercase
+(`readme.adoc` / `explainme.adoc`); that naming is owner-chosen, not an error
+(see `AUDIT.adoc`). It is deliberately small, dated, and signed, so a reader can
+hold us to exactly what we affirmed, when we affirmed it.
+====
+
+toc::[]
+
+== What this is, and how it is designed to work
+
+*What it is.* A short, dated, jointly-signed snapshot of what we can _honestly
+and verifiably_ claim about this repo at one exact commit. Nothing here is
+marketing and nothing is a promise about the future — both of those live in the
+README. This file is the receipt.
+
+*How it is designed to work.* Three moving parts make it trustworthy:
+
+. *Ground truth, not memory.* Every claim below was produced by _running Agda in
+  the session that wrote this file_. The build, the `-W error` hardening pass,
+  and the `--safe`-enforcement honesty probe were all run live; their exact
+  outputs are in <<reproduce,Reproduce it yourself>>. If a status doc or a
+  memory said otherwise, the live run wins and we flag the contradiction.
+. *A frozen anchor.* The file names the exact commit SHA, branch, UTC timestamp,
+  and toolchain (see <<Verifiable anchor>>), so "true" always means "true _at
+  this point_". Move the SHA and the file becomes a draft until re-run.
+. *A real signature.* It is landed by a *signed git commit*; that signature over
+  this content at the anchored SHA is what makes the affirmation tamper-evident
+  and attributable — not the prose alone.
+
+*We are fallible.* We can be wrong, stale, or simply mistaken about our own
+work. A green Agda typecheck proves the formalised _types and theorems_ in this
+repo hold; it does *not* prove that those types are the _right model_ of
+knowledge, belief, warrant, or proof transport — that is a modelling judgement,
+and modelling judgements can be wrong. This file is our best honest belief, not
+a proof of its own correctness. Treat it as a falsifiable claim, not gospel.
+
+== The epistemic contract (read this before you trust _or_ attack)
+
+This document records our *best joint belief* at the timestamp below. It is
+*not a guarantee of correctness.* We may be wrong. We may be deluded. We may
+have missed something — a hole, a stale doc, or a formalised core whose chosen
+encoding does not mean what we think it means.
+
+*No intentional overclaim.* That is the only guarantee here: we have not
+_knowingly_ inflated anything. Where something is a scaffold rather than a
+theorem, we say so. Where the proved object is an _idealised interface_ and not
+a production implementation, we say so. Where a doc in this very tree has
+drifted from the repo's current state, we say so. If you find an honest claim
+here that turns out false, that is an error to be fixed — not a lie.
+
+*Standing invitation to refute.* You are _invited_ to bulldoze any claim in this
+file. We want that. But the fair form of the attack is:
+
+. Read this file at the stamped commit.
+. Reproduce (or fail to reproduce) the checks in <<reproduce,Reproduce it yourself>>.
+. _Then_ tell us where the discrepancy is, against the artefact as it stood at
+  this moment — so we can either justify it or concede it on the record.
+
+An attack that skips steps 1–2 is attacking a strawman of a different date.
+
+*No fights before the facts are cleared up.* We are not interested in a dispute
+over a claim until the discrepancy has actually been checked against the
+artefact at this commit and we have had the chance to either justify it or
+concede it on the record. Good faith both ways: bring a reproducible
+discrepancy and we will fix the claim, the doc, or the code — promptly and
+without defensiveness. The goal is a corrected record, not a won argument.
+
+== Verifiable anchor
+
+[cols="1,3"]
+|===
+| *Repo*        | `hyperpolymath/epistemic-types` (a stdlib-free Agda formalization — *not* the sibling `echo-types` library)
+| *Branch*      | `ci/add-agda-codeql-2026-06-16` (note: the repo's default branch is `main`; this affirmation was checked on the CI branch at HEAD)
+| *Commit (HEAD)* | `d2f7678199bfd950b2be148a6ef70ee21674699e`
+| *Permalink*   | https://github.com/hyperpolymath/epistemic-types/tree/d2f7678199bfd950b2be148a6ef70ee21674699e
+| *Verified (UTC)* | 2026-06-16T12:17:03Z
+| *Working-tree delta at verification* | *Clean* (`git status --porcelain` empty) before this file was written. `AFFIRMATION.adoc` is the only addition; it is documentation and does not affect the build/proof results below. The green results are HEAD, untouched.
+| *Toolchain*   | Agda 2.8.0 · just 1.50.0 · git 2.43.0. No Agda standard library is used: the build runs `agda --no-libraries` against only `Agda.Primitive` / `Agda.Builtin.*`, so the estate's dangling-stdlib gotcha does *not* apply here.
+|===
+
+[IMPORTANT]
+If you are reading this at a _later_ commit, the claims may have drifted.
+Re-run <<reproduce>> and write a fresh affirmation; do not trust a stale one.
+
+== Companion documents and repo metadata (cross-check)
+
+This affirmation should be read against the repo's own public claims. Where they
+drift from what we verified, we say so here rather than quietly leave the reader
+to find out.
+
+* *`readme.adoc`* — link:readme.adoc[_"Epistemic Types"_]. Present. Lowercase
+  by deliberate owner choice (the estate `README.adoc` canonical-casing rule is
+  consciously waived here per `AUDIT.adoc`). It describes the prototype's
+  intended scope; this file is its receipt for one moment.
+* *`explainme.adoc`* — link:explainme.adoc[_"Explain Me: Epistemic Types"_].
+  Present. Also lowercase by the same deliberate choice. So the estate trio
+  (README / EXPLAINME / AFFIRMATION) is now *complete* for this repo, modulo the
+  lowercase naming.
+* *`AUDIT.adoc`* — an RSR compliance audit is present. *Drift noted:* its
+  "Intentionally omitted" section states _"GitHub Actions CI workflows ...
+  Omitted on purpose ... The real gate is local: `just check`."_ The HEAD commit
+  (`d2f7678`, _"ci: add Agda typecheck + CodeQL (repo had zero CI)"_) *adds*
+  `.github/workflows/agda.yml` and `codeql.yml`. So the AUDIT's
+  CI-is-omitted paragraph is *stale at this commit*. *Also note:* those two new
+  workflow files each carry an active
+  `# SPDX-License-Identifier: MPL-2.0` (and `SPDX-FileCopyrightText`) header —
+  so the repo is *not* SPDX-free at HEAD even though the Agda source under `src/`
+  still is (see _Outstanding / weak / refuted_ below). The AUDIT's own
+  proof-trust section (dated 2026-06-16) otherwise agrees with what we
+  re-verified live below.
+* *GitHub repo description* — *empty.* `gh repo view` returns `description: ""`.
+  Nothing to cross-check; nothing to contradict. (Noted as a gap, not glossed.)
+* *GitHub topics* — *none.* `repositoryTopics: null`. No public tags to verify
+  against the formalisation.
+
+== The honest state (one breath)
+
+*epistemic-types is a small, deliberately honest, stdlib-free Agda formalization
+of standpoint-indexed modal / epistemic / warrant / proof-transport type formers
+that type-checks green right now under `--safe --without-K` with no postulates
+and no escape hatches — so its named theorems are genuinely machine-checked —
+while remaining an explicit prototype: it formalises honesty-preserving
+*interfaces* and several real separation theorems, but does not yet ship a
+Kripke/evidence-state semantics, lawful instances, or the full echo graded-loss
+logic, and it carries no LICENSE.*
+
+=== What is solid (and how we checked)
+
+* *The whole library type-checks, cold, green.* `just check`
+  (`agda --no-libraries -i src src/EpistemicTypes/All.agda`) exits *0* after
+  `rm -rf _build`. All *10* modules are reported checked:
+  `All`, `Base`, `Warrant`, `Access`, `EchoBridge`, `ReadConsistency`,
+  `SurrealBridge`, `Examples`, `ProofTransportExample`, `ProofTransport`.
+* *The green is hardened.* Re-running with `-W error` (which promotes unsolved
+  metas / constraints / termination warnings to errors) *also* exits *0* — so
+  there are no hidden unsolved metavariables behind the success.
+* *`--safe` is genuinely enforced — proven by an honesty probe.* Injecting
+  `postulate evil : {A : Set} -> A` into a throwaway copy of `Base.agda` is
+  *rejected* with `error: [SafeFlagPostulate]` and exit *42*. So the clean build
+  is a real verification, not a no-op flag.
+* *Zero escape hatches.* A grep across `src/` for
+  `postulate` / `sorry` / `TERMINATING` / `trustMe` / `primTrustMe` / holes
+  (`{!`) returns *nothing*. All 10 files carry `{-# OPTIONS --safe --without-K #-}`.
+* *The named results are real proofs, not blanks.* Read directly from the
+  green-checked source:
+** `Warrant.sound-epi` — extraction `Evidence -> A` exists *only* via the
+   separate `SoundWarrant.sound` field; plain `Warrant` has no `Evidence -> A`,
+   so warrants are non-factive by construction.
+** `Examples.no-polymorphic-belief-reflection` and
+   `Examples.no-polymorphic-epi-reflection` — a generic
+   `(A : Set) -> Belief rough A -> A` (resp. `Epi`) is *refuted* by exhibiting a
+   belief/warrant for `⊥`. Belief and warrant cannot be globally reflected.
+** `ProofTransport.proofNeedsChecker` — every `View holder a Proof c`
+   decomposes into _that holder's own_ `Certifying m × Checker × Evidence`; no
+   checker-free `View sender … Proof → View receiver … Proof` is exported
+   (the "no-smuggling" property).
+** `ProofTransport.designatedBindsHolder` (`d ≡ holder`),
+   `ProofTransport.opaqueNotCertifying` (`¬ Certifying OpaqueReceipt`),
+   `ProofTransport.verifyReceiptIsGap` (a receipt-only verify is `left OpaqueGap`)
+   — the public-portable / designated-bound / receipt-never-certifies trichotomy.
+** `ReadConsistency.freshnessPropagatesUnderWrites`, `resyncRecoversFresh`,
+   `syncChainEndsFresh`, `freshNotStale` — version-monotone re-sync liveness.
+** `Access` preorder + monotone-transport laws, instantiated for real in
+   `Examples.standpointPreorder` / `knowledgeAccessible` and in
+   `ReadConsistency`.
+
+=== The honest nuance you must not lose
+
+The green typecheck establishes that an *idealised core calculus* — a set of
+Agda records, datatypes, and the theorems above — is internally consistent and
+holds under `--safe --without-K`. It does *not* establish that any external
+system (a real attestation protocol, a real CRDT read path, a real
+proof-carrying-code pipeline) *refines* this calculus. "Proved core" +
+"un-modelled world outside" is exactly that — two things, with an unverified
+bridge between them. There is *no production implementation* in this repo at all;
+it is a specification lens. Anyone reading "epistemic-types proves system X is
+sound" is overclaiming: it proves _its own_ formal statements, full stop.
+
+=== Known-incomplete but honestly fenced (scaffold, not silent gap)
+
+[NOTE]
+====
+* `EpistemicTypes.EchoBridge` is a deliberate *scaffold*. It defines real
+  tropical-grade plumbing (`gradeMin` / `gradePlus`, `Echo r A`,
+  `EpistemicEcho`) and type-checks, but it proves *no graded-loss theorems* of
+  its own. The graded-loss work that does exist lives partially in
+  `SurrealBridge` (the day-loss / birthday-tower fragment). EchoBridge is a
+  specification lens — a sound seed, not a complete graded-loss logic.
+* The `SurrealBridge` is explicitly *not* the full Conway proper class of
+  surreals; the only inhabited instance is the finite `daySurrealAccess`
+  birthday tower over `Nat`. The richer day-bounded fragments are roadmap.
+====
+
+=== Outstanding / weak / refuted (no spin)
+
+* *No LICENSE file, no SPDX on the Agda source — intentional and owner-pending;
+  but the CI workflows already carry an SPDX line (drift noted).* There is no
+  `LICENSE` file, and no `SPDX-License-Identifier` header on any `src/` Agda file
+  (verified: `grep` of `src/` for `SPDX-License-Identifier` returns nothing).
+  *Correction to an earlier draft, fenced rather than glossed:* the tree is
+  *not* fully SPDX-free at this commit. The two CI workflows added in HEAD
+  `d2f7678` — `.github/workflows/agda.yml` and `.github/workflows/codeql.yml` —
+  each open with a real, active
+  `# SPDX-License-Identifier: MPL-2.0` line *and* a
+  `# SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell ...` line (not prose
+  mentions). The other `SPDX` strings (`CONTRIBUTING.md`, `AUDIT.adoc`,
+  `GOVERNANCE.adoc`, `.machine_readable/6a2/AGENTIC.a2ml`) are prose / policy
+  text. So the licence *classification* is already asserted MPL-2.0 inside those
+  two workflow headers, while the source tree and the `LICENSE` file remain
+  owner-pending. Per `AUDIT.adoc` and estate policy the licence is
+  *owner-manual*; the recorded classification is *MPL-2.0*. Until the owner
+  lands a `LICENSE` and stamps the source, this repo is *not* Bronze, not
+  `stable`, not released — and *this affirmation does not add or change any SPDX
+  line itself* (the header is parked at the top for the owner).
+* *Prototype scope — much is deliberately unformalized.* No Kripke semantics, no
+  evidence-state model, no lawful (law-bearing) modality instances proved, no
+  graded comonad for echo-types, no proof irrelevance, no decidability, no
+  global warrant soundness. The README states these as future commitments; we
+  confirm they are *absent*, not hidden.
+* *`AUDIT.adoc` CI paragraph is stale* at this commit (CI was added in HEAD; the
+  audit still says it is omitted). Correcting that doc is a separate, non-licence
+  edit, left to the maintainer.
+* *The two new CI workflows (`agda.yml`, `codeql.yml`) were NOT run by us in
+  this session.* We verified the proofs *locally*; we did not trigger or observe
+  a GitHub Actions run. "CI is green" is therefore *not* a claim this file
+  makes — only "the local typecheck is green" is.
+* *Public GitHub metadata is empty* (no description, no topics), so a reader
+  arriving from GitHub gets no steering text. Cosmetic, but noted.
+
+[#reproduce]
+== Reproduce it yourself
+
+From the repo root, at the commit above, with Agda 2.8.0 on `PATH`:
+
+[source,sh]
+----
+# 1. Cold, canonical typecheck (the Justfile proof target):
+rm -rf _build
+just check
+#   == agda --no-libraries -i src src/EpistemicTypes/All.agda
+#   expect: "Checking EpistemicTypes.All ... ProofTransport ...", exit 0
+#   (all 10 modules listed)
+
+# 2. Hardening pass — promote unsolved metas/constraints/termination to errors:
+agda --no-libraries -W error -i src src/EpistemicTypes/All.agda
+#   expect: same module list, exit 0
+
+# 3. Honesty probe — confirm --safe actually bites (it must REJECT a postulate):
+tmp=$(mktemp -d); cp -r src "$tmp/src"
+printf '\npostulate evil : {A : Set} -> A\n' >> "$tmp/src/EpistemicTypes/Base.agda"
+agda --no-libraries -i "$tmp/src" "$tmp/src/EpistemicTypes/Base.agda"
+#   expect: error: [SafeFlagPostulate]  "Cannot postulate evil with safe flag",
+#           exit 42
+rm -rf "$tmp"
+
+# 4. Escape-hatch scan (expect no matches):
+grep -rnE 'postulate|sorry|TERMINATING|trustMe|primTrustMe|\{!' src/
+----
+
+Expected summary: steps 1 and 2 exit `0` and list all 10 `EpistemicTypes.*`
+modules; step 3 exits `42` with `[SafeFlagPostulate]`; step 4 prints nothing.
+
+== One-line characterisation (quote this)
+
+[quote]
+____
+"A small, stdlib-free Agda formalization of standpoint-indexed
+epistemic/warrant/proof-transport type formers that type-checks *green right
+now* under `--safe --without-K` with zero postulates and a verified
+postulate-rejection probe — so its named separation theorems are genuinely
+machine-checked — but an explicit prototype: interfaces and theorems, *not* a
+semantics, *not* lawful instances, *not* the full echo graded-loss logic, and
+*no LICENSE yet*. A serious specification lens, not a verified system. No
+intentional overclaim."
+____
+
+== Joint attestation
+
+We, the undersigned, assert that *to the best of our joint belief at the
+timestamp above, every claim in this file is true and was checked as described*
+— with no intentional overclaim, and with the open gaps stated rather than
+hidden.
+
+* *Engineering party (AI):* Claude Opus 4.8 (`claude-opus-4-8[1m]`) — ran the
+  build/test/proof checks recorded here on 2026-06-16T12:17:03Z and stands
+  behind this wording as a faithful report of those runs.
+* *Owner / maintainer:* Jonathan D.A. Jewell — _signs by committing this file
+  with `-S` (`id_ed25519_signing`); the git commit signature over this content,
+  at the commit SHA recorded above, is the cryptographic form of this
+  affirmation._
++
+Signed-off-date: ____________________  (fill on signing)
+
+[TIP]
+The authoritative, tamper-evident signature is the *signed git commit* that
+lands this file. If the SHA in <<Verifiable anchor>> matches the parent of that
+commit and the commit verifies, this affirmation is anchored. If they don't
+match, treat the file as a draft.

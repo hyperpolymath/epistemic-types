@@ -1,0 +1,206 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= What epistemic-types is (and what we did not invent)
+Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+:toc: macro
+:toclevels: 2
+
+_An upfront, scholarly statement of what the central object of this repository
+is, what established structure it instantiates, what is ours versus borrowed,
+and what it is deliberately NOT. Read against `AFFIRMATION.adoc` (the dated,
+signed ground truth) — this statement must not, and does not, contradict it._
+
+toc::[]
+
+== What it is (as we use it)
+
+In this repository an *epistemic type* is a *standpoint-indexed modal type
+former*
+
+----
+E : K -> Set ℓ -> Set ℓ
+----
+
+where `K` indexes epistemic standpoints (agents, observers, evidence states,
+accessibility contexts, warrant regimes). The reading of `E κ A` is that `A` is
+*epistemically available from standpoint `κ`*: known, believed, observed,
+warranted, inferable, or assertable under that standpoint. This is the operative
+definition as the code actually uses it, and it is the form named in
+`readme.adoc` and verified green in `AFFIRMATION.adoc`.
+
+The library's defining move is to *separate the interfaces* rather than ship one
+omnibus modality (`src/EpistemicTypes/Base.agda`):
+
+* `Modality` supplies only `E` and `map` — an indexed endofunctor family, no
+  monad, no comonad, no `return`/`bind`/`extract` by default.
+* `LawfulModality` adds the functor laws as explicit fields.
+* `FactiveModality` adds `reflect : E κ A -> A` (the factivity / truth axiom).
+* `BeliefModality` *intentionally has no* `reflect`.
+* `ReturnModality` makes a strong introduction rule explicit only when wanted.
+
+Warrant is treated as deliberately *non-factive but proof-relevant*
+(`src/EpistemicTypes/Warrant.agda`). `Warrant κ A` records a *type of evidence
+tokens* `Evidence : Set wℓ` for a claim `A` and carries *no* field
+`Evidence -> A`; `Epi κ A` packages a warrant with one such token, and holding
+`Epi κ A` *still does not give you `A`*. Soundness is a *separate* interface,
+`SoundWarrant`, which alone adds the map `sound : Evidence -> A` (exposed as
+`sound-epi`). So an evidence token is an instrument of attestation, not a
+licence to extract the proposition.
+
+Standpoint accessibility is a *preorder* `κ ≤κ κ'`
+(`src/EpistemicTypes/Access.agda`), read as "`κ'` is at least as informed as
+`κ`"; transport (`increase`) moves epistemic availability up the order, and the
+preorder and transport laws are fields because arbitrary standpoints do not
+determine them.
+
+`src/EpistemicTypes/ProofTransport.agda` applies the same discipline to
+*proof transport across trust boundaries*. One artefact is read three ways — von
+Neumann bytes, a Curry–Howard proof, an epistemic status relative to a holder —
+via `View holder artifact status claim`. `transmit` moves *bytes, not
+proofhood* (a sender's `Proof` arrives only as a `Receipt`); `verify` recovers
+proofhood *only* with the *receiver's own* `Checker` and `Evidence`; and
+`proofNeedsChecker` is the structural *no-smuggling* property: every
+`View holder a Proof c` decomposes into that holder's own certifying mode,
+checker, and evidence, so no checker-free
+`View sender … Proof → View receiver … Proof` exists. All of the above
+type-checks under `--safe --without-K` with zero postulates, per
+`AFFIRMATION.adoc`.
+
+== The established structure it instantiates (and where it is from)
+
+Honesty first, because it is load-bearing: unlike the sibling repos echo-types
+(which is provably the fibre / a graded-loss modality) and tropical-resource-typing
+(provably a dioid), epistemic-types' *deep* mathematical identity is
+*deliberately unsettled*. The repository's own `readme.adoc` lists "concrete
+Kripke-style and evidence-state models" (roadmap #2) and the
+monadic/comonadic *variance* question (roadmap #7) as *intentionally
+unformalized*, and `AFFIRMATION.adoc` confirms the Kripke semantics is absent,
+not hidden. The object is *operationally* very clearly defined as used; its
+*deep placement* is open. So below we *name the candidate established frames*
+without committing to one.
+
+* *Epistemic logic.* The modal treatment of knowledge and belief as distinct
+  operators, with belief deliberately lacking the truth (factivity) axiom that
+  knowledge has — Jaakko Hintikka, _Knowledge and Belief: An Introduction to the
+  Logic of the Two Notions_ (Cornell University Press, 1962). Our
+  `FactiveModality` (with `reflect`) versus `BeliefModality` (without) is exactly
+  this knowledge/belief split.
+
+* *Kripke semantics / relational possible-worlds models.* Saul A. Kripke,
+  "Semantical Considerations on Modal Logic," _Acta Philosophica Fennica_ 16
+  (1963), pp. 83–94. Our preorder accessibility `κ ≤κ κ'` is an accessibility
+  relation in this sense; but we have *not* built the worlds-and-valuation
+  semantics, so this is a candidate frame, not a realised one.
+
+* *Justification logic / the Logic of Proofs* — the *standout* candidate.
+  Sergei Artemov, "Explicit Provability and Constructive Semantics,"
+  _The Bulletin of Symbolic Logic_ 7(1) (2001), pp. 1–36; and Sergei Artemov and
+  Melvin Fitting, _Justification Logic: Reasoning with Reasons_ (Cambridge
+  University Press, 2019). Justification logic replaces an opaque `□F` with
+  explicit justification terms `t : F` ("`t` is evidence for `F`"), where
+  `t : F` does *not* entail `F` unless a *separate factivity axiom* is assumed.
+  That is precisely the shape of our non-factive `Warrant` (an evidence token
+  that does not yield `A`) with `SoundWarrant` added as the separate factivity
+  interface. We claim the *correspondence is suggestive*, not that we have built
+  justification logic.
+
+* *Standpoint logic.* Lucía Gómez Álvarez and Sebastian Rudolph,
+  "Standpoint Logic: Multi-Perspective Knowledge Representation," in
+  _Formal Ontology in Information Systems (FOIS 2021)_ (IOS Press, 2021). Our
+  indexing of a modality by a standpoint `κ`, with an accessibility order between
+  standpoints, sits in this family.
+
+* *Indexed / graded modalities.* The broader literature on graded and indexed
+  modal type formers (graded comonads / coeffects; e.g. the graded-modal
+  literature around Katsumata, Orchard, and others) supplies the general shape of
+  a `Set`-indexed modality with transport along an order; we cite it
+  conservatively at the level of the field rather than pinning one paper.
+
+The *work that would pin the placement* is the Kripke set-out itself (roadmap
+#2): take worlds to be *candidate readings / natures of an object* (the von
+Neumann–data / Curry–Howard–proof / game-semantic indeterminacy of one
+artefact), and a standpoint's accessibility to be *what that standpoint can
+discern* among those readings. Until that is built and checked, the deep
+identity is a hypothesis, and we say so.
+
+== What is ours, and what is not (the contribution boundary)
+
+What is *borrowed* is the mathematics: the knowledge/belief modal split, the
+relational accessibility idea, the explicit-evidence-without-factivity shape of
+justification logic, the standpoint-indexing idea, and the graded/indexed-modality
+machinery — all authored by others and cited above.
+
+What is *ours* is the *modelling and assembly*: the specific Agda
+*interface-separation* (`Modality` / `LawfulModality` / `FactiveModality` /
+`BeliefModality` / `ReturnModality`; `Warrant` versus `SoundWarrant`), and the
+*standpoint-indexed proof-transport* calculus that makes proofhood holder-relative
+and proves the no-smuggling property. The usefulness is *demonstrated by concrete,
+checkable artefacts* recorded as ground truth in `AFFIRMATION.adoc`:
+
+* the whole library type-checks *cold and green* under `--safe --without-K`
+  (`just check`, exit 0, all 10 modules), hardened by a `-W error` pass and an
+  honesty probe that confirms `--safe` *rejects* an injected `postulate`
+  (`[SafeFlagPostulate]`, exit 42), with zero escape hatches across `src/`;
+* `Warrant.sound-epi` makes extraction `Evidence -> A` available *only* via the
+  separate `SoundWarrant.sound` field — non-factivity by construction;
+* `Examples.no-polymorphic-belief-reflection` and
+  `no-polymorphic-epi-reflection` *refute* a generic
+  `(A : Set) -> Belief rough A -> A` (resp. `Epi`) by exhibiting a belief/warrant
+  for `⊥`;
+* `ProofTransport.proofNeedsChecker` (no-smuggling), with
+  `designatedBindsHolder`, `opaqueNotCertifying`, and `verifyReceiptIsGap` giving
+  the public-portable / designated-bound / receipt-never-certifies trichotomy.
+
+These results are consumed downstream: the proof-transport / warrant-gap model is
+used by *snifs* (deniable, non-forging attestation) and is named as the
+*K-CUT-WARRANT* proof home for choreographic-types.
+
+[NOTE]
+====
+**On contribution (the same stance in every sibling repo).** We did not invent the
+mathematics this work rests on. Graded monads, tropical / idempotent dioids, multiparty
+session types and choreographies, and epistemic / justification logic are established
+structures authored by others, cited above. What is ours is the *modelling*: we apply these
+structures as instruments fitted to specific domains — verifiable WebAssembly, federated
+identity, BEAM sandboxing, structured information loss — in places the established corpus had
+not been instantiated this way, and we report only where the fit has already produced
+*checkable artefacts*. The contribution is the model and its demonstrated usefulness, not the
+underlying mathematics. This is deliberate, and it is a strength: a claim that concedes its own
+foundations is survivable; one that claims invention dies at the first citation. (Cf. the
+estate discipline — echo-types' own distinctness claim was permitted to terminate negatively,
+EI-2.)
+====
+
+== Is-not, and what is still open
+
+To keep boundaries un-eroded:
+
+* epistemic-types *is NOT a complete epistemic logic or a Kripke semantics* — by
+  its own statement (`readme.adoc` "What remains intentionally unformalized";
+  `AFFIRMATION.adoc` "Prototype scope"). It formalises honesty-preserving
+  *interfaces* and real *separation theorems*, not a worlds-and-valuation model.
+* epistemic-types *is NOT factive by default*. Factivity (`reflect`,
+  `SoundWarrant.sound`) is a *separate, assumed* interface; the default
+  `Warrant`/`Belief` carry no truth axiom. A reader who treats a warrant as a
+  proof of its claim has crossed exactly the line this repo draws.
+* the *epistemic* modality `E` *is NOT the echo* (loss/residue) modality. They
+  *compose* — `E κ (Echo r A)` is meaningful — but do *not collapse*:
+  `EchoBridge` is a deliberate scaffold that proves *no graded-loss theorems of
+  its own* (per `AFFIRMATION.adoc`), and the prototype keeps `Echo r A` and
+  `E κ A` distinct on purpose.
+* epistemic-types *is NOT a verified external system*. The green typecheck
+  establishes an *idealised core calculus*; it does not establish that any real
+  attestation protocol, CRDT read path, or proof-carrying-code pipeline
+  *refines* it. There is no production implementation in this repo.
+* the `SurrealBridge` *is NOT* the full Conway proper class of surreals — only
+  the finite `daySurrealAccess` birthday tower over `Nat` is inhabited.
+
+*Honestly open* (the parts we do not yet claim, mirroring the readme roadmap):
+the Kripke / evidence-state semantics that would *pin* the deep identity
+(#2); lawful (law-bearing) modality *instances* proved rather than assumed (#3);
+warrant *soundness* as an optional, proved interface (#4); a graded comonad for
+echo-types and the full graded-loss logic (#5); richer day-bounded surreal
+fragments (#6); and the *variance* verdict — whether any specific epistemic
+modality deserves *monadic or comonadic* structure (#7). It is *too early to
+name the single deep answer*, and that is the correct state to be in: the object
+is sharp as used and open where it should be open.
