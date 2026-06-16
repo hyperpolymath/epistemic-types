@@ -257,3 +257,39 @@ gate. In particular they must not: create or edit `LICENSE`; add SPDX or
 copyright headers; add GitHub Actions workflows or CI badges; rename
 `readme.adoc` or `explainme.adoc`; or make release/readiness claims that
 conflict with the tier statement above.
+
+== Proof-trust verification (2026-06-16)
+
+An out-of-band ground-truth audit (cold typecheck + flag probes, not doc-trust)
+was run before an external project built on these proofs. It *affirms* the
+honesty claims above; it makes no Bronze/release claim and changes no source.
+
+* *Build (ground truth).* `agda --no-libraries -i src src/EpistemicTypes/All.agda`
+  exits 0; re-run with `-W error` (promotes unsolved metas / constraints /
+  termination issues to errors) *still* exits 0. All 10 modules carry
+  `{-# OPTIONS --safe --without-K #-}`; the repo is stdlib-free (only
+  `Agda.Primitive` / `Agda.Builtin.*`), so the estate's dangling-stdlib gotcha
+  does not apply here.
+* *`--safe` is genuinely enforced* — proven by an honesty probe: injecting
+  `postulate evil : {A : Set} → A` into a copy of `Base.agda` is *rejected*
+  (`[SafeFlagPostulate]`, exit 42). So the clean build is a real verification,
+  not a no-op flag.
+* *Zero escape hatches* — `postulate` / `sorry` / hole / `TERMINATING` /
+  `trustMe` / `axiom` count is 0 in every file (including comments); zero
+  orphan modules (all 10 in the checked import graph).
+* *Named results are real proofs* (not blanks/postulates):
+  `ReadConsistency.freshnessPropagatesUnderWrites` / `resyncRecoversFresh` /
+  `syncChainEndsFresh`; `Warrant.sound-epi` (non-factive by construction —
+  no `Evidence → A` field); `ProofTransport.{proofNeedsChecker,
+  designatedBindsHolder, opaqueNotCertifying, verifyReceiptIsGap}` (no
+  checker-free `Proof → Proof` transport is exported); the `Access` preorder +
+  monotone-transport laws, instantiated for real in `Examples` /
+  `ReadConsistency`.
+* *Honest caveat for downstream builders.* `EchoBridge.agda` is a deliberate
+  *scaffold* — real tropical-grade plumbing (`gradeMin`/`gradePlus`, `Echo`,
+  `EpistemicEcho`) but *no proven graded-loss theorems*; those live partially
+  in `SurrealBridge` (day-loss). This is a ~736-line specification lens, a
+  sound seed rather than a complete logic.
+
+*Verdict: trustworthy — GO* as the epistemic specification lens. The
+LLM-fraud concern that motivated the audit did not materialise.
