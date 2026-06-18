@@ -11,6 +11,27 @@ is **everything still type-checks under `--safe --without-K`, with no shortcuts*
 
 ---
 
+## Contribution model — Tri-Perimeter Contribution Framework (TPCF)
+
+epistemic-types follows the estate-wide **Tri-Perimeter Contribution Framework (TPCF)** — graduated trust without gatekeeping:
+
+- **Perimeter 1 — Core Systems (maintainers only).** The proof kernel:
+  `src/EpistemicTypes/*.agda` (Base, Access, Warrant, ProofTransport, the
+  EchoBridge/SurrealBridge), the `All.agda` wiring, and build tooling.
+- **Perimeter 2 — Expert Extensions (trusted contributors).** New
+  epistemic/standpoint modules, examples, and bridges. Apply via issue → review
+  → merge, with `just check` green.
+- **Perimeter 3 — Community Sandbox (open to all).** Docs (`.adoc`),
+  `.well-known/`, AI manifests, spec proposals.
+
+### Fork workflow
+
+External contributors use the standard **fork**-and-pull-request workflow: fork
+the repository, branch from `main`, run `just check` (the full `--safe
+--without-K` type-check) locally, and open a PR. Proofs are load-bearing — a red
+`agda` check blocks merge, and no `postulate` / `believe_me` shortcuts are
+accepted.
+
 ## Build and check
 
 There is exactly one thing to run, and it must stay green:
