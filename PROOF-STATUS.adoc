@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: MPL-2.0
+= epistemic-types — Proof Status
+:toc:
+
+[abstract]
+Verification status of the epistemic-types Agda formalisation. The whole library
+**type-checks under `--safe`** with **zero postulates** and is fully
+self-contained (`--no-libraries`: it imports only `Agda.Builtin.*` /
+`Agda.Primitive`). This records a reproduced `agda` run, not a "looks fine" reading.
+
+== Verified (this environment)
+
+* Command: `agda --safe -i src src/EpistemicTypes/All.agda` → **exit 0**.
+* All **10/10** modules declare `{-# OPTIONS --safe #-}`; **zero `postulate`**,
+  zero `believe_me`/`primTrustMe`.
+* Agda used here: **2.6.3** (the repo's `CONTRIBUTING.md` targets 2.8.0; the
+  development uses only `Agda.Builtin`/`Agda.Primitive`, so it checks under both).
+
+Modules (`src/EpistemicTypes/`): `Base`, `Access`, `Warrant`, `ReadConsistency`,
+`ProofTransport` (+ `ProofTransportExample`), `EchoBridge`, `SurrealBridge`,
+`Examples`, `All`.
+
+Reproduce:
+[source,sh]
+----
+just check        # = agda --no-libraries -i src src/EpistemicTypes/All.agda
+# or, enforcing --safe explicitly:
+agda --safe -i src src/EpistemicTypes/All.agda
+----
+
+== Honest scope
+
+* Status: **prototype (v0.1.0)** — a deliberately small, honest formalisation of
+  standpoint-indexed modal / epistemic / echo-like type formers.
+* `EchoBridge` and `SurrealBridge` are **local re-implementations** of the
+  `Echo`/`Grade` and surreal shapes (no dependency on the `echo-types` Agda
+  library or a surreal-number library); the relationship is at the design level.
+* The library is self-contained by design (`--no-libraries`); it does not depend
+  on the standard library.
+
+== Known gap (flagged, not changed)
+
+* **No `LICENSE` file is present.** Per the estate policy this sole-owner repo
+  should carry `MPL-2.0`, but adding/!choosing a licence is an owner decision —
+  flagged here rather than added unilaterally.
