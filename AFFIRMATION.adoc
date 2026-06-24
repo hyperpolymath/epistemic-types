@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = AFFIRMATION — epistemic-types, as of 2026-06-16
 :toc: macro
@@ -126,7 +126,7 @@ to find out.
   `.github/workflows/agda.yml` and `codeql.yml`. So the AUDIT's
   CI-is-omitted paragraph is *stale at this commit*. *Also note:* those two new
   workflow files each carry an active
-  `# SPDX-License-Identifier: MPL-2.0` (and `SPDX-FileCopyrightText`) header —
+  `# SPDX-License-Identifier: CC-BY-SA-4.0` (and `SPDX-FileCopyrightText`) header —
   so the repo is *not* SPDX-free at HEAD even though the Agda source under `src/`
   still is (see _Outstanding / weak / refuted_ below). The AUDIT's own
   proof-trust section (dated 2026-06-16) otherwise agrees with what we
@@ -224,7 +224,7 @@ sound" is overclaiming: it proves _its own_ formal statements, full stop.
   *not* fully SPDX-free at this commit. The two CI workflows added in HEAD
   `d2f7678` — `.github/workflows/agda.yml` and `.github/workflows/codeql.yml` —
   each open with a real, active
-  `# SPDX-License-Identifier: MPL-2.0` line *and* a
+  `# SPDX-License-Identifier: CC-BY-SA-4.0` line *and* a
   `# SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell ...` line (not prose
   mentions). The other `SPDX` strings (`CONTRIBUTING.md`, `AUDIT.adoc`,
   `GOVERNANCE.adoc`, `.machine_readable/6a2/AGENTIC.a2ml`) are prose / policy
