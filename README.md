@@ -1,0 +1,173 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+-->
+
+This repository explores Agda formalizations of modal, epistemic, and
+echo-like type formers.
+
+# Prototype
+
+An epistemic type in this prototype is a standpoint-indexed modal type
+former:
+
+    E : K -> Set ℓ -> Set ℓ
+
+`K` indexes epistemic standpoints: agents, observers, evidence states,
+accessibility contexts, or warrant regimes. The intended reading of `E`
+`κ` `A` is that `A` is epistemically available from standpoint `κ`:
+known, believed, observed, warranted, inferable, or assertable under
+that standpoint.
+
+The base interface treats `E` as a plain indexed endofunctor family. It
+is not made a monad or comonad by default. In particular, `return` `:`
+`A` `→` `E` `κ` `A`, `bind`, and `extract` `:` `E` `κ` `A` `→` `A` are
+not generic fields.
+
+# Knowledge, belief, and warrant
+
+`EpistemicTypes.Base` separates the interfaces:
+
+- `Modality` supplies `E` and `map`.
+
+- `LawfulModality` adds functor laws as fields.
+
+- `FactiveModality` adds `reflect` `:` `E` `κ` `A` `→` `A`.
+
+- `BeliefModality` intentionally has no `reflect`.
+
+- `ReturnModality` makes a strong introduction rule explicit when it is
+  wanted.
+
+`EpistemicTypes.Warrant` defines proof-relevant warrant-carrying types.
+`Warrant` `κ` `A` records the type of evidence tokens for a claim `A`,
+but it does not include a function from evidence to `A`. `Epi` `κ` `A`
+packages a warrant with an evidence token. `SoundWarrant` is separate:
+only there is a soundness map assumed.
+
+# Accessibility
+
+`EpistemicTypes.Access` models standpoint access with a preorder:
+
+    κ ≤κ κ'
+
+The intended reading is that `κ’` is at least as informed as `κ`.
+Transport is named `increase` and moves epistemic availability from `κ`
+to `κ’`. Preorder laws and transport laws are fields, because arbitrary
+standpoints and arbitrary modalities do not determine them.
+
+# Echo-types
+
+Echo-types are treated as min-plus-graded loss/residue modalities.
+Epistemic types are standpoint/warrant/access modalities. The bridge
+scaffold defines:
+
+    E κ (Echo r A)
+
+meaning that standpoint `κ` has epistemic access to an echo of `A` at
+irrecoverability grade `r`. The prototype does not collapse `Echo` `r`
+`A` and `E` `κ` `A`; their composition is meaningful, but they are not
+the same modality.
+
+# Surreal standpoints
+
+`EpistemicTypes.SurrealBridge` adds an abstract, set-sized surrogate for
+using surreal-like values as standpoints. It is stronger than a plain
+preorder: each access proof carries a tropical grade measuring the
+access loss/refinement:
+
+    record SurrealAccess : Set ... where
+      field
+        Carrier : Set ...
+        _≤♯_    : Carrier -> Carrier -> Set ...
+        refl♯   : ...
+        trans♯  : ...
+        magnitude-loss : x ≤♯ y -> Grade
+        loss-refl      : magnitude-loss refl♯ ≡ finite zero
+        loss-trans     : magnitude-loss (trans♯ p q)
+                           ≡ gradePlus (magnitude-loss p) (magnitude-loss q)
+
+The module proves that this order can be used as epistemic accessibility
+and that the knowledge/belief/warrant separation still holds over such
+standpoints. It also defines `GradedSurrealModality`, where transport
+across `p` `:` `x` `≤♯` `y` turns `E` `x` `(Echo` `r` `A)` into `E` `y`
+`(Echo` `(gradePlus` `r` `(magnitude-loss` `p))` `A)`.
+
+A concrete `daySurrealAccess` instance models the finite birthday tower
+with `Nat` standpoints and grade equal to the number of
+birthday/refinement steps. This is still not the full Conway proper
+class of all surreals as an Agda `Set`; it is the first set-sized
+fragment where the access grade does real type-level work.
+
+# Proof transport across trust boundaries
+
+`EpistemicTypes.ProofTransport` adds a small, compositional core for
+**standpoint-indexed proof transport**. It distinguishes one artefact
+read three ways: as von Neumann data/code, as a Curry–Howard proof, and
+as an epistemic status relative to a receiver.
+
+    View : Agent -> Artifact -> Status -> Claim -> Set
+
+A sender may hold `View` `sender` `artifact` `Proof` `claim` while a
+receiver initially holds only `Data`, `Claimed`, or `Receipt`.
+Transmission moves bytes, not proofhood:
+
+    transmit : (b : Boundary) -> View (from b) a Proof c -> View (to b) a Receipt c
+
+Proofhood is recovered on the receiver’s side only with the receiver’s
+own checker and evidence:
+
+    verify : Checker holder m a c -> Evidence m a c -> View holder a Data c
+           -> Either Gap (View holder a Proof c)
+
+Public attestations are transferable (`publicIsPortable`); designated
+attestations are receiver-bound (`designatedBindsHolder`); receipt-only
+attestations never certify the claim (`opaqueNotCertifying`,
+`verifyReceiptIsGap`). `proofNeedsChecker` states the no-smuggling
+property: every proof a holder possesses carries that holder’s own
+checker and evidence, so no checker-free `View` `sender` `a` `Proof` `c`
+`→` `View` `receiver` `a` `Proof` `c` is exported.
+`EpistemicTypes.ProofTransportExample` works a K9-SVC/A2ML-style
+attestation (issuer `K9SVC`, receiver `Alice`, third party `Bob`).
+
+An engineering rendering of the same model — for A2ML/K9 tooling — lives
+in `.machine_readable/proof-transport/` (`ProofTransport.a2ml` and the
+Kennel-level `proof-transport.k9.ncl`).
+
+# Roadmap
+
+1.  Keep the current prototype small and type-checking.
+
+2.  Add concrete Kripke-style and evidence-state models.
+
+3.  Add lawful instances only where the laws are proved or explicitly
+    assumed.
+
+4.  Explore warrant soundness as an optional interface, not as a
+    default.
+
+5.  Connect to echo-types via graded bridge modules without importing
+    the full echo library.
+
+6.  Add richer day-bounded surreal fragments as instances of
+    `SurrealAccess`.
+
+7.  Later, evaluate whether any specific epistemic modality deserves
+    monadic or comonadic structure.
+
+# What remains intentionally unformalized
+
+The prototype does not define a complete epistemic logic, a Kripke
+semantics, a graded comonad for echo-types, proof irrelevance,
+decidability, or global soundness of warrants. Those are future
+commitments, not hidden assumptions.
+
+# Type-checking
+
+Run:
+
+    just check
+
+or directly:
+
+    agda --no-libraries -i src src/EpistemicTypes/All.agda
