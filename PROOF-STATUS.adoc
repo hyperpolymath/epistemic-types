@@ -38,8 +38,8 @@ agda --safe -i src src/EpistemicTypes/All.agda
 * The library is self-contained by design (`--no-libraries`); it does not depend
   on the standard library.
 
-== Known gap (flagged, not changed)
+== Licence
 
-* **No `LICENSE` file is present.** Per the estate policy this sole-owner repo
-  should carry `MPL-2.0`, but adding/!choosing a licence is an owner decision —
-  flagged here rather than added unilaterally.
+* **`LICENSE` present (MPL-2.0).** Previously flagged here as missing; the owner
+  has since added a REUSE-style `LICENSE` + `LICENSES/{MPL-2.0,CC-BY-SA-4.0}.txt`,
+  matching the estate sole-owner policy.
