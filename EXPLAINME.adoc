@@ -1,0 +1,146 @@
+// SPDX-License-Identifier: MPL-2.0
+= Epistemic Types — EXPLAINME
+:toc: preamble
+:toc-title: Contents
+:icons: font
+:doctype: article
+
+This file backs every factual claim in link:README.adoc[README.adoc] with code paths and honest caveats. Read it if you are doing due diligence on whether the story matches the code.
+
+== Claim-to-implementation map
+
+=== E is an indexed endofunctor with incremental lawful/factive/belief layers
+
+[quote, README.adoc]
+____
+The base interface treats E as an indexed endofunctor. Stronger structure is added incrementally, each as a separate record.
+____
+
+How this is implemented::
+`link:src/EpistemicTypes/Base.agda[]` defines `Modality` (fields: `E`, `map`), `LawfulModality` (fields: identity, composition), `FactiveModality` (field: `reflect`), `BeliefModality` (intentionally no `reflect`), `ReturnModality` (field: `return`). Each is a separate record. No module postulates monadic `bind` or comonadic `extract`.
+
+Caveat::
+This is standard type-theoretic packaging of modal interfaces. The contribution is the *separation* — forcing the user to opt into factivity or strong introduction rather than inheriting it from a monad/comonad default. No known gap.
+
+=== Warrants separate evidence tokens from soundness
+
+[quote, README.adoc]
+____
+A warrant records the type of evidence for a claim without assuming the evidence is valid.
+____
+
+How this is implemented::
+`link:src/EpistemicTypes/Warrant.agda[]` defines `Warrant κ A` (type of evidence tokens), `Epi κ A` (token + warrant), and `SoundWarrant` (separate interface adding `soundness : Epi κ A → A`).
+
+Caveat::
+`SoundWarrant` is an optional interface. Nothing in the core forces warrants to be sound. This is the right default for security/attestation use cases where the receiver must verify locally, but it means `Epi κ A` cannot be used as a drop-in replacement for `A` without assuming `SoundWarrant`.
+
+=== Accessibility is a preorder with transport
+
+[quote, README.adoc]
+____
+Standpoint access is modelled by a preorder κ ≤κ κ' (read: κ' is at least as informed as κ). Transport increase moves epistemic availability along this order.
+____
+
+How this is implemented::
+`link:src/EpistemicTypes/Access.agda[]` defines the preorder (`_≤κ_`, `reflκ`, `transκ`) and `increase : κ ≤κ κ' → E κ A → E κ' A`. Preorder and transport laws are fields, not proved, because arbitrary standpoints do not determine them.
+
+Caveat::
+This is a standard Kripke-style accessibility relation, repackaged as an explicit record. The laws are assumed (fields), not derived. This is honest — the prototype does not constrain the accessibility relation beyond preorder.
+
+=== Surreal bridge adds tropical-graded access loss
+
+[quote, README.adoc]
+____
+SurrealBridge enriches the preorder: each access step carries a tropical grade measuring the information loss or refinement cost of the access.
+____
+
+How this is implemented::
+`link:src/EpistemicTypes/SurrealBridge.agda[]` defines `SurrealAccess` record with `magnitude-loss : x ≤♯ y → Grade`, plus `loss-refl` and `loss-trans` laws. Defines `GradedSurrealModality` showing transport degrades echo grades: `E x (Echo r A) → E y (Echo (gradePlus r (magnitude-loss p)) A)`. Concrete instance: `daySurrealAccess` using `Nat` standpoints where grade = birthday steps.
+
+Caveat::
+**This is not the Conway proper class of surreals.** It is a set-sized fragment (finite birthday tower) where the access grade does type-level work. The module name `SurrealBridge` may overclaim; `DayBoundedTropicalBridge` would be more precise. The composition with Echo types is a bridge scaffold — it imports the Echo grade structure but does not depend on the full echo-types library.
+
+=== Proof transport has a no-smuggling guarantee
+
+[quote, README.adoc]
+____
+The no-smuggling property (proofNeedsChecker) states: every proof a holder possesses carries that holder's own checker and evidence. No checker-free View sender a Proof c → View receiver a Proof c is exported.
+____
+
+How this is implemented::
+`link:src/EpistemicTypes/ProofTransport.agda[]` defines `View`, `transmit`, `verify`, and proves `proofNeedsChecker`, `publicIsPortable`, `designatedBindsHolder`, `opaqueNotCertifying`, `verifyReceiptIsGap`. `link:src/EpistemicTypes/ProofTransportExample.agda[]` works the K9-SVC/A2ML-style attestation flow (issuer K9SVC, receiver Alice, third party Bob).
+
+Caveat::
+This formalises the *typing* of attestation, not the cryptographic implementation. `transmit` moves bytes; `verify` calls a checker. The no-smuggling property is a structural consequence of the `View` typing discipline, not a cryptographic hardness assumption. The A2ML/K9 rendering in `.machine_readable/proof-transport/` is an engineering shadow, not a proof.
+
+== Dogfooded Across The Account
+
+[cols="1,2,2", options="header"]
+|===
+| Technology / Pattern | Used here | Also used in
+
+| Standpoint-indexed modality
+| Core `E κ A` interface
+| link:https://github.com/hyperpolymath/echo-types[echo-types] (as `Echo r A`)
+
+| Proof transport / no-smuggling
+| `ProofTransport.agda`
+| link:https://github.com/hyperpolymath/k9-svc[K9-SVC] (attestation tooling)
+
+| Tropical-graded access
+| `SurrealBridge.agda`
+| link:https://github.com/hyperpolymath/tropical-resource-typing[tropical-resource-typing]
+|===
+
+== Known gaps
+
+[CAUTION]
+====
+**No Kripke semantics.** The prototype defines the syntactic/type-theoretic interfaces for modalities but does not model them against a Kripke frame semantics. This is the largest open theoretical gap.
+====
+
+[CAUTION]
+====
+**No monadic or comonadic structure.** `bind` and `extract` are intentionally omitted. This keeps the prototype minimal but means `E κ` cannot be used as a drop-in for standard monadic effect handling without the user supplying these operations and proving their laws.
+====
+
+[CAUTION]
+====
+**SurrealBridge is finite-birthday only.** The concrete instance uses `Nat`. The full Conway proper class of surreals is not formalised. The module name may overclaim the mathematical structure.
+====
+
+[CAUTION]
+====
+**Access laws are assumed, not derived.** `EpistemicTypes.Access` takes preorder and transport laws as fields. This is honest (arbitrary standpoints don't determine them) but means the prototype lacks concrete derived models validating these laws from first principles.
+====
+
+[CAUTION]
+====
+**Echo-type bridge is a scaffold.** The composition `E κ (Echo r A)` imports grade structure but does not depend on the full echo-types library. Deep integration (e.g., shared comonadic structure) is deferred.
+====
+
+== Evidence Index
+
+[cols="2,3", options="header"]
+|===
+| Path | Proves
+
+| `src/EpistemicTypes/Base.agda`
+| Modality / LawfulModality / FactiveModality / BeliefModality / ReturnModality interfaces
+
+| `src/EpistemicTypes/Warrant.agda`
+| Warrant / Epi / SoundWarrant separation
+
+| `src/EpistemicTypes/Access.agda`
+| Preorder accessibility + transport
+
+| `src/EpistemicTypes/SurrealBridge.agda`
+| Tropical-graded access loss + GradedSurrealModality + daySurrealAccess
+
+| `src/EpistemicTypes/ProofTransport.agda`
+| View / transmit / verify + no-smuggling + opacity laws
+
+| `src/EpistemicTypes/ProofTransportExample.agda`
+| K9-SVC/A2ML-style attestation worked example
+|===
