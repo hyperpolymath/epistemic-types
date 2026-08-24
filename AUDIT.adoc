@@ -227,8 +227,8 @@ in the `standards` subdir. Duplicating contractile scaffolding into a small
 prototype would be over-scope and would risk re-propagating stale copies. This
 repository defers to the estate canon.
 
-`guix.scm` / `flake.nix` packaging::
-*Future, not yet done.* The library is not yet packaged for Guix or Nix. This
+`guix.scm` / `flake.guix` packaging::
+*Future, not yet done.* The library is not yet packaged for Guix or Guix. This
 is honest deferral, not hidden debt; the `Justfile` entrypoint is sufficient for
 the prototype tier. Packaging may be added once the API stabilises beyond
 `prototype`.
