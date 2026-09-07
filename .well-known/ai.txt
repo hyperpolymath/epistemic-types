@@ -20,15 +20,15 @@ Disallow-Generation: yes
 # library, and must not weaken the --safe --without-K guarantees.
 #
 # For AI agent integration instructions, see:
-#   .machine_readable/6a2/0-AI-MANIFEST.a2ml   (universal AI entry point)
-#   .machine_readable/6a2/STATE.a2ml           (structured project state)
+#   .machine_readable/descriptiles/0-AI-MANIFEST.a2ml   (universal AI entry point)
+#   .machine_readable/descriptiles/STATE.a2ml           (structured project state)
 #   .machine_readable/proof-transport/         (a2ml + k9 rendering of the
 #                                               ProofTransport attestation model)
 #
 # Human-facing docs: readme.adoc, explainme.adoc
 #
 # Build / check: 'just check'
-#   == agda --no-libraries -i src src/EpistemicTypes/All.agda  (Agda 2.8.0)
+#   == agda --no-libraries -i src src/EpistemicTypes/All.agda  (Agda 2.6.4.3)
 #
-# No CI is enabled for this repository (see AUDIT.adoc); there are no
-# GitHub Actions workflows, badges, containers, or external pipelines.
+# CI is enabled: proof constructions, semantic rejections, canonical Echo
+# correspondence, CodeQL Actions and secret scanning. See docs/ci-safety.adoc.

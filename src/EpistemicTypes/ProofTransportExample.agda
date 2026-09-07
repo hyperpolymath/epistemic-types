@@ -1,114 +1,186 @@
 {-# OPTIONS --safe --without-K #-}
 
-------------------------------------------------------------------------
--- A K9-SVC / A2ML-style attestation, modelled with proof transport.
---
---   issuer        K9SVC
---   receiver      Alice
---   third party   Bob
---   claim         ActionWasPerformed
---   artifact      AttestationBlob
---
--- Three cases are exhibited:
---   (1) the blob is raw Data for Alice;
---   (2) Alice upgrades it to Proof with her designated checker + evidence;
---   (3) Bob, across the boundary, holds only a Receipt — and *cannot* hold the
---       designated capability that was issued to Alice — UNLESS the attestation
---       is public, which is portable to any agent.
-------------------------------------------------------------------------
-
+-- Executable Boolean certificate checks, semantic soundness, and countercases.
+-- ArtifactIsTrue means a Boolean equality, not that a physical action occurred.
 module EpistemicTypes.ProofTransportExample where
 
+open import Agda.Builtin.Bool using (Bool; true; false)
 open import Agda.Builtin.Equality using (_≡_; refl)
 
 data Agent : Set where
-  K9SVC : Agent
-  Alice : Agent
-  Bob   : Agent
+  K9SVC Alice Bob : Agent
 
 data Claim : Set where
-  ActionWasPerformed : Claim
+  ArtifactIsTrue ImpossibleClaim : Claim
 
-data Artifact : Set where
-  AttestationBlob : Artifact
+Artifact : Set
+Artifact = Bool
 
--- Instantiate the proof-transport core at these concrete carriers.
-open import EpistemicTypes.ProofTransport Agent Claim Artifact
+data NoMeaning : Set where
 
-----------------------------------------------------------------------
--- Case 1: the attestation blob is just data for Alice.
-----------------------------------------------------------------------
+Meaning : Agent -> Artifact -> Claim -> Set
+Meaning _ a ArtifactIsTrue = a ≡ true
+Meaning _ _ ImpossibleClaim = NoMeaning
 
-aliceRaw : View Alice AttestationBlob Data ActionWasPerformed
+Payload : Artifact -> Claim -> Set
+Payload _ _ = Bool
+
+open import EpistemicTypes.ProofTransport Agent Claim Artifact Meaning Payload
+
+checkPayload : (a : Artifact) -> (c : Claim) -> Payload a c -> Bool
+checkPayload true ArtifactIsTrue p = p
+checkPayload false ArtifactIsTrue _ = false
+checkPayload _ ImpossibleClaim _ = false
+
+checkPayloadSound :
+  (holder : Agent) (a : Artifact) (c : Claim) (p : Payload a c) ->
+  checkPayload a c p ≡ true -> Meaning holder a c
+checkPayloadSound _ true ArtifactIsTrue true _ = refl
+checkPayloadSound _ true ArtifactIsTrue false ()
+checkPayloadSound _ false ArtifactIsTrue p ()
+checkPayloadSound _ true ImpossibleClaim p ()
+checkPayloadSound _ false ImpossibleClaim p ()
+
+verifier : (holder : Agent) (a : Artifact) (c : Claim) -> CertificateCheck holder a c
+verifier holder a c = certificateCheck (checkPayload a c) (checkPayloadSound holder a c)
+
+aliceRaw : View Alice true Data ArtifactIsTrue
 aliceRaw = asData
 
-----------------------------------------------------------------------
--- Case 2: Alice has the designated checker and the matching evidence, so she
--- upgrades the blob to a proof of ActionWasPerformed.
-----------------------------------------------------------------------
+aliceChecker : Checker Alice (Designated Alice) true ArtifactIsTrue
+aliceChecker = designatedCheck (verifier Alice true ArtifactIsTrue)
 
-aliceChecker : Checker Alice (Designated Alice) AttestationBlob ActionWasPerformed
-aliceChecker = designatedCheck
+aliceEvidence : Evidence (Designated Alice) true ArtifactIsTrue
+aliceEvidence = designatedEv Alice true
 
-aliceEvidence : Evidence (Designated Alice) AttestationBlob ActionWasPerformed
-aliceEvidence = designatedEv Alice
+aliceProof : View Alice true Proof ArtifactIsTrue
+aliceProof = forgetMode (asProofUnder certDesignated aliceChecker aliceEvidence refl)
 
-aliceUpgrade : Either Gap (View Alice AttestationBlob Proof ActionWasPerformed)
+aliceUpgrade : Either Gap (View Alice true Proof ArtifactIsTrue)
 aliceUpgrade = designatedTransfer aliceChecker aliceEvidence aliceRaw
 
-aliceProof : View Alice AttestationBlob Proof ActionWasPerformed
-aliceProof = forgetMode (asProofUnder certDesignated aliceChecker aliceEvidence)
-
--- The upgrade really does succeed (it computes to `right aliceProof`).
 aliceUpgradeSucceeds : aliceUpgrade ≡ right aliceProof
 aliceUpgradeSucceeds = refl
 
-----------------------------------------------------------------------
--- Case 3a: across the Alice ⇒ Bob boundary, Bob's view of the proof degrades
--- to a mere receipt.  The bytes crossed; the proofhood did not.
-----------------------------------------------------------------------
+aliceProofHasMeaning : Meaning Alice true ArtifactIsTrue
+aliceProofHasMeaning = proofSound aliceProof
 
 aliceToBob : Boundary
 aliceToBob = Alice ⇒ Bob
 
-bobReceipt : View Bob AttestationBlob Receipt ActionWasPerformed
+bobReceipt : View Bob true Receipt ArtifactIsTrue
 bobReceipt = transmit aliceToBob aliceProof
-
-----------------------------------------------------------------------
--- Case 3b: Bob cannot manufacture the *designated* proof.  The designated
--- capability is bound to Alice, and Alice ≢ Bob, so the type
---   Checker Bob (Designated Alice) AttestationBlob ActionWasPerformed
--- is uninhabited.  This is the deniability of a designated attestation.
-----------------------------------------------------------------------
 
 Alice≢Bob : ¬ (Alice ≡ Bob)
 Alice≢Bob ()
 
-bobHasNoDesignatedChecker :
-  ¬ Checker Bob (Designated Alice) AttestationBlob ActionWasPerformed
+bobHasNoDesignatedChecker : ¬ Checker Bob (Designated Alice) true ArtifactIsTrue
 bobHasNoDesignatedChecker ck = Alice≢Bob (designatedBindsHolder ck)
 
-----------------------------------------------------------------------
--- Case 3c: but if the attestation is *public*, Bob upgrades like anyone else,
--- because public checking is portable from Alice to Bob.
-----------------------------------------------------------------------
+-- This concrete meaning is holder-independent, so the required implication is id.
+bobPublicChecker : Checker Bob Public true ArtifactIsTrue
+bobPublicChecker = publicIsPortable {r = Alice} {q = Bob} (λ p -> p)
+  (publicCheck (verifier Alice true ArtifactIsTrue))
 
-bobPublicChecker : Checker Bob Public AttestationBlob ActionWasPerformed
-bobPublicChecker = publicIsPortable {Alice} {Bob} publicCheck
+bobPublicProof : View Bob true Proof ArtifactIsTrue
+bobPublicProof = forgetMode
+  (asProofUnder certPublic bobPublicChecker (publicEv true) refl)
 
-bobPublicUpgrade :
-  Evidence Public AttestationBlob ActionWasPerformed ->
-  Either Gap (View Bob AttestationBlob Proof ActionWasPerformed)
-bobPublicUpgrade ev = publicTransfer bobPublicChecker ev asData
+bobPublicUpgradeSucceeds :
+  publicTransfer bobPublicChecker (publicEv true) asData ≡ right bobPublicProof
+bobPublicUpgradeSucceeds = refl
 
-----------------------------------------------------------------------
--- A receipt-only attestation never upgrades to proof of the claim, for anyone.
-----------------------------------------------------------------------
+-- Negative data cases are successful proofs ABOUT actual rejection computations.
+badPayloadRejected :
+  publicTransfer bobPublicChecker (publicEv false) asData ≡ left InvalidEvidence
+badPayloadRejected = refl
 
-bobBlob : View Bob AttestationBlob Data ActionWasPerformed
-bobBlob = asData
+tamperedArtifactRejected :
+  verify (publicCheck (verifier Bob false ArtifactIsTrue))
+    (publicEv true) asData ≡ left InvalidEvidence
+tamperedArtifactRejected = refl
 
-bobReceiptStuck :
-  (ev : Evidence OpaqueReceipt AttestationBlob ActionWasPerformed) ->
-  verify receiptCheck ev bobBlob ≡ left OpaqueGap
-bobReceiptStuck ev = verifyReceiptIsGap ev bobBlob
+falseClaimRejected :
+  verify (publicCheck (verifier Bob true ImpossibleClaim))
+    (publicEv true) asData ≡ left InvalidEvidence
+falseClaimRejected = refl
+
+falseClaimHasNoProof : ¬ View Bob true Proof ImpossibleClaim
+falseClaimHasNoProof = proofCannotSupportFalse (λ ())
+
+-- Any attempted generic fabrication function is refuted by the false instance.
+noArbitraryProofStatuses :
+  ¬ ((c : Claim) -> View Bob true Proof c)
+noArbitraryProofStatuses manufacture = falseClaimHasNoProof (manufacture ImpossibleClaim)
+
+receiptModeRejected :
+  verify {holder = Bob} {a = true} {c = ArtifactIsTrue}
+    receiptCheck (receiptEv true) asData ≡ left OpaqueGap
+receiptModeRejected = refl
+
+missingCheckerRejected :
+  tryUpgrade {holder = Bob} {a = true} {m = Public} {c = ArtifactIsTrue}
+    nothing (just (publicEv true)) asData ≡ left MissingChecker
+missingCheckerRejected = refl
+
+missingEvidenceRejected :
+  tryUpgrade (just bobPublicChecker) nothing asData ≡ left MissingEvidence
+missingEvidenceRejected = refl
+
+-- Issuer/environment modes use the SAME semantic soundness obligation.
+issuerProof : View Alice true Proof ArtifactIsTrue
+issuerProof = forgetMode (asProofUnder certIssuer
+  (issuerCheck (verifier Alice true ArtifactIsTrue)) (issuerEv true) refl)
+
+issuerAccepts :
+  verify (issuerCheck (verifier Alice true ArtifactIsTrue)) (issuerEv true) asData
+  ≡ right issuerProof
+issuerAccepts = refl
+
+issuerRejectsFalse :
+  verify (issuerCheck (verifier Alice true ImpossibleClaim)) (issuerEv true) asData
+  ≡ left InvalidEvidence
+issuerRejectsFalse = refl
+
+environmentProof : View Alice true Proof ArtifactIsTrue
+environmentProof = forgetMode (asProofUnder certEnv
+  (envCheck (verifier Alice true ArtifactIsTrue)) (envEv true) refl)
+
+environmentAccepts :
+  verify (envCheck (verifier Alice true ArtifactIsTrue)) (envEv true) asData
+  ≡ right environmentProof
+environmentAccepts = refl
+
+environmentRejectsFalse :
+  verify (envCheck (verifier Alice true ImpossibleClaim)) (envEv true) asData
+  ≡ left InvalidEvidence
+environmentRejectsFalse = refl
+
+designatedRejectsFalse :
+  verify (designatedCheck (verifier Alice true ImpossibleClaim))
+    (designatedEv Alice true) asData ≡ left InvalidEvidence
+designatedRejectsFalse = refl
+
+-- A holder-sensitive interpretation demonstrates why portability needs a proof.
+-- Alice knows her own identity; that fact cannot be relabelled as Bob = Alice.
+module HolderBoundary where
+  LocalMeaning : Agent -> Artifact -> Claim -> Set
+  LocalMeaning holder _ _ = holder ≡ Alice
+
+  import EpistemicTypes.ProofTransport as Core
+  module Local = Core Agent Claim Artifact LocalMeaning Payload
+
+  aliceCheck : Local.CertificateCheck Alice true ArtifactIsTrue
+  aliceCheck = Local.certificateCheck (λ _ -> true) (λ _ _ -> refl)
+
+  aliceLocalProof : Local.View Alice true Local.Proof ArtifactIsTrue
+  aliceLocalProof = Local.forgetMode (Local.asProofUnder Local.certPublic
+    (Local.publicCheck aliceCheck) (Local.publicEv true) refl)
+
+  noBobProof : Local.¬ Local.View Bob true Local.Proof ArtifactIsTrue
+  noBobProof = Local.proofCannotSupportFalse (λ ())
+
+  noSilentHolderTransport :
+    Local.¬ (Local.View Alice true Local.Proof ArtifactIsTrue ->
+      Local.View Bob true Local.Proof ArtifactIsTrue)
+  noSilentHolderTransport move = noBobProof (move aliceLocalProof)

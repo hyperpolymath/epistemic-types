@@ -20,33 +20,36 @@ discipline = "Constructive. Compiles under {-# OPTIONS --safe --without-K #-}. N
 honesty-rule = "Laws appear as explicit fields when not derivable; lawful instances are added only after proving or explicitly assuming the laws. No smuggling."
 
 [build]
-checker = "Agda 2.8.0"
+checker = "Agda 2.6.4.3"
 command = "just check"
-expands-to = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+expands-to = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 aggregator = "src/EpistemicTypes/All.agda re-exports every module."
 
 [modules]
 # Agda modules under src/EpistemicTypes/.
 list = [
-  "EpistemicTypes.Base",
-  "EpistemicTypes.Warrant",
   "EpistemicTypes.Access",
-  "EpistemicTypes.SurrealBridge",
+  "EpistemicTypes.All",
+  "EpistemicTypes.Base",
+  "EpistemicTypes.ContinuityExamples",
   "EpistemicTypes.EchoBridge",
   "EpistemicTypes.Examples",
   "EpistemicTypes.ProofTransport",
   "EpistemicTypes.ProofTransportExample",
+  "EpistemicTypes.ReadConsistency",
+  "EpistemicTypes.SurrealBridge",
+  "EpistemicTypes.Warrant",
 ]
 
 [modules.detail]
 base = "Modality / LawfulModality / FactiveModality / BeliefModality / ReturnModality. The base form E κ A reads 'A is epistemically available at standpoint κ'."
 warrant = "Warrant / Epi / SoundWarrant."
 access = "Preorder + AccessibleModality transport 'increase'."
-echo-bridge = "Min-plus graded loss/residue 'Echo r A', kept deliberately distinct from E κ A."
+echo-bridge = "Certified residue Echo C y, explicit source compatibility, recovery/migration laws and measured resource bounds; distinct from E κ A."
 surreal-bridge = "SurrealAccess carrier + GradedSurrealModality + daySurrealAccess finite birthday tower."
 examples = "Worked instances exercising the interfaces."
-proof-transport = "Standpoint-indexed proof transport across trust boundaries. View : Agent -> Artifact -> Status -> Claim -> Set; statuses Data/Code/Claimed/Receipt/Proof/ProofUnder; modes Public/Designated/IssuerMediated/EnvironmentMediated/OpaqueReceipt. transmit downgrades a sender's Proof to a receiver's Receipt; verify upgrades Data->Proof only with the receiver's OWN checker+evidence; public is portable, designated is receiver-bound, receipt-only never certifies; proofNeedsChecker = structural no-smuggling."
-proof-transport-example = "A K9-SVC / A2ML attestation: issuer K9SVC, receiver Alice, third party Bob, claim ActionWasPerformed, artifact AttestationBlob."
+proof-transport = "proofSound derives Meaning holder artifact claim from an accepted sound checker. Receipts alone do not certify; transfer requires the target-holder meaning."
+proof-transport-example = "Boolean certificate checker with legitimate acceptance and refutations for false claims, changed artifacts and holder-sensitive replay."
 
 [route-to-mvp]
 milestones = [
@@ -69,7 +72,7 @@ items = [
 ]
 
 [progress-summary]
-note = "Prototype. The base interface and all eight modules typecheck under 'just check' (Agda 2.8.0, --safe --without-K, --no-libraries, no postulates). The endofunctor/Modality formers, Warrant, Access transport, EchoBridge residue, SurrealBridge tower, ProofTransport, and its K9-SVC/A2ML attestation example are in place. Remaining work is semantics and lawful instances — see [roadmap]."
+note = "Prototype. The base interface and all eleven modules typecheck under 'just check' (Agda 2.6.4.3, --safe --without-K, --no-libraries, no postulates). The endofunctor/Modality formers, Warrant, Access transport, EchoBridge residue, SurrealBridge tower, ProofTransport, and its K9-SVC/A2ML attestation example are in place. Remaining work is semantics and lawful instances — see [roadmap]."
 
 [blockers-and-issues]
 # No active blockers.
@@ -83,8 +86,8 @@ actions = [
 ]
 
 [ci]
-enabled = false
-note = "CI is not enabled (see AUDIT.adoc). Checking is local via 'just check'."
+enabled = true
+note = "Proof and security CI are configured; see docs/ci-safety.adoc for merge requirements."
 
 [ecosystem]
 part-of = ["RSR Framework", "echo / epistemic formal-methods siblings"]

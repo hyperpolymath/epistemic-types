@@ -14,9 +14,9 @@ authority.
 |===
 | Document | What it covers
 
-| `readme.adoc` (repo root)
+| `README.adoc` (repo root)
 | Project overview: the core form `E : K -> Set ℓ -> Set ℓ`, the module layout,
-  and the `just check` build (`agda --no-libraries -i src src/EpistemicTypes/All.agda`).
+  and the `just check` build (`just check`).
 
 | `explainme.adoc` (repo root)
 | Gentler, narrative explanation of the ideas — why `E κ A` is a plain indexed
@@ -30,6 +30,12 @@ authority.
   public / designated / receipt distinctions.
 |===
 
+== Continuity foundations
+
+link:continuity-foundations.adoc[] documents store-coherent reads, certified
+residues, source compatibility, migration sufficiency, resource bounds, and the
+optional canonical Echo integration gate.
+
 == Machine-readable specs
 
 The `.machine_readable/` tree mirrors the prose for a2ml / Nickel-k9 tooling.
@@ -39,7 +45,7 @@ The Agda modules remain authoritative; these files restate them as data.
 |===
 | Path | Role
 
-| `.machine_readable/6a2/`
+| `.machine_readable/descriptiles/`
 | Project-level notes for automated agents: `0-AI-MANIFEST.a2ml`, `STATE.a2ml`,
   and a short `README.adoc`.
 
@@ -52,15 +58,15 @@ The Agda modules remain authoritative; these files restate them as data.
 
 == Source modules (authority)
 
-The library lives in `src/EpistemicTypes/` and re-exports through `All.agda`:
-`Base`, `Warrant`, `Access`, `EchoBridge`, `SurrealBridge`, `Examples`,
-`ProofTransport`, and `ProofTransportExample`.  It is constructive, compiles
-under `{-# OPTIONS --safe --without-K #-}`, uses no postulates, and depends on
-no Agda standard library — only `Agda.Builtin.*` / `Agda.Primitive` (Agda 2.8.0).
+The core lives in `src/EpistemicTypes/`. `All.agda` checks `Base`, `Warrant`,
+`Access`, `ReadConsistency`, `EchoBridge`, `SurrealBridge`, `ContinuityExamples`,
+`Examples`, `ProofTransport`, and `ProofTransportExample`. Some imports are not
+publicly re-exported to avoid helper-name collisions. Every core module uses
+`--safe --without-K` and builtins only. Local checks use Agda 2.6.4.3.
 
 == Notes
 
-* `EchoBridge` (min-plus graded loss/residue `Echo r A`) is kept deliberately
-  distinct from `E κ A`; it composes with the sibling `echo-types` formalism.
-* Continuous integration is not enabled for this prototype; the build is the
-  single `just check` invocation.
+* `Echo C y`, `BoundedEcho C measure budget y`, and `E κ A` have separate roles.
+* `just check` runs the core proof graph and eleven semantic rejection fixtures.
+* `just check-canonical` separately checks correspondence against actual sibling
+  Echo sources; it requires an explicit standard-library source path.

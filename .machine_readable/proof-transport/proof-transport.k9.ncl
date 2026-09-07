@@ -8,20 +8,21 @@
 #
 # Thesis: proofhood is standpoint-indexed.  Transmission across a trust boundary
 # moves bytes (von Neumann), not proofhood (Curry-Howard).  A receiver recovers
-# proofhood only with its own checker (verifier) + evidence (certificate) — the
+# proofhood only through a sound checking function and an accepted payload — the
 # proof-carrying-code pattern, made standpoint-relative.
 
 let Leash = [| 'Kennel, 'Yard, 'Hunt |] in
 let Mode = [| 'Public, 'Designated, 'IssuerMediated, 'EnvironmentMediated, 'OpaqueReceipt |] in
+let Portability = [| 'RequiresHolderMeaningImplication, 'NoGenericTransfer |] in
 let Gap = [|
   'TrivialGap, 'DesignatedGap, 'EnvironmentGap, 'IssuerTrustGap,
-  'OpaqueGap, 'MissingChecker, 'MissingEvidence, 'MissingContext
+  'OpaqueGap, 'MissingChecker, 'MissingEvidence, 'MissingContext, 'InvalidEvidence
 |] in
 
 # Per-mode transport semantics.
 let ModeRule = {
   certifies | Bool,            # can a matching checker + evidence yield Proof?
-  portable | Bool,             # is the checker reconstructible by any agent?
+  portability | Portability,  # conditional support is an explicit schema value
   receiver_bound | Bool,       # is the checker pinned to one designated holder?
   gap_on_fail | Gap,           # RESERVED: the gap a future refinement would report
                                # for this mode. The core does NOT yet emit these per
@@ -33,22 +34,24 @@ let ModeRule = {
 
   contractile = {
     name = "proof-transport",
-    version = "0.1.0",
+    version = "0.2.0-unreleased",
     research_counterpart = "src/EpistemicTypes/ProofTransport.agda",
     example_counterpart = "src/EpistemicTypes/ProofTransportExample.agda",
-    summary = "Proofhood is standpoint-indexed; transmission moves bytes, not proofhood.",
+    summary = "Proof status entails an explicit meaning through accepted sound verification.",
   },
 
   # The transport law, as data (cf. `transmit`, `checkableTransportUpgrades`,
   # `proofNeedsChecker` in the Agda module).
   law = {
     transmit_yields = "Receipt",                  # sender Proof crosses as Receipt
-    upgrade_requires = ["Certifying", "Checker", "Evidence"],
+    upgrade_requires = ["Certifying", "SoundChecker", "PayloadEvidence", "AcceptedCheckEquality"],
+    semantic_guarantee = "View holder a Proof c -> Meaning holder a c",
+    public_portability_requires = "Meaning r a c -> Meaning q a c",
     no_free_proof_transfer = true,                # no Proof -> Proof without a checker
     # The research core currently CONSTRUCTS only these gaps: `verify` emits
-    # OpaqueGap (receipt-only); `tryUpgrade` emits MissingChecker / MissingEvidence.
+    # OpaqueGap (receipt-only) or InvalidEvidence; tryUpgrade also emits missing-resource gaps.
     # All other gaps (including modes.*.gap_on_fail) are reserved vocabulary.
-    gaps_realized_today = ["OpaqueGap", "MissingChecker", "MissingEvidence"],
+    gaps_realized_today = ["OpaqueGap", "MissingChecker", "MissingEvidence", "InvalidEvidence"],
   },
 
   # Statuses an artefact can hold relative to a holder (data `Status`).
@@ -57,23 +60,23 @@ let ModeRule = {
   # Verification / attestation modes and how each transports.
   modes = {
     Public | ModeRule = {
-      certifies = true, portable = true, receiver_bound = false,
+      certifies = true, portability = 'RequiresHolderMeaningImplication, receiver_bound = false,
       gap_on_fail = 'MissingEvidence,
     },
     Designated | ModeRule = {
-      certifies = true, portable = false, receiver_bound = true,
+      certifies = true, portability = 'NoGenericTransfer, receiver_bound = true,
       gap_on_fail = 'DesignatedGap,
     },
     IssuerMediated | ModeRule = {
-      certifies = true, portable = false, receiver_bound = false,
+      certifies = true, portability = 'NoGenericTransfer, receiver_bound = false,
       gap_on_fail = 'IssuerTrustGap,
     },
     EnvironmentMediated | ModeRule = {
-      certifies = true, portable = false, receiver_bound = false,
+      certifies = true, portability = 'NoGenericTransfer, receiver_bound = false,
       gap_on_fail = 'EnvironmentGap,
     },
     OpaqueReceipt | ModeRule = {
-      certifies = false, portable = false, receiver_bound = false,
+      certifies = false, portability = 'NoGenericTransfer, receiver_bound = false,
       gap_on_fail = 'OpaqueGap,
     },
   },
@@ -81,25 +84,25 @@ let ModeRule = {
   # All gaps in the vocabulary (data `Gap`).
   gaps = [
     "TrivialGap", "DesignatedGap", "EnvironmentGap", "IssuerTrustGap",
-    "OpaqueGap", "MissingChecker", "MissingEvidence", "MissingContext",
+    "OpaqueGap", "MissingChecker", "MissingEvidence", "MissingContext", "InvalidEvidence",
   ],
 
-  # The worked K9-SVC attestation scenario (mirrors ProofTransportExample.agda).
+  # The worked Boolean certificate scenario; no physical action is asserted.
   scenario = {
     issuer = "K9SVC",
     receiver = "Alice",
     third_party = "Bob",
-    claim = "ActionWasPerformed",
-    artifact = "AttestationBlob",
+    claim = "ArtifactIsTrue",
+    artifact = "Boolean true",
     cases = [
       { who = "Alice", mode = 'Data, holds = ["blob"],
         result = "raw data; no claim certified" },
       { who = "Alice", mode = 'Designated, holds = ["blob", "designated_checker", "designated_evidence"],
-        result = "Proof ActionWasPerformed" },
+        result = "Proof that the Boolean artifact equals true, after successful sound check" },
       { who = "Bob", mode = 'Receipt, holds = ["blob_via_transmit"],
         result = "Receipt only — designated checker is Alice-bound, so Bob cannot upgrade" },
       { who = "Bob", mode = 'Public, holds = ["blob", "public_checker", "public_evidence"],
-        result = "Proof ActionWasPerformed — public checking is portable" },
+        result = "Proof ArtifactIsTrue after successful check and supplied holder-meaning implication" },
     ],
   },
 

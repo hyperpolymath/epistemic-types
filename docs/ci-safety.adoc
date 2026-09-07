@@ -1,0 +1,62 @@
+= Proof and security gates
+:revdate: 2026-09-07
+
+Changes reach `main` through a pull request after the required checks pass.
+The owner explicitly authorized maintaining these CI and merge safeguards on
+2026-09-07; the former no-CI policy is superseded.
+
+== Proof checks
+
+`Proof core and rejection controls` checks every file under
+`src/EpistemicTypes/`, including a file accidentally omitted from `All.agda`.
+It uses Agda 2.6.4.3 with `--safe --without-K --double-check
+--ignore-interfaces -W error --no-libraries`. It also runs all eleven enumerated
+false-claim controls. The rejection runner requires Agda's type-error exit code
+and the intended semantic diagnostic; import and environment failures do not pass.
+
+`Canonical Echo correspondence` imports the actual `echo-types` source pinned to
+`46cd1a32d4dcf1020f01dd1aab41f816742da10e`. It checks both residue-conversion round
+trips and agreement of lowering. Its standard library is Debian's Agda stdlib
+2.1-4. Only `UnsupportedIndexedMatch`, the already-reviewed warning about Cubical
+transport compatibility, is suppressed for this integration. Safe mode,
+without-K, internal double checking and all other warnings-as-errors remain.
+The claim is ordinary Agda correspondence, not Cubical computation compatibility.
+
+The Debian 13 container is pinned by digest; the Agda packages are pinned by
+version and installed through authenticated Debian repositories. There are no
+proof-interface caches in CI. Checkout does not persist its GitHub credential.
+Core checking remains independent of the standard library and Echo checkout.
+
+== Security and merge enforcement
+
+The existing CodeQL workflow analyzes GitHub Actions, the applicable language for
+this repository. It does not claim to analyze Agda semantics. The shared secret
+scanner checks for credentials; shell/Rust-specific jobs are supplementary when
+those files are present. The governance workflow checks the estate's conventions.
+Reusable workflows and actions are pinned to immutable revisions.
+
+Required status checks are configured on GitHub separately from these workflow
+files. The proof core, canonical correspondence and secret scan must succeed on
+the reviewed change. Existing signed-commit, pull-request and CodeQL security
+rules remain in force. Changes to checks or dependency pins require review like
+changes to proof source; a skipped or missing proof job is not a successful proof.
+
+Checks run for PRs and pushes to main, with timeouts and cancellation of superseded
+proof runs. They never use `pull_request_target` to execute contributor code.
+These gates establish the declared formal and repository-security checks. They
+do not certify a deployed runtime, the adequacy of every modeled proposition,
+or physical continuity.
+
+== Reproduce
+
+[source,sh]
+----
+just check
+just check-canonical /path/to/reviewed/echo-types /path/to/writable/agda-stdlib/src
+actionlint
+gh actions-lock --no-fix
+----
+
+The explicit writable stdlib path lets Agda recheck source without trying to
+write interfaces into a system-owned package directory. CI's container performs
+the same source check in its isolated filesystem.

@@ -10,7 +10,7 @@ The Agda module is the authority; these files mirror it for A2ML/K9 tooling.
 
 | `ProofTransport.a2ml`
 | A2ML spec: entities, statuses, modes, gaps, judgement, operations,
-  theorems, the honesty discipline, and the K9-SVC scenario — for agents.
+  theorems, semantic soundness, and the Boolean certificate scenario — for agents.
 
 | `proof-transport.k9.ncl`
 | K9 contractile at `'Kennel` leash (pure data, no eval): the same model as a
@@ -21,7 +21,8 @@ The Agda module is the authority; these files mirror it for A2ML/K9 tooling.
 
 Proofhood is standpoint-indexed.  Transmission across a trust boundary moves
 bytes (von Neumann), not proofhood (Curry-Howard).  A receiver recovers
-proofhood only with its own checker (verifier) plus evidence (certificate) —
+proofhood only through an accepted payload and a verifier's proof that
+acceptance entails the explicit holder/artefact/claim meaning —
 the proof-carrying-code pattern, made standpoint-relative.
 
 == Correspondence
@@ -35,15 +36,15 @@ the proof-carrying-code pattern, made standpoint-relative.
 | `Gap`                       | `gaps`
 | `transmit`                  | `law.transmit_yields = "Receipt"`
 | `verify` / `checkableTransportUpgrades` | `law.upgrade_requires`
-| `publicIsPortable`          | `modes.Public.portable = true`
+| `publicIsPortable`          | `modes.Public.portable = true` with `law.public_portability_requires`
 | `designatedBindsHolder`     | `modes.Designated.receiver_bound = true`
 | `opaqueNotCertifying`       | `modes.OpaqueReceipt.certifies = false`
-| `proofNeedsChecker`         | `law.no_free_proof_transfer = true`
-| `ProofTransportExample`     | `scenario` (K9SVC / Alice / Bob)
+| `proofSound`                | `law.semantic_guarantee`
+| `ProofTransportExample`     | `scenario` (Boolean artefact, certificate, Alice / Bob)
 |===
 
 NOTE: `modes.*.gap_on_fail` in the k9 file is a *reserved* failure mapping.  The
-research core today constructs only `OpaqueGap` (via `verify`) and
+research core today constructs `OpaqueGap` or `InvalidEvidence` (via `verify`) and
 `MissingChecker` / `MissingEvidence` (via `tryUpgrade`) — see
 `law.gaps_realized_today`.  The remaining gaps are vocabulary for a future
 refinement, not behaviour the core implements yet.
