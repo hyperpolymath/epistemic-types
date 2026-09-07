@@ -26,7 +26,7 @@ accessibility contexts, warrant regimes). The reading of `E κ A` is that `A` is
 *epistemically available from standpoint `κ`*: known, believed, observed,
 warranted, inferable, or assertable under that standpoint. This is the operative
 definition as the code actually uses it, and it is the form named in
-`readme.adoc` and verified green in `AFFIRMATION.adoc`.
+`README.adoc` and verified green in `AFFIRMATION.adoc`.
 
 The library's defining move is to *separate the interfaces* rather than ship one
 omnibus modality (`src/EpistemicTypes/Base.agda`):
@@ -71,7 +71,7 @@ type-checks under `--safe --without-K` with zero postulates, per
 Honesty first, because it is load-bearing: unlike the sibling repos echo-types
 (which is provably the fibre / a graded-loss modality) and tropical-resource-typing
 (provably a dioid), epistemic-types' *deep* mathematical identity is
-*deliberately unsettled*. The repository's own `readme.adoc` lists "concrete
+*deliberately unsettled*. The repository's own `README.adoc` lists "concrete
 Kripke-style and evidence-state models" (roadmap #2) and the
 monadic/comonadic *variance* question (roadmap #7) as *intentionally
 unformalized*, and `AFFIRMATION.adoc` confirms the Kripke semantics is absent,
@@ -134,7 +134,7 @@ What is *ours* is the *modelling and assembly*: the specific Agda
 *interface-separation* (`Modality` / `LawfulModality` / `FactiveModality` /
 `BeliefModality` / `ReturnModality`; `Warrant` versus `SoundWarrant`), and the
 *standpoint-indexed proof-transport* calculus that makes proofhood holder-relative
-and proves the no-smuggling property. The usefulness is *demonstrated by concrete,
+and proves semantic soundness relative to Meaning through `proofSound`. The usefulness is *demonstrated by concrete,
 checkable artefacts* recorded as ground truth in `AFFIRMATION.adoc`:
 
 * the whole library type-checks *cold and green* under `--safe --without-K`
@@ -147,7 +147,7 @@ checkable artefacts* recorded as ground truth in `AFFIRMATION.adoc`:
   `no-polymorphic-epi-reflection` *refute* a generic
   `(A : Set) -> Belief rough A -> A` (resp. `Epi`) by exhibiting a belief/warrant
   for `⊥`;
-* `ProofTransport.proofNeedsChecker` (no-smuggling), with
+* `ProofTransport.proofNeedsChecker` (structural projection; `proofSound` is the semantic guarantee), with
   `designatedBindsHolder`, `opaqueNotCertifying`, and `verifyReceiptIsGap` giving
   the explicitly qualified public portability / designated-bound / receipt-never-certifies distinction.
 
@@ -176,7 +176,7 @@ EI-2.)
 To keep boundaries un-eroded:
 
 * epistemic-types *is NOT a complete epistemic logic or a Kripke semantics* — by
-  its own statement (`readme.adoc` "What remains intentionally unformalized";
+  its own statement (`README.adoc` "What remains intentionally unformalized";
   `AFFIRMATION.adoc` "Prototype scope"). It formalises honesty-preserving
   *interfaces* and real *separation theorems*, not a worlds-and-valuation model.
 * epistemic-types *is NOT factive by default*. Factivity (`reflect`,

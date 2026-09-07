@@ -79,7 +79,7 @@ invariants:
   - id: "build-green"
     statement: "The library typechecks: `just check` succeeds."
     command: "just check"
-    expands_to: "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+    expands_to: "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
     tool: "Agda 2.6.4.3"
   - id: "no-postulates"
     statement: "No postulates. Compiles under {-# OPTIONS --safe --without-K #-}; constructive throughout."
@@ -107,7 +107,7 @@ ecosystem:
     - name: "a2ml + k9"
       relationship: "Machine-readable + contractile tooling; ProofTransport's engineering target (.machine_readable/proof-transport/)."
 
-# Docs keep their existing lowercase names; do not rename or duplicate.
+# Docs keep their existing names; do not rename or duplicate.
 docs:
-  - "readme.adoc"
+  - "README.adoc"
   - "explainme.adoc"

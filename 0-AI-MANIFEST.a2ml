@@ -27,7 +27,7 @@ proof-transport-contractile = ".machine_readable/proof-transport/proof-transport
 proof-transport-readme = ".machine_readable/proof-transport/README.adoc"
 
 [docs]
-readme = "readme.adoc"
+readme = "README.adoc"
 explainme = "explainme.adoc"
 audit = "AUDIT.adoc"
 format = "AsciiDoc (.adoc) is the default; existing lowercase doc filenames are canonical and are not renamed."
@@ -36,31 +36,34 @@ format = "AsciiDoc (.adoc) is the default; existing lowercase doc filenames are 
 scm-files-location = ".machine_readable/ ONLY — a2ml and scm/Nickel/k9 files never live at repo root"
 license = "MPL-2.0"
 build = "just check"
-build-expansion = "safe Agda All.agda check plus tests/check-rejections.sh"
+build-expansion = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 agda-options = "{-# OPTIONS --safe --without-K #-} ; no postulates; no Agda standard library (only Agda.Builtin.* / Agda.Primitive)"
-agda-version = "2.8.0"
-echo-distinction = "Do not collapse Echo r A and E κ A. Echo-types are min-plus-graded loss/residue; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
-ci = "none — no GitHub Actions, no badges (see AUDIT.adoc)"
+agda-version = "2.6.4.3"
+echo-distinction = "Do not collapse Echo C y and E κ A. Echo retains certified residues; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
+ci = "Proof and security workflows configured; required merge checks are described in docs/ci-safety.adoc"
 
 [source]
 root = "src/EpistemicTypes/"
 aggregator = "src/EpistemicTypes/All.agda"
 modules = [
-  "EpistemicTypes.Base",
-  "EpistemicTypes.Warrant",
   "EpistemicTypes.Access",
+  "EpistemicTypes.All",
+  "EpistemicTypes.Base",
+  "EpistemicTypes.ContinuityExamples",
   "EpistemicTypes.EchoBridge",
-  "EpistemicTypes.SurrealBridge",
   "EpistemicTypes.Examples",
   "EpistemicTypes.ProofTransport",
   "EpistemicTypes.ProofTransportExample",
+  "EpistemicTypes.ReadConsistency",
+  "EpistemicTypes.SurrealBridge",
+  "EpistemicTypes.Warrant",
 ]
 
 [source.descriptions]
 Base = "Modality / LawfulModality / FactiveModality / BeliefModality / ReturnModality. The base E is a plain indexed endofunctor (map only)."
 Warrant = "Warrant / Epi / SoundWarrant — explicit warrant objects."
 Access = "Preorder plus AccessibleModality transport ('increase') across the access preorder."
-EchoBridge = "Min-plus graded loss/residue 'Echo r A', kept distinct from E κ A."
+EchoBridge = "Certified Echo C y residues, explicit migration/recovery and separately measured resource bounds."
 SurrealBridge = "SurrealAccess carrier plus GradedSurrealModality plus daySurrealAccess finite-birthday tower."
 Examples = "Worked instances of the abstract interfaces."
 ProofTransport = "Standpoint-indexed proof transport across trust boundaries."
@@ -87,8 +90,8 @@ step-2 = "Read .machine_readable/descriptiles/STATE.a2ml for current project sta
 step-3 = "Read .machine_readable/descriptiles/META.a2ml for architecture and design decisions."
 step-4 = "Read .machine_readable/descriptiles/ECOSYSTEM.a2ml for ecosystem position and sibling repos."
 step-5 = "Read .machine_readable/descriptiles/AGENTIC.a2ml, NEUROSYM.a2ml, and PLAYBOOK.a2ml for agent guidance."
-step-6 = "Read readme.adoc and explainme.adoc for the human-facing overview."
-step-7 = "Run 'just check' to type-check src/EpistemicTypes/All.agda before and after changes."
+step-6 = "Read README.adoc and explainme.adoc for the human-facing overview."
+step-7 = "Run 'just check' to check every source module and semantic rejection fixture before and after changes."
 
 [policy]
 rules = [
@@ -97,7 +100,7 @@ rules = [
   "Keep modules small and type-check frequently with 'just check'.",
   "Keep a2ml / Nickel / k9 files under .machine_readable/ only.",
   "License and SPDX changes are owner-manual; do not add LICENSE files or SPDX headers.",
-  "Do not add CI, containers, or badges; this is a single-tool Agda library.",
+  "Maintain owner-authorized proof and security CI; do not bypass failing checks.",
 ]
 
 [ecosystem]

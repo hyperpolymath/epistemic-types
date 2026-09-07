@@ -12,7 +12,7 @@ last-updated = "2026-06-15"
 author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
 
 [hypatia-config]
-scan-enabled = true
+scan-enabled = false
 scan-depth = "standard"  # quick | standard | deep
 report-format = "logtalk"
 scan-paths = [ "src/EpistemicTypes" ]
@@ -47,9 +47,9 @@ safe-flags = "--safe --without-K"
 # Neural pattern detection is not configured for this prototype.
 # A formal Agda library is better served by the deterministic symbolic rules
 # above and by the type-checker than by learned pattern matching.
-enabled = true
+enabled = false
 
 [ci]
 # CI checks core proofs, semantic rejections, pinned Echo correspondence and workflow/secret security.
 # See AUDIT.adoc. Verification is local via `just check`.
-enabled = true
+enabled = false

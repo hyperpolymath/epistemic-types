@@ -13,6 +13,7 @@
 
 let Leash = [| 'Kennel, 'Yard, 'Hunt |] in
 let Mode = [| 'Public, 'Designated, 'IssuerMediated, 'EnvironmentMediated, 'OpaqueReceipt |] in
+let Portability = [| 'RequiresHolderMeaningImplication, 'NoGenericTransfer |] in
 let Gap = [|
   'TrivialGap, 'DesignatedGap, 'EnvironmentGap, 'IssuerTrustGap,
   'OpaqueGap, 'MissingChecker, 'MissingEvidence, 'MissingContext, 'InvalidEvidence
@@ -21,7 +22,7 @@ let Gap = [|
 # Per-mode transport semantics.
 let ModeRule = {
   certifies | Bool,            # can a matching checker + evidence yield Proof?
-  portable | Bool,             # supported ONLY with an explicit meaning implication
+  portability | Portability,  # conditional support is an explicit schema value
   receiver_bound | Bool,       # is the checker pinned to one designated holder?
   gap_on_fail | Gap,           # RESERVED: the gap a future refinement would report
                                # for this mode. The core does NOT yet emit these per
@@ -59,23 +60,23 @@ let ModeRule = {
   # Verification / attestation modes and how each transports.
   modes = {
     Public | ModeRule = {
-      certifies = true, portable = true, receiver_bound = false,
+      certifies = true, portability = 'RequiresHolderMeaningImplication, receiver_bound = false,
       gap_on_fail = 'MissingEvidence,
     },
     Designated | ModeRule = {
-      certifies = true, portable = false, receiver_bound = true,
+      certifies = true, portability = 'NoGenericTransfer, receiver_bound = true,
       gap_on_fail = 'DesignatedGap,
     },
     IssuerMediated | ModeRule = {
-      certifies = true, portable = false, receiver_bound = false,
+      certifies = true, portability = 'NoGenericTransfer, receiver_bound = false,
       gap_on_fail = 'IssuerTrustGap,
     },
     EnvironmentMediated | ModeRule = {
-      certifies = true, portable = false, receiver_bound = false,
+      certifies = true, portability = 'NoGenericTransfer, receiver_bound = false,
       gap_on_fail = 'EnvironmentGap,
     },
     OpaqueReceipt | ModeRule = {
-      certifies = false, portable = false, receiver_bound = false,
+      certifies = false, portability = 'NoGenericTransfer, receiver_bound = false,
       gap_on_fail = 'OpaqueGap,
     },
   },

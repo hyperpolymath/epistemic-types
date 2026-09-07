@@ -143,15 +143,14 @@ machine-readable description in step.
 
 * *AsciiDoc (`.adoc`) is the default* for documentation. Update the
 relevant `.adoc` file alongside any behavioural or interface change.
-* Existing docs keep their current lowercase names: `readme.adoc` and
+* Existing docs keep their current names: `README.adoc` and
 `explainme.adoc`. Do *not* rename or duplicate them.
 * Machine-readable descriptions live under `.machine++_++readable/`
 (a2ml {plus} Nickel/k9). a2ml files use the canonical TOML-like dialect:
 `++[++section++]++` headers, `key = "value"`, arrays
 `++[++ "a", "b" ++]++`, inline tables `++{++ k = "v", j = "w" }`.
-* Only these files may be Markdown (GitHub community-health
-special-casing): `CONTRIBUTING.adoc`, `CODE++_++OF++_++CONDUCT.md`,
-`SECURITY.md`, `CHANGELOG.adoc`. Everything else is `.adoc`.
+* Root contribution, conduct, security and changelog documents use AsciiDoc.
+  Preserve their existing `.adoc` filenames.
 
 '''''
 

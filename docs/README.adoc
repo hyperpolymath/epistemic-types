@@ -16,7 +16,7 @@ authority.
 
 | `README.adoc` (repo root)
 | Project overview: the core form `E : K -> Set ℓ -> Set ℓ`, the module layout,
-  and the `just check` build (`agda --no-libraries -i src src/EpistemicTypes/All.agda`).
+  and the `just check` build (`just check`).
 
 | `explainme.adoc` (repo root)
 | Gentler, narrative explanation of the ideas — why `E κ A` is a plain indexed

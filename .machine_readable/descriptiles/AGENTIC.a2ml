@@ -11,7 +11,7 @@ last-updated = "2026-06-15"
 
 [agent-permissions]
 can-edit-source = true        # Agda modules under src/EpistemicTypes/
-can-edit-docs = true          # readme.adoc, explainme.adoc, AsciiDoc docs
+can-edit-docs = true          # README.adoc, explainme.adoc, AsciiDoc docs
 can-edit-machine-readable = true  # .machine_readable/ (descriptiles, proof-transport)
 can-edit-build = true         # Justfile, epistemic-types.agda-lib, .gitignore
 can-create-files = true
@@ -41,7 +41,7 @@ can-add-spdx-headers = false  # repo is intentionally SPDX-free; keep it consist
 # - Never edit LICENSE or add SPDX-License-Identifier / copyright headers.
 #   Licensing (classified MPL-2.0 as the owner's sole repo) is owner-manual only.
 # - Never commit secrets or credentials.
-# - Keep docs in AsciiDoc; do not rename or duplicate readme.adoc / explainme.adoc.
+# - Keep docs in AsciiDoc; do not rename or duplicate README.adoc / explainme.adoc.
 # - Maintain the owner-authorized proof and security CI gates; never bypass failing checks.
 
 [maintenance-integrity]
@@ -55,7 +55,7 @@ release-claim-requires-hard-pass = true
 [verification]
 # The single source of truth for "does it hold".
 command = "just check"
-underlying = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+underlying = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 agda-version = "2.6.4.3"
 entrypoint = "src/EpistemicTypes/All.agda"
 expected = "type-checks clean, no postulates, no warnings"

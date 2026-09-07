@@ -26,6 +26,12 @@ verify = "Evaluates the check; successful verification yields Proof, false yield
 opaque = "OpaqueReceipt always yields OpaqueGap."
 tryUpgrade = "Additionally emits MissingChecker or MissingEvidence."
 
+[transport]
+transmit = "Moves sender proof data to a receiver-side Receipt; it does not establish the receiver's Meaning."
+checkableTransportUpgrades = "The boundary fixes sender/receiver indices; successful sound verification establishes the receiver's Meaning."
+publicTransfer = "Transfers the public checker and evidence using an explicit Meaning r a c -> Meaning q a c implication."
+designatedTransfer = "A designated checker can be used only at its indexed holder; designation is not cryptographic authentication."
+
 [statuses]
 values = ["Data", "Code", "Claimed", "Receipt", "Proof", "ProofUnder"]
 

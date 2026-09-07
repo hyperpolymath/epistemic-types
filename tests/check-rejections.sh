@@ -12,7 +12,7 @@ actual_files=$(rg --files tests/reject -g '*.agda' | sort)
 [[ "$actual_files" == "$expected_files" ]] || { echo 'FAIL: rejection manifest differs from files'; exit 1; }
 for fixture in "${fixtures[@]}"; do
   status=0
-  diagnostic=$(agda --no-libraries --safe --without-K --double-check -W error \
+  diagnostic=$(agda --no-libraries --safe --without-K --double-check --ignore-interfaces -W error \
     -i src -i tests/reject "tests/reject/$fixture.agda" 2>&1) || status=$?
   if [[ "$status" -eq 0 ]]; then
     printf 'FAIL: %s unexpectedly type-checked\n' "$fixture"
