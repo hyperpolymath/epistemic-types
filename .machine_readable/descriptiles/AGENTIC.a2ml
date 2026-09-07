@@ -12,7 +12,7 @@ last-updated = "2026-06-15"
 [agent-permissions]
 can-edit-source = true        # Agda modules under src/EpistemicTypes/
 can-edit-docs = true          # readme.adoc, explainme.adoc, AsciiDoc docs
-can-edit-machine-readable = true  # .machine_readable/ (6a2, proof-transport)
+can-edit-machine-readable = true  # .machine_readable/ (descriptiles, proof-transport)
 can-edit-build = true         # Justfile, epistemic-types.agda-lib, .gitignore
 can-create-files = true
 can-edit-license = false      # LICENSE / SPDX are owner-manual — agents MUST NOT touch
@@ -29,7 +29,7 @@ can-add-spdx-headers = false  # repo is intentionally SPDX-free; keep it consist
 #   is a plain indexed endofunctor (map only). Do NOT add a generic return,
 #   reflect, join, or extract that is not justified by an explicit field or proof.
 #   Laws appear as fields when not derivable; they are never assumed silently.
-# - Never collapse Echo r A (min-plus graded loss/residue) into E κ A. Their
+# - Never collapse Echo C y (certified residue and separately measured bounds) into E κ A. Their
 #   composition is meaningful; they are not the same modality.
 # - Never break the ProofTransport no-smuggling discipline: verify upgrades
 #   Data -> Proof only with the receiver's OWN checker + evidence; transmit
@@ -37,12 +37,12 @@ can-add-spdx-headers = false  # repo is intentionally SPDX-free; keep it consist
 #   certifies. Do not weaken proofNeedsChecker.
 # Repository hygiene:
 # - Never place state files in the repository root. Machine-readable state lives
-#   under .machine_readable/ (6a2, proof-transport).
+#   under .machine_readable/ (descriptiles, proof-transport).
 # - Never edit LICENSE or add SPDX-License-Identifier / copyright headers.
 #   Licensing (classified MPL-2.0 as the owner's sole repo) is owner-manual only.
 # - Never commit secrets or credentials.
 # - Keep docs in AsciiDoc; do not rename or duplicate readme.adoc / explainme.adoc.
-# - Do not add CI / GitHub Actions workflows or badges (not enabled; see AUDIT.adoc).
+# - Maintain the owner-authorized proof and security CI gates; never bypass failing checks.
 
 [maintenance-integrity]
 fail-closed = true
@@ -56,7 +56,7 @@ release-claim-requires-hard-pass = true
 # The single source of truth for "does it hold".
 command = "just check"
 underlying = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
-agda-version = "2.8.0"
+agda-version = "2.6.4.3"
 entrypoint = "src/EpistemicTypes/All.agda"
 expected = "type-checks clean, no postulates, no warnings"
 

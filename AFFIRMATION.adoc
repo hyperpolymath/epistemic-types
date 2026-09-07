@@ -2,6 +2,14 @@
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = AFFIRMATION — epistemic-types, as of 2026-06-16
 :toc: macro
+
+NOTE: The dated historical affirmation below is superseded in scope by the
+2026-09-07 repairs. Proof transport now entails its explicit Meaning;
+ReadConsistency now models store histories with contents agreement; Echo now
+uses certified residues, source compatibility, migration laws, and separate
+measured bounds. Neither these proofs nor the earlier affirmation establishes
+external-store or runtime refinement. Current evidence and limitations are in
+`PROOF-STATUS.adoc` and `docs/continuity-foundations.adoc`.
 :toclevels: 2
 
 _the No-Bullshit file: what we affirm was true and checkable at this moment_
@@ -180,7 +188,7 @@ logic, and it carries no LICENSE.*
 ** `ProofTransport.designatedBindsHolder` (`d ≡ holder`),
    `ProofTransport.opaqueNotCertifying` (`¬ Certifying OpaqueReceipt`),
    `ProofTransport.verifyReceiptIsGap` (a receipt-only verify is `left OpaqueGap`)
-   — the public-portable / designated-bound / receipt-never-certifies trichotomy.
+   — the explicitly qualified public portability / designated-bound / receipt-never-certifies distinction.
 ** `ReadConsistency.freshnessPropagatesUnderWrites`, `resyncRecoversFresh`,
    `syncChainEndsFresh`, `freshNotStale` — version-monotone re-sync liveness.
 ** `Access` preorder + monotone-transport laws, instantiated for real in
@@ -227,7 +235,7 @@ sound" is overclaiming: it proves _its own_ formal statements, full stop.
   `# SPDX-License-Identifier: CC-BY-SA-4.0` line *and* a
   `# SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell ...` line (not prose
   mentions). The other `SPDX` strings (`CONTRIBUTING.md`, `AUDIT.adoc`,
-  `GOVERNANCE.adoc`, `.machine_readable/6a2/AGENTIC.a2ml`) are prose / policy
+  `GOVERNANCE.adoc`, `.machine_readable/descriptiles/AGENTIC.a2ml`) are prose / policy
   text. So the licence *classification* is already asserted MPL-2.0 inside those
   two workflow headers, while the source tree and the `LICENSE` file remain
   owner-pending. Per `AUDIT.adoc` and estate policy the licence is

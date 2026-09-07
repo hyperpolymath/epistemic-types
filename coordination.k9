@@ -68,7 +68,7 @@ protected_paths:
   - path: "src/EpistemicTypes/All.agda"
     role: "re-export aggregator; the check entry point"
   - path: ".machine_readable/"
-    role: "a2ml + Nickel/k9 machine-readable surface (6a2/, proof-transport/)"
+    role: "a2ml + Nickel/k9 machine-readable surface (descriptiles/, proof-transport/)"
   - path: "Justfile"
     role: "canonical build recipe"
   - path: "epistemic-types.agda-lib"
@@ -80,7 +80,7 @@ invariants:
     statement: "The library typechecks: `just check` succeeds."
     command: "just check"
     expands_to: "agda --no-libraries -i src src/EpistemicTypes/All.agda"
-    tool: "Agda 2.8.0"
+    tool: "Agda 2.6.4.3"
   - id: "no-postulates"
     statement: "No postulates. Compiles under {-# OPTIONS --safe --without-K #-}; constructive throughout."
   - id: "no-stdlib"
@@ -90,11 +90,10 @@ invariants:
   - id: "honesty-over-api"
     statement: "Favour mathematical honesty over a large API. The base E : K -> Set ℓ -> Set ℓ is a plain indexed endofunctor (map only) — not a monad/comonad; no generic return/reflect. Echo r A is kept distinct from E κ A."
 
-# CI is intentionally absent (estate Actions billing wall; Scorecard known-broken
-# estate-wide). Verification is local-only via `just check`. See AUDIT.adoc.
+# CI and merge gates are explicitly authorized by the owner (2026-09-07).
 ci:
-  enabled: false
-  note: "No CI; not enabled (see AUDIT.adoc). Verification is local via `just check`."
+  enabled: true
+  note: "Proof and security CI are configured; just check remains the local core gate."
 
 # Real ecosystem siblings this repo coordinates with.
 ecosystem:

@@ -1,7 +1,7 @@
 # NEUROSYM.a2ml — Neurosymbolic integration metadata
 # Hypatia scanning + symbolic-rule configuration for epistemic-types.
 # This is a small Agda formal-methods prototype, checked by `just check`
-# (== `agda --no-libraries -i src src/EpistemicTypes/All.agda`, Agda 2.8.0).
+# (== `agda --no-libraries -i src src/EpistemicTypes/All.agda`, Agda 2.6.4.3).
 # Rules below are right-sized to that single-tool library; honesty over breadth.
 
 [metadata]
@@ -33,7 +33,7 @@ rules = [
   { name = "no-no-termination-check", pattern = "\\{-# NO_TERMINATION_CHECK #-\\}", severity = "critical", note = "Legacy termination bypass; forbidden for the same reason as TERMINATING." },
   { name = "no-stdlib-import", pattern = "open import (Data|Relation|Function|Algebra|Category|Codata|Effect|Foreign|IO|Reflection|Tactic|Agda\\.Builtin\\.Reflection)\\b", severity = "high", note = "Repo builds with `agda --no-libraries`; only `Agda.Builtin.*` and `Agda.Primitive` are permitted. A standard-library import would not type-check under `just check` and breaks the self-contained guarantee." },
   { name = "no-unsafe-options", pattern = "\\{-# OPTIONS[^#]*--type-in-type", severity = "critical", note = "`--type-in-type` is inconsistent; the repo target is `--safe --without-K`." },
-  { name = "echo-not-collapsed", pattern = "Echo .* = .* E ", severity = "medium", note = "Heuristic: Echo r A (min-plus graded loss/residue) and E kappa A (epistemic availability) are distinct modalities. Their composition is meaningful; their identification is a modelling error. Manual review on hit." }
+  { name = "echo-not-collapsed", pattern = "Echo .* = .* E ", severity = "medium", note = "Heuristic: Echo C y (certified residue and separately measured bounds) and E kappa A (epistemic availability) are distinct modalities. Their composition is meaningful; their identification is a modelling error. Manual review on hit." }
 ]
 
 [symbolic-rules.notes]
@@ -47,9 +47,9 @@ safe-flags = "--safe --without-K"
 # Neural pattern detection is not configured for this prototype.
 # A formal Agda library is better served by the deterministic symbolic rules
 # above and by the type-checker than by learned pattern matching.
-enabled = false
+enabled = true
 
 [ci]
-# No CI is configured for this repository (no GitHub Actions workflows, no badges).
+# CI checks core proofs, semantic rejections, pinned Echo correspondence and workflow/secret security.
 # See AUDIT.adoc. Verification is local via `just check`.
-enabled = false
+enabled = true

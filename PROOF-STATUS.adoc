@@ -8,7 +8,44 @@ Verification status of the epistemic-types Agda formalisation. The whole library
 self-contained (`--no-libraries`: it imports only `Agda.Builtin.*` /
 `Agda.Primitive`). This records a reproduced `agda` run, not a "looks fine" reading.
 
-== Verified (this environment)
+== Current continuity-foundations correction — 2026-09-07
+
+`ReadView` now entails equality with the indexed store contents. Cached-read
+freshness is tied to a particular store history; every write invalidates old
+freshness, and synchronization reads current contents in the model.
+
+`Echo` now carries a specified residue certificate. Source compatibility, recovery,
+and migration have explicit obligations. The collision theorem refutes every
+migration requiring a distinction discarded by the retained pair. Resource
+bounds require measure inequalities; arbitrary grade retagging is removed.
+
+The eleven-module core and eleven deliberate rejection fixtures pass with
+Agda 2.6.4.3 under `--safe --without-K --no-libraries`, without warnings.
+The additional canonical Echo integration proves both representation round
+trips and agreement of lowering; its standard-library dependencies emit Cubical
+compatibility warnings. See link:docs/continuity-foundations.adoc[] for commands,
+scope, and remaining runtime and combined-language obligations.
+
+== Earlier semantic proof-transport correction — 2026-09-07
+
+The token-only proof-status construction has been replaced. `proofSound`
+derives an explicit `Meaning holder artifact claim` from every proof status.
+The verifier supplies a Boolean check and a proof of acceptance soundness;
+proof construction requires its successful-check equality. No global soundness
+axiom is added.
+
+Reproduced with Agda 2.6.4.3: `just check` passes the full 10-module library
+and four semantic rejection controls. Examples prove legitimate acceptance
+and rejection of bad payloads, altered artefacts, false claims, opaque modes,
+and missing checking resources. Holder-dependent transfer is explicitly
+qualified. The older `proofNeedsChecker` theorem remains a weaker structural
+projection; its former semantic interpretation was unsupported.
+
+At that stage ReadConsistency/store coherence and EchoBridge/index constraints
+were still open; the later correction above addresses their model-level gaps.
+External-store and runtime correspondence remain open.
+
+== Earlier reproduced baseline
 
 * Command: `agda --safe -i src src/EpistemicTypes/All.agda` → **exit 0**.
 * All **10/10** modules declare `{-# OPTIONS --safe #-}`; **zero `postulate`**,
@@ -32,9 +69,9 @@ agda --safe -i src src/EpistemicTypes/All.agda
 
 * Status: **prototype (v0.1.0)** — a deliberately small, honest formalisation of
   standpoint-indexed modal / epistemic / echo-like type formers.
-* `EchoBridge` and `SurrealBridge` are **local re-implementations** of the
-  `Echo`/`Grade` and surreal shapes (no dependency on the `echo-types` Agda
-  library or a surreal-number library); the relationship is at the design level.
+* `EchoBridge` and `SurrealBridge` remain self-contained. The optional integration
+  test imports canonical Echo sources and proves a residue correspondence; no
+  full surreal-number library or combined-runtime verification is claimed.
 * The library is self-contained by design (`--no-libraries`); it does not depend
   on the standard library.
 

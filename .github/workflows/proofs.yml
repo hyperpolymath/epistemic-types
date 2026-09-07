@@ -1,0 +1,65 @@
+# This workflow is managed by gh actions-lock.
+
+name: Proof Safety
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    name: Proof core and rejection controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    container: debian:13-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+    steps:
+      - name: Install authenticated Debian toolchain packages
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y ca-certificates git ripgrep agda-bin=2.6.4.3-1+b2
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Verify toolchain and proof constructions
+        run: |
+          test "$(agda --version)" = 'Agda version 2.6.4.3'
+          bash tests/check-proofs.sh
+          bash tests/check-rejections.sh
+
+  echo:
+    name: Canonical Echo correspondence
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    container: debian:13-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+    steps:
+      - name: Install authenticated Debian toolchain packages
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y ca-certificates git agda-bin=2.6.4.3-1+b2 agda-stdlib=2.1-4
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Checkout reviewed canonical Echo source
+        uses: actions/checkout@v6.0.3
+        with:
+          repository: hyperpolymath/echo-types
+          ref: 46cd1a32d4dcf1020f01dd1aab41f816742da10e
+          path: .ci-deps/echo-types
+          persist-credentials: false
+      - name: Prove representation round trips and lowering agreement
+        run: |
+          test "$(agda --version)" = 'Agda version 2.6.4.3'
+          agda --no-libraries --safe --without-K --double-check --ignore-interfaces \
+            -W error -W noUnsupportedIndexedMatch -i src -i tests/integration \
+            -i .ci-deps/echo-types/proofs/agda -i /usr/share/agda-stdlib/src \
+            tests/integration/CanonicalEcho.agda

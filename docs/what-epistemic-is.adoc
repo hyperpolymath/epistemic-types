@@ -58,11 +58,11 @@ determine them.
 Neumann bytes, a Curry–Howard proof, an epistemic status relative to a holder —
 via `View holder artifact status claim`. `transmit` moves *bytes, not
 proofhood* (a sender's `Proof` arrives only as a `Receipt`); `verify` recovers
-proofhood *only* with the *receiver's own* `Checker` and `Evidence`; and
-`proofNeedsChecker` is the structural *no-smuggling* property: every
-`View holder a Proof c` decomposes into that holder's own certifying mode,
-checker, and evidence, so no checker-free
-`View sender … Proof → View receiver … Proof` exists. All of the above
+proofhood through a successful sound check of an explicit
+`Meaning holder artifact claim`. `proofSound` derives that meaning;
+`proofNeedsChecker` remains a weaker structural projection. Public transport
+requires a proved implication between the holders' meanings. The earlier
+token-only encoding did not establish semantic truth. All of the above
 type-checks under `--safe --without-K` with zero postulates, per
 `AFFIRMATION.adoc`.
 
@@ -149,7 +149,7 @@ checkable artefacts* recorded as ground truth in `AFFIRMATION.adoc`:
   for `⊥`;
 * `ProofTransport.proofNeedsChecker` (no-smuggling), with
   `designatedBindsHolder`, `opaqueNotCertifying`, and `verifyReceiptIsGap` giving
-  the public-portable / designated-bound / receipt-never-certifies trichotomy.
+  the explicitly qualified public portability / designated-bound / receipt-never-certifies distinction.
 
 These results are consumed downstream: the proof-transport / warrant-gap model is
 used by *snifs* (deniable, non-forging attestation) and is named as the
@@ -183,13 +183,13 @@ To keep boundaries un-eroded:
   `SoundWarrant.sound`) is a *separate, assumed* interface; the default
   `Warrant`/`Belief` carry no truth axiom. A reader who treats a warrant as a
   proof of its claim has crossed exactly the line this repo draws.
-* the *epistemic* modality `E` *is NOT the echo* (loss/residue) modality. They
-  *compose* — `E κ (Echo r A)` is meaningful — but do *not collapse*:
-  `EchoBridge` is a deliberate scaffold that proves *no graded-loss theorems of
-  its own* (per `AFFIRMATION.adoc`), and the prototype keeps `Echo r A` and
-  `E κ A` distinct on purpose.
+* the epistemic modality, Echo retention, and resource bounds remain separate.
+  `E κ (Echo C y)` describes availability of a certified residue;
+  `BoundedEcho C measure budget y` adds a measure inequality. The optional
+  canonical integration proves residue representation and lowering agreement.
+  No full graded-comonad or physical-loss theorem follows from this bridge.
 * epistemic-types *is NOT a verified external system*. The green typecheck
-  establishes an *idealised core calculus*; it does not establish that any real
+  checks the formalised types and propositions; it does not establish that any real
   attestation protocol, CRDT read path, or proof-carrying-code pipeline
   *refines* it. There is no production implementation in this repo.
 * the `SurrealBridge` *is NOT* the full Conway proper class of surreals — only

@@ -35,50 +35,57 @@ for `A` at `κ`.  `Epi κ A` packages a warrant and a token.  This still does no
 prove `A`.  A sound warrant is a separate record with an explicit soundness
 function.
 
-== Echo distinction
+== Reads and retained information
 
-Echo-types track loss, residue, or irrecoverability grades.  Epistemic types
-track standpoint-relative access, belief, knowledge, or warrant.  The bridge
-`E κ (Echo r A)` says that a standpoint has access to a lossy/residual echo of
-`A`; it is not the same as directly having `E κ A`.
+A `ReadView s` proves that its value matches the contents of the store history
+`s`. Cached reads retain their source and ancestry. A write makes them stale;
+a model read obtains current data. Facts about unchanged aspects can survive a
+write through an explicit proof.
+
+`Echo C y` holds a residue certified relative to the chosen retention contract.
+`MatchesSource` checks compatibility with a candidate source; information loss
+can leave multiple candidates. Exact recovery and migration require additional
+laws. The example retains one Boolean from a pair: it supports migration for
+that Boolean, but cannot support migration for the discarded Boolean.
+
+The composition `E κ (Echo C y)` expresses epistemic access to that certified
+residue. Standpoint access, retained information, and resource quantities remain
+separate dimensions.
 
 == Surreal bridge
 
-The surreal bridge uses an abstract set-sized carrier with an order and a
-grade-valued access loss.  The loss is used by `GradedSurrealModality`:
+`BoundedEcho C measure budget y` adds a proved upper bound on a residue measure.
+The concrete surreal adapter preserves data while relaxing that bound according
+to an instance-supplied access grade. The legacy `magnitude-loss` name does not
+establish measured information loss or physical elapsed time.
 
-----
-E x (Echo r A) -> E y (Echo (gradePlus r (magnitude-loss p)) A)
-----
-
-for `p : x ≤♯ y`.  This is the point where surreal-like magnitude does work in
-the type: moving across access accumulates a tropical loss grade.
-
-The bridge still proves the same separation results: factive knowledge needs
-`reflect`, belief has no generic reflection, and warrant tokens do not expose
-their claims without separate soundness.
-
-The bridge is not a formalization of the full class of Conway surreals.  That
-would require a universe-indexed or class-like treatment, not a single ordinary
-Agda `Set`.  The included `daySurrealAccess` instance is a finite birthday
-tower: the grade is the number of birthday/refinement steps.
+The bridge keeps the existing factive/non-factive separation results. Its
+`daySurrealAccess` is a set-sized finite-day example, not all Conway surreals.
+The optional canonical integration proves correspondence with the actual
+`EchoResidue.EchoR`. See link:docs/continuity-foundations.adoc[].
 
 == Proof transport
 
-One artefact can be read three ways at once: as von Neumann data/code, as a
-Curry–Howard proof object, and as an epistemic status relative to a receiver.
-`EpistemicTypes.ProofTransport` keeps these apart.
+`ProofTransport` is parameterised by agents, claim labels, artefacts,
+`Meaning : Agent -> Artifact -> Claim -> Set`, and a certificate
+`Payload : Artifact -> Claim -> Set`. The caller states the meaning being proved.
 
-The honesty point mirrors the rest of the library: a receiver does not get
-`Proof claim` for free.  `transmit` carries a sender's proof across a trust
-boundary as a mere `Receipt`; the receiver re-establishes proofhood only by
-running its own `Checker` over `Evidence` (`verify`).  Public verification is
-portable to anyone; a designated checker is pinned to its holder, so a third
-party cannot reconstruct it; a receipt-only attestation never certifies the
-underlying claim.  This is the proof-carrying-code pattern made
-standpoint-relative: the certificate is data and travels, but the verification
-standpoint must be re-supplied by the receiver.  An engineering rendering for
-A2ML/K9 tooling lives under `.machine_readable/proof-transport/`.
+A `CertificateCheck` contains an executable Boolean check and a proof that
+acceptance entails that exact meaning. Evidence carries a payload; possessing
+it alone proves nothing. A proof constructor also requires
+`runChecker checker evidence ≡ true`.
+
+    proofSound : View holder a Proof c -> Meaning holder a c
+
+`verify` evaluates the checking function and returns `InvalidEvidence` on
+rejection. `transmit` produces a receipt at the receiving holder.
+`publicIsPortable` requires an explicit implication between the two holders'
+meanings; it does not silently relabel holder-dependent truths.
+
+The example checks Boolean artefacts and certificates, proves legitimate
+acceptance, and refutes false claims. It does not claim that a physical action
+occurred. The older token-only model lacked semantic soundness; the strengthened
+interface is a breaking correction documented in link:docs/proof-transport.adoc[].
 
 == Roadmap
 

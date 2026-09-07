@@ -48,31 +48,48 @@ How this is implemented::
 Caveat::
 This is a standard Kripke-style accessibility relation, repackaged as an explicit record. The laws are assumed (fields), not derived. This is honest — the prototype does not constrain the accessibility relation beyond preorder.
 
-=== Surreal bridge adds tropical-graded access loss
+=== Store views, residues, and resource bounds
 
-[quote, README.adoc]
-____
-SurrealBridge enriches the preorder: each access step carries a tropical grade measuring the information loss or refinement cost of the access.
-____
+`ReadConsistency.agda` uses finite store histories. Every read view proves its
+value agrees with its indexed history; cached reads additionally prove ancestry.
+Writes preserve the old sample and make it stale. Synchronization obtains the
+current contents in the model. Evidence survives changes only through an
+explicit stability proof. These results do not establish an external scheduler
+or shared-memory implementation.
+
+`EchoBridge.agda` replaces the unconstrained residue token with `Echo C y`, whose
+certificate means `Retention.Cert C residue y`. `MatchesSource` establishes
+compatibility with a candidate source, not unique historical origin. Recovery
+and migration require their own laws. The examples prove useful migration of a
+retained component and refute every adequate migration of a discarded component.
+
+`BoundedEcho C measure budget y` keeps resource bounds separate from retention.
+The concrete surreal adapter weakens a proved upper bound and preserves the
+data; it no longer changes an unconstrained grade label. `daySurrealAccess`
+remains a finite-day example, with no full Conway-surreal or physical-cost claim.
+
+`tests/integration/CanonicalEcho.agda` imports the actual sibling sources and
+proves representation round trips and lowering agreement. This optional gate
+uses the standard library; the core continues to use builtins only. See
+link:docs/continuity-foundations.adoc[] for assumptions and reproduction.
+
+=== Proof transport entails an explicit claim meaning
 
 How this is implemented::
-`link:src/EpistemicTypes/SurrealBridge.agda[]` defines `SurrealAccess` record with `magnitude-loss : x ≤♯ y → Grade`, plus `loss-refl` and `loss-trans` laws. Defines `GradedSurrealModality` showing transport degrades echo grades: `E x (Echo r A) → E y (Echo (gradePlus r (magnitude-loss p)) A)`. Concrete instance: `daySurrealAccess` using `Nat` standpoints where grade = birthday steps.
+`src/EpistemicTypes/ProofTransport.agda` takes `Meaning` and `Payload`.
+`CertificateCheck` provides an executable check plus acceptance soundness.
+`asProofUnder` requires the check to return true. `proofSound` derives the
+exact holder/artefact/claim meaning, and `proofCannotSupportFalse` excludes
+proof status for a refuted meaning. Public portability requires a supplied
+implication between the holders' meanings.
 
 Caveat::
-**This is not the Conway proper class of surreals.** It is a set-sized fragment (finite birthday tower) where the access grade does type-level work. The module name `SurrealBridge` may overclaim; `DayBoundedTropicalBridge` would be more precise. The composition with Echo types is a bridge scaffold — it imports the Echo grade structure but does not depend on the full echo-types library.
-
-=== Proof transport has a no-smuggling guarantee
-
-[quote, README.adoc]
-____
-The no-smuggling property (proofNeedsChecker) states: every proof a holder possesses carries that holder's own checker and evidence. No checker-free View sender a Proof c → View receiver a Proof c is exported.
-____
-
-How this is implemented::
-`link:src/EpistemicTypes/ProofTransport.agda[]` defines `View`, `transmit`, `verify`, and proves `proofNeedsChecker`, `publicIsPortable`, `designatedBindsHolder`, `opaqueNotCertifying`, `verifyReceiptIsGap`. `link:src/EpistemicTypes/ProofTransportExample.agda[]` works the K9-SVC/A2ML-style attestation flow (issuer K9SVC, receiver Alice, third party Bob).
-
-Caveat::
-This formalises the *typing* of attestation, not the cryptographic implementation. `transmit` moves bytes; `verify` calls a checker. The no-smuggling property is a structural consequence of the `View` typing discipline, not a cryptographic hardness assumption. The A2ML/K9 rendering in `.machine_readable/proof-transport/` is an engineering shadow, not a proof.
+The former token-only model did not justify semantic soundness.
+`proofNeedsChecker` alone was only a structural statement. The new Boolean
+examples and deliberate rejection controls test both acceptance and false
+claims. The theorem remains relative to the specified meaning and checker
+proof; it does not establish cryptography or physical facts. See
+link:docs/proof-transport.adoc[].
 
 == Dogfooded Across The Account
 
@@ -82,7 +99,7 @@ This formalises the *typing* of attestation, not the cryptographic implementatio
 
 | Standpoint-indexed modality
 | Core `E κ A` interface
-| link:https://github.com/hyperpolymath/echo-types[echo-types] (as `Echo r A`)
+| link:https://github.com/hyperpolymath/echo-types[echo-types] (distinct residue formalism)
 
 | Proof transport / no-smuggling
 | `ProofTransport.agda`
@@ -112,12 +129,12 @@ This formalises the *typing* of attestation, not the cryptographic implementatio
 
 [CAUTION]
 ====
-**Access laws are assumed, not derived.** `EpistemicTypes.Access` takes preorder and transport laws as fields. This is honest (arbitrary standpoints don't determine them) but means the prototype lacks concrete derived models validating these laws from first principles.
+**Access laws are assumed, not derived.** `EpistemicTypes.Access` takes preorder and transport laws as fields. This is honest (arbitrary standpoints don't determine them) and the laws must be supplied for each instance; the repository includes small concrete instances.
 ====
 
 [CAUTION]
 ====
-**Echo-type bridge is a scaffold.** The composition `E κ (Echo r A)` imports grade structure but does not depend on the full echo-types library. Deep integration (e.g., shared comonadic structure) is deferred.
+**Combined semantics remain open.** The residue correspondence is checked, but a combined Firmboot calculus, external-store correspondence, scheduler bounds, and runtime refinement are not established.
 ====
 
 == Evidence Index
@@ -136,11 +153,11 @@ This formalises the *typing* of attestation, not the cryptographic implementatio
 | Preorder accessibility + transport
 
 | `src/EpistemicTypes/SurrealBridge.agda`
-| Tropical-graded access loss + GradedSurrealModality + daySurrealAccess
+| Resource-bound weakening + GradedSurrealModality + finite daySurrealAccess
 
 | `src/EpistemicTypes/ProofTransport.agda`
-| View / transmit / verify + no-smuggling + opacity laws
+| View / transmit / verify + semantic soundness + opacity laws
 
 | `src/EpistemicTypes/ProofTransportExample.agda`
-| K9-SVC/A2ML-style attestation worked example
+| Sound Boolean verification, false-claim rejection, and holder-boundary counterexample
 |===

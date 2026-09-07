@@ -1,0 +1,174 @@
+= Continuity foundations: store views and certified residues
+:toc:
+
+== Scope and status
+
+This is the 2026-09-07 correction of two independent prototype gaps, following
+the semantic proof-transport repair. The checked source is in
+`ReadConsistency.agda`, `EchoBridge.agda`, `SurrealBridge.agda`, and
+`ContinuityExamples.agda`. These are breaking research APIs.
+
+The local Agda model now binds read values to store states, residue certificates
+to a specified relation, migrations to retained information, and resource bounds
+to a supplied measure. It does not implement a Firmboot typechecker, a concurrent
+store, a scheduler, a physical sensor, or an update runtime.
+
+== Reads: state first, version second
+
+The old `ReadView v A` contained only a value of type `A`. Its `readIncrease`
+copied that value into any later version index; `Fresh v v` then held by
+reflexivity. Nothing established that the value matched the later store.
+`Sync old new` was freely constructible, so its recovery theorems did not prove
+that an actual read happened or that a scheduler eventually performed one.
+Those definitions and the purported mutable-read `versionAccessible` instance
+have been removed. Numeric version order remains a valid preorder.
+
+The replacement is a pure inductive store history:
+
+[source,agda]
+----
+data Store (A : Set) : Set where
+  initial : A -> Store A
+  write   : Store A -> A -> Store A
+----
+
+`version` is the history length, and `contents` is the latest value. A
+`ReadView s` carries a value and `value ≡ contents s`. Its public constructor
+requires this equality; direct construction cannot bypass it.
+
+`CachedRead current` carries a source history, a proof that the source is an
+ancestor of `current`, and a `ReadView source`. Its freshness means equality
+of source and current histories, not just equality of their version numbers.
+Two different branches may have the same version and different contents.
+
+* `advanceCache` preserves the cached sample while extending its historical
+  context after a write.
+* `writeStalesCache` and `writeInvalidatesFreshness` apply to every such cache,
+  including a write that restores an earlier value.
+* `synchronize s` computes a new view using `contents s`.
+  `syncReadsCurrent` establishes value agreement, and `syncRestoresFresh`
+  establishes that its source is the current history.
+* `retainUnchanged` permits an old value to become a certified view of a later
+  state only with an ancestry witness and an explicit contents equality.
+* `FactAt s P` means `P (contents s)`. `transportFact` needs a proof that the
+  specific fact survives the change. The pair example changes the second
+  component while preserving a fact about the first.
+
+These are properties of a finite pure model. The model stores the full history;
+no bounded-memory implementation or proof-erasure claim is made. A connection
+from this history to an authoritative external store, atomic snapshots,
+version reuse, memory ordering, and scheduling remains an implementation proof
+obligation. Synchronization correctness is not eventual synchronization.
+
+== Echo: certificates, source compatibility, and sufficient information
+
+The former `Echo r A` stored an arbitrary residue type and token, with no
+relationship to `A` or `r`. `retagEcho` could silently change its grade.
+
+The replacement `Retention A B R` specifies:
+
+* `observe : A -> B`, the visible observation;
+* `retain : A -> R`, the residue actually retained;
+* `Cert : R -> B -> Set`, the interpretation of a residue certificate;
+* `sound : (x : A) -> Cert (retain x) (observe x)`.
+
+`Echo C y` carries a residue and a proof of `Cert residue y`. `lower C x`
+constructs it from the actual observation and retention functions.
+
+A certificate's meaning is still the caller's responsibility. A trivial `Cert`
+is allowed and proves only a trivial proposition. In particular, an arbitrary
+certified residue need not identify the original source. `MatchesSource C x e`
+requires both the observation and residue to agree with those produced from
+the candidate source `x`. `lowerMatchesSource` proves this for constructed
+residues. Multiple candidates may match after loss: the checked
+`ambiguousSource` example establishes exactly that. This is compatibility,
+not a historical-origin or execution-provenance claim, and there is no general
+source-extraction rule.
+
+`Recovery C` additionally requires a left-inverse law for the retained pair.
+`Migration C target` instead requires:
+
+[source,agda]
+----
+adequate : (x : A) ->
+  migrate (observe x) (retain x) ≡ target x
+----
+
+The target may need less than full recovery. The example retains the first of
+two Booleans and proves adequate migration for the first. It refutes adequate
+migration for the discarded second Boolean. The general
+`collisionForbidsMigration` theorem proves that two identical retained pairs
+with different required results rule out every migration with this interface.
+`migrateMatching` establishes correctness for any compatible source. Full recovery
+additionally gives `recoverMatching`; these laws prevent incompatible required
+results from being recovered from an ambiguous retained pair.
+
+`EchoMap` requires a map of visible values, a map of residues, and a proof of
+certificate preservation. It claims only that relation preservation; any
+source-level migration or recovery claim needs its additional law.
+
+== Resource bounds are separate
+
+`BoundedEcho C measure budget y` packages an `Echo C y` with
+`measure residue ≤G budget`. The natural-number-or-infinity grade is an upper
+bound on a supplied measure, not an Echo retention index. Its meaning and units
+come from that measure; it is not automatically elapsed time, energy, or bytes.
+
+`weakenBound` requires an order proof and preserves the retained data. A smaller
+bound cannot be claimed without proving that it holds. The surreal adapter now
+uses `r ≤G gradePlus r accessCost` to relax an existing bound. This does not
+assert that data was lost or recovered during access. The legacy
+`magnitude-loss` field name denotes an instance-supplied access grade; its
+composition laws alone give no information-theoretic interpretation.
+
+`daySurrealAccess` remains a set-sized finite-day example, not a full
+formalisation of Conway's surreals. General `GradedSurrealModality` transport
+is an interface obligation; only its provided instance is constructed here.
+
+== Relationship to canonical Echo
+
+The core remains dependency-free. `tests/integration/CanonicalEcho.agda`
+separately imports the actual sibling `Echo` and `EchoResidue` modules. It
+proves both conversion round trips between this `Echo C y` and canonical
+`EchoR R (Cert C) y`, and proves that `lower` agrees with canonical
+`echo-to-residue` applied to `echo-intro`.
+
+This is a checked correspondence for the residue representation and lowering.
+It is not a proof of a full graded comonad, all sibling bridges, or runtime
+migration. The canonical retention axis remains distinct from resource grades.
+
+== Reproduction and deliberate rejection controls
+
+[source,sh]
+----
+just check
+agda --no-libraries --safe --without-K --ignore-interfaces -i src src/EpistemicTypes/All.agda
+just check-canonical /path/to/echo-types /path/to/agda-stdlib/src
+----
+
+The core and examples have been checked with Agda 2.6.4.3. `just check` covers
+all eleven source modules and eleven semantic rejection fixtures: the four
+proof-transport controls plus `StaleSample`, `FakeFreshness`, `ForkedHistory`,
+`ForgedResidue`, `MismatchedSource`, `UnderstatedBound`, and `InventedMigration`.
+An unrelated import or tool failure fails the rejection gate.
+
+The optional canonical integration also checks successfully with the locally
+available standard library 2.1. Its dependencies emit `UnsupportedIndexedMatch`
+compatibility warnings about Cubical transports; this run establishes ordinary
+`--without-K` checking, not Cubical computation compatibility. The core build
+has no standard-library dependency and emits no warnings.
+
+== Next obligations
+
+Use these constructions in the detector's complete update contract: retained
+cursor/history/event status, current-state admission, linear ownership,
+preparation and cancellation effects, and a permitted service trace. Then
+connect resource bounds to an independently specified scheduler and implement
+an acceptance checker with a soundness proof. These remain separate work.
+
+== Continuous verification
+
+The core, deliberate rejection controls and pinned canonical Echo correspondence
+are CI gates; see link:ci-safety.adoc[]. Only the documented Cubical transport
+compatibility warning is suppressed for the integration. The core remains
+warning-free with no standard-library dependency.

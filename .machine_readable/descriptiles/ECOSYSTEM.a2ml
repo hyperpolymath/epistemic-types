@@ -12,13 +12,13 @@ type = "formal-methods-library"
 purpose = "A small, deliberately honest Agda formalization of standpoint-indexed modal / epistemic / echo-like type formers. Favours mathematical honesty over a large API: constructive, no postulates, no standard library."
 
 [stack]
-language = "Agda 2.8.0"
+language = "Agda 2.6.4.3"
 options = "--safe --without-K"
 libraries = "none — built with 'agda --no-libraries' against Agda.Builtin.* and Agda.Primitive only"
 machine-readable = "a2ml + Nickel/k9"
 docs = "AsciiDoc"
 check = "just check  ==  agda --no-libraries -i src src/EpistemicTypes/All.agda"
-notes = "Single-tool Agda library. No JS/TS/Python, no containers, no CI (see AUDIT.adoc)."
+notes = "Single-tool Agda library. The core has no runtime dependencies; CI uses a pinned Debian verification container."
 
 [core]
 form = "E : K -> Set ℓ -> Set ℓ   (E κ A = 'A is epistemically available at standpoint κ')"
@@ -27,7 +27,7 @@ modules = [
   "EpistemicTypes.Base — Modality / LawfulModality / FactiveModality / BeliefModality / ReturnModality",
   "EpistemicTypes.Warrant — Warrant / Epi / SoundWarrant",
   "EpistemicTypes.Access — Preorder + AccessibleModality transport 'increase'",
-  "EpistemicTypes.EchoBridge — min-plus graded loss/residue 'Echo r A', kept distinct from E κ A",
+  "EpistemicTypes.EchoBridge — certified residue and separately measured bounds 'Echo C y', kept distinct from E κ A",
   "EpistemicTypes.SurrealBridge — SurrealAccess carrier + GradedSurrealModality + daySurrealAccess finite birthday tower",
   "EpistemicTypes.Examples",
   "EpistemicTypes.ProofTransport — standpoint-indexed proof transport across trust boundaries",
@@ -43,8 +43,8 @@ no-smuggling = "proofNeedsChecker: no checker-free Proof -> Proof transport is e
 
 [related-projects]
 projects = [
-  { name = "echo-types", relationship = "sibling-formalism", notes = "Agda loss-with-residue (min-plus graded) formalism. EpistemicTypes.EchoBridge's 'Echo r A' composes with it; kept deliberately distinct from the epistemic E κ A modality (no collapse)." },
+  { name = "echo-types", relationship = "sibling-formalism", notes = "Agda loss-with-residue (min-plus graded) formalism. EpistemicTypes.EchoBridge's 'Echo C y' composes with it; kept deliberately distinct from the epistemic E κ A modality (no collapse)." },
   { name = "ephapax", relationship = "sibling-formal-language", notes = "Sibling formal language; its four-layer redesign carries echo obligations. Echo / standpoint vocabulary is shared at the conceptual level, not via a code dependency." },
-  { name = "standards", relationship = "estate-foundation", notes = "Estate RSR / standards repo plus k9-svc and a2ml tooling. Supplies the 6a2 layout and the contractile / k9 rendering conventions this repo's .machine_readable mirrors." },
+  { name = "standards", relationship = "estate-foundation", notes = "Estate RSR / standards repo plus k9-svc and a2ml tooling. Supplies the descriptiles layout and the contractile / k9 rendering conventions this repo's .machine_readable mirrors." },
   { name = "a2ml + k9", relationship = "rendering-target", notes = "Machine-readable a2ml + Nickel/k9 contractile tooling. The engineering rendering target for ProofTransport: the standpoint-indexed proof-transport core is rendered to a2ml/k9 under .machine_readable/proof-transport/." }
 ]

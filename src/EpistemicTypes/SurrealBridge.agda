@@ -8,7 +8,8 @@ open import Agda.Builtin.Nat using (Nat; zero; suc; _+_)
 
 open import EpistemicTypes.Access
 open import EpistemicTypes.Base
-open import EpistemicTypes.EchoBridge using (Echo; Grade; echo; finite; gradePlus)
+open import EpistemicTypes.EchoBridge using
+  (Retention; BoundedEcho; Grade; finite; gradePlus; weakenBound; ≤G-plus)
 open import EpistemicTypes.Warrant
 
 data Empty : Set where
@@ -31,8 +32,8 @@ sym refl = refl
 -- This is still not the full Conway proper class of all surreal numbers.
 -- It is a small interface for a day-bounded fragment or chosen carrier of
 -- surreal-like standpoints.  Unlike a mere preorder, it must attach a
--- tropical grade to each access proof.  That grade is the formal place where
--- "how much epistemic access is lost/refined between standpoints" lives.
+-- resource grade to each access proof. Its interpretation is supplied by the
+-- instance; the laws alone do not measure actual information loss or time.
 record SurrealAccess {sℓ oℓ : Level} : Set (lsuc (sℓ ⊔ oℓ)) where
   infix 4 _≤♯_
   field
@@ -76,32 +77,27 @@ Preorder._≤κ_ (surrealPreorder S) = SurrealAccess._≤♯_ S
 Preorder.refl≤ (surrealPreorder S) = SurrealAccess.refl♯ S
 Preorder.trans≤ (surrealPreorder S) = SurrealAccess.trans♯ S
 
--- Echo retagging preserves the residue while changing the declared loss grade.
--- This is not a recovery of A; it only records that the same residue is now
--- seen after an additional access loss.
-retagEcho : {r r' : Grade} {A : Set} -> Echo r A -> Echo r' A
-retagEcho (echo Residue residue) = echo Residue residue
-
--- A modality whose transport across surreal access accumulates access loss
--- into the Echo grade.  This is where the surreal magnitude actually does
--- work in the type.
+-- Transport weakens a proved resource upper bound. It does not change the
+-- retention contract or claim that information has been lost or recovered.
+-- Arbitrary retagEcho is removed: reducing a budget needs a fresh bound.
 record GradedSurrealModality {sℓ oℓ : Level}
   (S : SurrealAccess {sℓ = sℓ} {oℓ = oℓ})
   : Set (sℓ ⊔ oℓ ⊔ lsuc (lsuc lzero)) where
   open SurrealAccess S
 
   field
-    modality : Modality Carrier (lsuc lzero)
+    modality : Modality Carrier lzero
 
   open Modality modality public
 
   field
     transportWithLoss :
-      {x y : Carrier} {A : Set} ->
+      {x y : Carrier} {A B R : Set} ->
+      {C : Retention A B R} {measure : R -> Grade} {visible : B} ->
       (p : x ≤♯ y) ->
       (r : Grade) ->
-      E x (Echo r A) ->
-      E y (Echo (gradePlus r (magnitude-loss p)) A)
+      E x (BoundedEcho C measure r visible) ->
+      E y (BoundedEcho C measure (gradePlus r (magnitude-loss p)) visible)
 
 -- Factive knowledge over surreal standpoints is still explicit and separate.
 surrealKnowledge :
@@ -127,8 +123,8 @@ AccessibleModality.increase (surrealKnowledgeAccess S) p a = a
 AccessibleModality.increase-refl (surrealKnowledgeAccess S) a = refl
 AccessibleModality.increase-trans (surrealKnowledgeAccess S) p q a = refl
 
--- Identity-on-objects epistemic access to echoes: the value is still only an
--- echo, and crossing access p changes the grade by magnitude-loss p.
+-- Identity-on-objects access: the retained value is unchanged. The existing
+-- measure proof justifies the larger budget through the grade order.
 surrealEchoKnowledge :
   {sℓ oℓ : Level} ->
   (S : SurrealAccess {sℓ = sℓ} {oℓ = oℓ}) ->
@@ -139,7 +135,7 @@ GradedSurrealModality.modality (surrealEchoKnowledge S) =
     ; map = λ f a -> f a
     }
 GradedSurrealModality.transportWithLoss (surrealEchoKnowledge S) p r e =
-  retagEcho e
+  weakenBound (≤G-plus r (SurrealAccess.magnitude-loss S p)) e
 
 -- Belief over surreal standpoints remains non-factive.
 data SurrealBelief {sℓ : Level} {K : Set sℓ}

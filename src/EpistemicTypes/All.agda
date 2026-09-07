@@ -11,6 +11,7 @@ open import EpistemicTypes.EchoBridge public
 -- which would clash with Examples' identically-named helpers if both were
 -- re-exported.  The module is still part of the build via this import.
 import EpistemicTypes.ReadConsistency
+import EpistemicTypes.ContinuityExamples
 open import EpistemicTypes.SurrealBridge public
 open import EpistemicTypes.Examples public
 open import EpistemicTypes.ProofTransportExample public

@@ -57,8 +57,8 @@ consequence = "The project is self-contained and reproducible with just an Agda 
 [architecture-decisions.ADR-005]
 title = "Keep Echo grades distinct from epistemic standpoints"
 status = "accepted"
-context = "`EchoBridge` provides a min-plus-graded loss/residue modality `Echo r A`. It is tempting to identify the grade `r` with an epistemic standpoint `κ`, collapsing two different ideas."
-decision = "`Echo r A` (graded loss/residue) and `E κ A` (standpoint-indexed epistemic availability) are kept as separate type formers. Their composition is meaningful and intended, but they are never the same modality."
+context = "`EchoBridge` provides a min-plus-graded loss/residue modality `Echo C y`. It is tempting to identify the grade `r` with an epistemic standpoint `κ`, collapsing two different ideas."
+decision = "`Echo C y` (graded loss/residue) and `E κ A` (standpoint-indexed epistemic availability) are kept as separate type formers. Their composition is meaningful and intended, but they are never the same modality."
 consequence = "The echo bridge can be extended without dragging in a full graded comonad, and standpoint reasoning stays independent of loss accounting."
 
 [architecture-decisions.ADR-006]
@@ -72,7 +72,7 @@ consequence = "No-smuggling holds structurally rather than by side-condition. Th
 build-tool = "just"
 build-command = "just check"
 check-command = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
-agda-version = "2.8.0"
+agda-version = "2.6.4.3"
 package-manager = "none (single agda-lib; no external Agda dependencies)"
 ci-platform = "none (billing wall; see AUDIT.adoc)"
 container-runtime = "none"
@@ -82,7 +82,7 @@ posture = "Mathematical honesty over API size. The library is small on purpose: 
 base-interface = "`E : K -> Set ℓ -> Set ℓ`, read `E κ A` = 'A is epistemically available at standpoint κ'. The base is a plain indexed endofunctor (map only) — not a monad or comonad — so no return/reflect is assumed for free."
 factivity = "Factive knowledge and non-factive belief are distinct interfaces (FactiveModality vs BeliefModality), preventing belief from being read as knowledge."
 access = "`Access` adds a preorder over standpoints and an `AccessibleModality` whose `increase` transports availability along the preorder."
-echo = "`EchoBridge` supplies a min-plus-graded loss/residue modality `Echo r A`, kept structurally distinct from epistemic availability; the two compose but never collapse (see ADR-005)."
+echo = "`EchoBridge` supplies a min-plus-graded loss/residue modality `Echo C y`, kept structurally distinct from epistemic availability; the two compose but never collapse (see ADR-005)."
 surreal = "`SurrealBridge` offers an abstract `SurrealAccess` carrier with a `GradedSurrealModality` and a finite-birthday tower `daySurrealAccess`, as instances of the abstract access interface rather than a full surreal-number library."
 proof-transport = "`ProofTransport` formalizes standpoint-indexed proof transport across trust boundaries with statuses Data/Code/Claimed/Receipt/Proof/ProofUnder and modes Public/Designated/IssuerMediated/EnvironmentMediated/OpaqueReceipt; no-smuggling is by construction (see ADR-006)."
 modules = "Base, Warrant, Access, EchoBridge, SurrealBridge, Examples, ProofTransport, ProofTransportExample, with All re-exporting the development."

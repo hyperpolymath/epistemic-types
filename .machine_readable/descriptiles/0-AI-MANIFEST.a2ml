@@ -1,4 +1,4 @@
-# 0-AI-MANIFEST.a2ml — AI-assistant context for the 6a2 directory
+# 0-AI-MANIFEST.a2ml — AI-assistant context for the descriptiles directory
 # epistemic-types: directory manifest, modeling rules, and the typecheck command.
 
 [manifest]
@@ -23,15 +23,15 @@ factivity = "Separate factive knowledge from non-factive belief."
 warrants = "Use explicit warrant objects where possible."
 scope = "Keep modules small and type-check frequently; keep to a single-tool Agda library checked by 'just check'."
 echo_distinction = "Echo-types are min-plus-graded loss/residue modalities; epistemic types are standpoint/warrant/access modalities."
-no_collapse = "Do not collapse Echo r A and E κ A. Their composition is meaningful, but they are not the same modality."
+no_collapse = "Do not collapse Echo C y and E κ A. Their composition is meaningful, but they are not the same modality."
 
 [typecheck]
 command = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
 just-target = "just check"
-agda-version = "2.8.0"
+agda-version = "2.6.4.3"
 
 [canonical-locations]
-# The 6a2 directory is authoritative for this repo's machine-readable metadata.
+# The descriptiles directory is authoritative for this repo's machine-readable metadata.
 # Present in this directory (right-sized for a small formal-methods prototype):
 present = [ "0-AI-MANIFEST.a2ml", "STATE.a2ml", "README.adoc" ]
 

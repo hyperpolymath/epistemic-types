@@ -4,7 +4,7 @@ title = "epistemic-types — universal AI agent entry point"
 version = "0.1.0"
 format = "a2ml"
 status = "prototype"
-last-updated = "2026-06-15"
+last-updated = "2026-09-07"
 
 [project]
 name = "epistemic-types"
@@ -16,12 +16,12 @@ summary = "Core form E : K -> Set ℓ -> Set ℓ, read 'A is epistemically avail
 
 [canonical-locations]
 machine-readable = ".machine_readable/"
-state = ".machine_readable/6a2/STATE.a2ml"
-meta = ".machine_readable/6a2/META.a2ml"
-ecosystem = ".machine_readable/6a2/ECOSYSTEM.a2ml"
-agentic = ".machine_readable/6a2/AGENTIC.a2ml"
-neurosym = ".machine_readable/6a2/NEUROSYM.a2ml"
-playbook = ".machine_readable/6a2/PLAYBOOK.a2ml"
+state = ".machine_readable/descriptiles/STATE.a2ml"
+meta = ".machine_readable/descriptiles/META.a2ml"
+ecosystem = ".machine_readable/descriptiles/ECOSYSTEM.a2ml"
+agentic = ".machine_readable/descriptiles/AGENTIC.a2ml"
+neurosym = ".machine_readable/descriptiles/NEUROSYM.a2ml"
+playbook = ".machine_readable/descriptiles/PLAYBOOK.a2ml"
 proof-transport-spec = ".machine_readable/proof-transport/ProofTransport.a2ml"
 proof-transport-contractile = ".machine_readable/proof-transport/proof-transport.k9.ncl"
 proof-transport-readme = ".machine_readable/proof-transport/README.adoc"
@@ -36,7 +36,7 @@ format = "AsciiDoc (.adoc) is the default; existing lowercase doc filenames are 
 scm-files-location = ".machine_readable/ ONLY — a2ml and scm/Nickel/k9 files never live at repo root"
 license = "MPL-2.0"
 build = "just check"
-build-expansion = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+build-expansion = "safe Agda All.agda check plus tests/check-rejections.sh"
 agda-options = "{-# OPTIONS --safe --without-K #-} ; no postulates; no Agda standard library (only Agda.Builtin.* / Agda.Primitive)"
 agda-version = "2.8.0"
 echo-distinction = "Do not collapse Echo r A and E κ A. Echo-types are min-plus-graded loss/residue; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
@@ -64,7 +64,7 @@ EchoBridge = "Min-plus graded loss/residue 'Echo r A', kept distinct from E κ A
 SurrealBridge = "SurrealAccess carrier plus GradedSurrealModality plus daySurrealAccess finite-birthday tower."
 Examples = "Worked instances of the abstract interfaces."
 ProofTransport = "Standpoint-indexed proof transport across trust boundaries."
-ProofTransportExample = "K9-SVC / A2ML attestation scenario: issuer K9SVC, receiver Alice, third party Bob, claim ActionWasPerformed, artifact AttestationBlob."
+ProofTransportExample = "Sound Boolean certificate checks; valid acceptance, bad payload/artefact rejection, false-claim and holder-boundary impossibility."
 
 [proof-transport]
 thesis = "Proofhood is standpoint-indexed. Transmission across a trust boundary moves bytes (von Neumann), not proofhood (Curry-Howard); a receiver recovers proofhood only with its OWN checker plus evidence."
@@ -72,21 +72,21 @@ view = "View : Agent -> Artifact -> Status -> Claim -> Set"
 statuses = [ "Data", "Code", "Claimed", "Receipt", "Proof", "ProofUnder" ]
 modes = [ "Public", "Designated", "IssuerMediated", "EnvironmentMediated", "OpaqueReceipt" ]
 transmit = "downgrades a sender's Proof to a receiver's Receipt"
-verify = "upgrades Data -> Proof only with the receiver's OWN checker and evidence"
+verify = "evaluates the receiver's sound check; acceptance yields Proof, rejection yields InvalidEvidence"
 laws = [
-  "public is portable",
+  "public transport requires an explicit implication between holder meanings",
   "designated is receiver-bound",
   "receipt-only never certifies",
-  "proofNeedsChecker = structural no-smuggling",
+  "proofNeedsChecker = weaker structural projection; proofSound entails Meaning holder a c",
 ]
 authority = "The Agda module src/EpistemicTypes/ProofTransport.agda is authoritative; the .machine_readable/proof-transport/ rendering mirrors it for a2ml/k9 tooling."
 
 [session-startup]
 step-1 = "Read this manifest (0-AI-MANIFEST.a2ml)."
-step-2 = "Read .machine_readable/6a2/STATE.a2ml for current project state, module list, and roadmap."
-step-3 = "Read .machine_readable/6a2/META.a2ml for architecture and design decisions."
-step-4 = "Read .machine_readable/6a2/ECOSYSTEM.a2ml for ecosystem position and sibling repos."
-step-5 = "Read .machine_readable/6a2/AGENTIC.a2ml, NEUROSYM.a2ml, and PLAYBOOK.a2ml for agent guidance."
+step-2 = "Read .machine_readable/descriptiles/STATE.a2ml for current project state, module list, and roadmap."
+step-3 = "Read .machine_readable/descriptiles/META.a2ml for architecture and design decisions."
+step-4 = "Read .machine_readable/descriptiles/ECOSYSTEM.a2ml for ecosystem position and sibling repos."
+step-5 = "Read .machine_readable/descriptiles/AGENTIC.a2ml, NEUROSYM.a2ml, and PLAYBOOK.a2ml for agent guidance."
 step-6 = "Read readme.adoc and explainme.adoc for the human-facing overview."
 step-7 = "Run 'just check' to type-check src/EpistemicTypes/All.agda before and after changes."
 

@@ -7,11 +7,11 @@
 
 image:https://img.shields.io/badge/OpenSSF-BestPractices-green[link="https://www.bestpractices.dev/projects/XXXX"]
 
-Constructive Agda prototype for standpoint-indexed epistemic modalities, separating knowledge, belief, and warrant, and formalising proof transport across trust boundaries with a no-smuggling guarantee.
+Constructive Agda prototype for standpoint-indexed epistemic modalities, separating knowledge, belief, and warrant, with proof transport sound relative to an explicit claim meaning.
 
 == Overview
 
-When an agent observes a fact, the type of their access matters. Knowledge is factive; belief is not. A warrant records evidence without assuming soundness. Proof transported across a boundary becomes a receipt until the receiver re-verifies it with their own checker.
+When an agent observes a fact, the type of their access matters. Knowledge is factive; belief is not. A warrant records evidence without assuming soundness. Proof transported across a boundary becomes a receipt; a receiving proof requires a successful sound check of the receiver's claim meaning.
 
 Epistemic types provide a mechanised vocabulary for these distinctions. Given a type of standpoints `K` (agents, observers, evidence states), the modality `E : K → Set ℓ → Set ℓ` reads: `E κ A` is the type of `A` as epistemically available from standpoint `κ`.
 
@@ -64,36 +64,62 @@ Standpoint access is modelled by a preorder `κ ≤κ κ'` (read: `κ'` is at le
 
 === The surreal bridge
 
-`SurrealBridge` enriches the preorder: each access step carries a tropical grade measuring the information loss or refinement cost of the access:
+`SurrealBridge` enriches the preorder with an instance-supplied access grade.
+Its laws specify composition; they do not establish a physical cost or an
+information-loss measure:
 
     magnitude-loss : x ≤♯ y → Grade
     loss-refl      : magnitude-loss refl ≡ finite zero
     loss-trans     : magnitude-loss (trans p q) ≡ gradePlus (magnitude-loss p) (magnitude-loss q)
 
-This composes with echo types: transporting `E x (Echo r A)` along `p : x ≤♯ y` degrades the echo grade:
+Its concrete Echo adapter relaxes a proved upper bound on a residue measure
+along `p : x ≤♯ y`, while preserving the retained value:
 
-    GradedSurrealModality: E x (Echo r A) → E y (Echo (gradePlus r (magnitude-loss p)) A)
+    E x (BoundedEcho C measure r visible)
+      → E y (BoundedEcho C measure (gradePlus r (magnitude-loss p)) visible)
 
 The concrete `daySurrealAccess` instance models the finite birthday tower using `Nat` standpoints, where the grade is the number of refinement steps. This is a set-sized fragment, not the full Conway proper class of surreals.
 
+== Store-coherent reads and certified residues
+
+`ReadConsistency` now models finite store histories. A `ReadView s` proves its
+value equals `contents s`; a cached read records its source history and ancestry.
+Writes make existing caches stale. `synchronize` reads current contents in the
+model, while preserving evidence across a change requires an explicit proof.
+The former version-only relabelling and free `Sync` witness have been removed.
+
+`Echo C y` carries a residue satisfying the relation specified by `Retention C`.
+Source compatibility is explicit in `MatchesSource`; exact recovery and migration need
+their respective round-trip and adequacy laws. A checked counterexample shows
+that discarded distinctions cannot support a migration requiring those
+distinctions. Resource grades are separate, measured upper bounds.
+
+See link:docs/continuity-foundations.adoc[the breaking API correction and proof
+boundaries]. An optional integration gate proves correspondence with the actual
+sibling `EchoResidue.EchoR`; the core remains dependency-free.
+
 == Proof transport across trust boundaries
 
-`ProofTransport` formalises the lifecycle of a proof crossing a boundary. An artefact is read three ways:
+`ProofTransport` is parameterised by agents, claim labels, artefacts,
+`Meaning : Agent -> Artifact -> Claim -> Set`, and a certificate
+`Payload : Artifact -> Claim -> Set`. The caller states the meaning being proved.
 
-* **Data** — von Neumann structure / bytes.
-* **Proof** — Curry–Howard witness.
-* **Receipt** — attestation of proofhood without the witness itself.
+A `CertificateCheck` contains an executable Boolean check and a proof that
+acceptance entails that exact meaning. Evidence carries a payload; possessing
+it alone proves nothing. A proof constructor also requires
+`runChecker checker evidence ≡ true`.
 
-Transmission moves bytes, not proofhood:
+    proofSound : View holder a Proof c -> Meaning holder a c
 
-    transmit : (b : Boundary) → View (from b) a Proof c → View (to b) a Receipt c
+`verify` evaluates the checking function and returns `InvalidEvidence` on
+rejection. `transmit` produces a receipt at the receiving holder.
+`publicIsPortable` requires an explicit implication between the two holders'
+meanings; it does not silently relabel holder-dependent truths.
 
-Proofhood is recovered only by the receiver's own verification:
-
-    verify : Checker holder m a c → Evidence m a c → View holder a Data c
-           → Either Gap (View holder a Proof c)
-
-The **no-smuggling property** (`proofNeedsChecker`) states: every proof a holder possesses carries that holder's own checker and evidence. No checker-free `View sender a Proof c → View receiver a Proof c` is exported.
+The example checks Boolean artefacts and certificates, proves legitimate
+acceptance, and refutes false claims. It does not claim that a physical action
+occurred. The older token-only model lacked semantic soundness; the strengthened
+interface is a breaking correction documented in link:docs/proof-transport.adoc[].
 
 == What is standard and what is ours
 
@@ -117,11 +143,11 @@ The **no-smuggling property** (`proofNeedsChecker`) states: every proof a holder
 | Standard
 | `EpistemicTypes.Access`
 
-| Tropical-graded access loss on surreal-like standpoints
-| **Novel composition**
+| Resource-bound transport on surreal-like standpoints
+| Project-specific composition; no novelty theorem
 | `EpistemicTypes.SurrealBridge`
 
-| Proof transport with no-smuggling guarantee
+| Proof transport with explicit semantic soundness
 | **Novel formalisation**
 | `EpistemicTypes.ProofTransport`
 |===
@@ -143,7 +169,7 @@ This is a prototype, not a complete epistemic logic. The following are **intenti
 
 [source,bash]
 ----
-just check
+just check  # positive proofs and expected rejection controls
 ----
 
 Or directly:
@@ -156,28 +182,9 @@ agda --no-libraries -i src src/EpistemicTypes/All.agda
 == Documentation
 
 * link:EXPLAINME.adoc[EXPLAINME] — claim-by-claim receipts and known gaps
-* link:docs/roadmap.adoc[Roadmap] — projected models and structure additions
-* link:Glossary.adoc[Glossary] — terminology reference
+* link:docs/continuity-foundations.adoc[Continuity foundations] — store coherence, retained information, bounds, and next obligations
+* link:docs/proof-transport.adoc[Proof transport] — semantic verification across boundaries
 
 == License
 
-SPDX-License-Identifier: MPL-2.0 — see link:LICENSE[LICENSE].    verify : Checker holder m a c → Evidence m a c → View holder a Data c
-           → Either Gap (View holder a Proof c)
-
-The **no-smuggling property** (`proofNeedsChecker`) states: every proof a holder possesses carries that holder's own checker and evidence. No checker-free `View sender a Proof c → View receiver a Proof c` is exported.
-
-== What is standard and what is ours
-
-[cols="1,2,2", options="header"]
-|===
-| Concept | Status | Home in this repo
-
-| Indexed endofunctor / modality
-| Standard
-| `EpistemicTypes.Base`
-
-| Knowledge (factivity) vs. Belief distinction
-| Standard (modal logic S5 vs. KD45)
-| `EpistemicTypes.Base`
-
-| Warrant types without assumed soundness
+SPDX-License-Identifier: MPL-2.0 — see link:LICENSE[LICENSE].
