@@ -3,11 +3,11 @@
 # Docs: https://gh.io/actions-lockfile
 version: 'v0.0.2'
 workflows:
+    '.github/workflows/agda.yml':
+        - 'actions/checkout@v6.0.3'
     '.github/workflows/codeql.yml':
         - 'actions/checkout@v6.0.3'
         - 'github/codeql-action@v4.36.2'
-    '.github/workflows/proofs.yml':
-        - 'actions/checkout@v6.0.3'
     '.github/workflows/push-email-notify.yml':
         - 'hyperpolymath/smtp-notify-action@v0.2.0'
 dependencies:

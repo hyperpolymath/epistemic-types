@@ -1,4 +1,7 @@
 # This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+# This workflow is managed by gh actions-lock.
 
 name: Proof Safety
 
@@ -11,6 +14,10 @@ on:
 
 permissions:
   contents: read
+
+env:
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
