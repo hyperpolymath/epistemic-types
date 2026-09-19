@@ -67,7 +67,7 @@ and no warnings.
 
 CI checks every source module, semantic rejection controls and pinned
 canonical Echo correspondence. Proof and security gates must pass before
-merge; see [docs/ci-safety.adoc](docs/ci-safety.adoc). Run the local
+merge; see [docs/ci-safety.adoc](../docs/ci-safety.adoc). Run the local
 checks before opening a PR.
 
 ’’’’’

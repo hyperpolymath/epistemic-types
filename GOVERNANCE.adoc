@@ -218,7 +218,7 @@ change is itself a structural decision and is recorded in `CHANGELOG.md`.
 
 * link:readme.adoc[readme] — what the prototype is and how to type-check it
 * link:explainme.adoc[explainme] — the longer-form explanation
-* link:CONTRIBUTING.md[Contributing]
+* link:.github/CONTRIBUTING.md[Contributing]
 * link:CODE_OF_CONDUCT.md[Code of Conduct]
 * link:SECURITY.md[Security policy]
 * link:AUDIT.adoc[Audit] — build, CI, and licence status
