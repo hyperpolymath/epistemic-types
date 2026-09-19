@@ -63,6 +63,6 @@ maintainer at mailto:j.d.a.jewell@open.ac.uk[j.d.a.jewell@open.ac.uk].
 
 * link:readme.adoc[Readme]
 * link:explainme.adoc[Explainme]
-* link:CONTRIBUTING.md[Contributing Guide]
+* link:.github/CONTRIBUTING.md[Contributing Guide]
 * link:CODE_OF_CONDUCT.md[Code of Conduct]
 * link:AUDIT.adoc[Audit] — CI is not enabled; see the audit for rationale.
