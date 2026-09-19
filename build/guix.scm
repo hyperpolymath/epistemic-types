@@ -2,7 +2,7 @@
 ;; Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 ;;
 ;; Guix development environment for epistemic-types. Replaces flake.nix (Guix-only policy).
-;; Usage: guix shell -D -f guix.scm
+;; Usage: guix shell -D -f build/guix.scm
 
 (use-modules (guix packages)
              (guix build-system gnu)
