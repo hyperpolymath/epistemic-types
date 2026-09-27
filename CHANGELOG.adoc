@@ -40,6 +40,13 @@ the changelog records what is actually proved, not what is aspired to.
   sets out staged proof and runtime obligations. README and documentation
   index link to the note; no Agda API changed and the retired `AUDIT.adoc` was
   not restored.
+* Expanded `docs/secret-types.adoc` for issue #32 with a proposed two-level
+  confidentiality lattice, pure/total use case, low-observer threat boundary,
+  explicit noninterference target, and a distinction between epistemic access,
+  Echo residues, resource grades, and information-flow control. The placement
+  decision rejects an `EpistemicTypes.Secret` API, defers a new repository
+  pending review against SystemET/Anytype and Echo Types, and leaves all Agda
+  implementation and theorem work as separate follow-ups.
 
 [[fixed--2026-09-07]]
 ==== Fixed — 2026-09-07

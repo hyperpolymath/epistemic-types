@@ -36,9 +36,10 @@ authority.
   public / designated / receipt distinctions.
 
 | `docs/secret-types.adoc`
-| A scoped research direction for security-polarity / secret types: what the
-  current epistemic, warrant, and Echo interfaces do and do not establish, plus
-  a staged route to an in-repository security model.
+| Issue #32's proposed two-level information-flow model: label order, attacker
+  and observation boundary, target noninterference property, distinction from
+  existing interfaces, and an early repository-placement decision. No API or
+  security theorem is implemented.
 |===
 
 == Continuity foundations
