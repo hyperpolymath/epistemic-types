@@ -34,6 +34,11 @@ authority.
   downgrades a sender's `Proof` to a receiver's `Receipt`, how `verify` upgrades
   `Data` to `Proof` only with the receiver's own checker plus evidence, and the
   public / designated / receipt distinctions.
+
+| `docs/secret-types.adoc`
+| A scoped research direction for security-polarity / secret types: what the
+  current epistemic, warrant, and Echo interfaces do and do not establish, plus
+  a staged route to an in-repository security model.
 |===
 
 == Continuity foundations

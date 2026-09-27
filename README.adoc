@@ -202,6 +202,9 @@ This is a prototype, not a complete epistemic logic. The following are **intenti
   transport that would lift the integer certificate to rational input
 * Cross-iteration reuse of a skip bound, and the row-insertion update that
   maintains the scan invariants (`Applications.RapidNJSkip.WeakeningObligation`)
+* Confidentiality labels, secret types, declassification, and noninterference;
+  see link:docs/secret-types.adoc[the security-polarity research note] for the
+  current scope and proposed route
 
 == Build
 
@@ -223,6 +226,7 @@ agda --no-libraries -i src src/EpistemicTypes/All.agda
 * link:docs/continuity-foundations.adoc[Continuity foundations] — store coherence, retained information, bounds, and next obligations
 * link:docs/proof-transport.adoc[Proof transport] — semantic verification across boundaries
 * link:docs/applications/rapidnj-q-criterion.adoc[Applications: the RapidNJ Q-criterion] — the bound, the skip warrant, the exact-arithmetic obligation
+* link:docs/secret-types.adoc[Secret types] — a scoped research direction and staged route to a future security model
 
 == License
 
