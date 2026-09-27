@@ -12,6 +12,11 @@ open import EpistemicTypes.EchoBridge public
 -- re-exported.  The module is still part of the build via this import.
 import EpistemicTypes.ReadConsistency
 import EpistemicTypes.ContinuityExamples
+-- The applications layer is checked through this import and is deliberately
+-- not publicly re-exported: its modules carry application-specific
+-- vocabulary (row entries, scan invariants, a checkability record) that has
+-- no business in the core namespace.  See docs/applications/.
+import EpistemicTypes.Applications.RapidNJExamples
 open import EpistemicTypes.SurrealBridge public
 open import EpistemicTypes.Examples public
 open import EpistemicTypes.ProofTransportExample public

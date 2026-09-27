@@ -146,6 +146,12 @@ data _≤ℕ_ : Nat -> Nat -> Set where
   zero≤ : {n : Nat} -> zero ≤ℕ n
   suc≤  : {m n : Nat} -> m ≤ℕ n -> suc m ≤ℕ suc n
 
+-- Fixity matters for readability: without this declaration the relation
+-- would bind tighter than `_+_`, so `m + k ≤ℕ n + k` would parse as
+-- `m + (k ≤ℕ n) + k`.  Application modules mix the two, so the relation is
+-- declared here, where it is defined.
+infix 4 _≤ℕ_
+
 ≤ℕ-trans : {a b c : Nat} -> a ≤ℕ b -> b ≤ℕ c -> a ≤ℕ c
 ≤ℕ-trans zero≤ _ = zero≤
 ≤ℕ-trans (suc≤ p) (suc≤ q) = suc≤ (≤ℕ-trans p q)

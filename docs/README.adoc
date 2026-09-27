@@ -23,6 +23,12 @@ authority.
   endofunctor (map only) and *not* a monad/comonad, and what "epistemically
   available at standpoint κ" is meant to capture.
 
+| `docs/applications/rapidnj-q-criterion.adoc`
+| The applications layer: the RapidNJ per-row Q-criterion bound, the skip
+  certificate's three invariants, the warrant/soundness chain through
+  `FactiveModality.reflect`, and the exact-arithmetic (ℚ) obligation stated
+  rather than assumed.
+
 | `docs/proof-transport.adoc`
 | Focused walkthrough of `EpistemicTypes.ProofTransport`: how `transmit`
   downgrades a sender's `Proof` to a receiver's `Receipt`, how `verify` upgrades
@@ -64,9 +70,19 @@ The core lives in `src/EpistemicTypes/`. `All.agda` checks `Base`, `Warrant`,
 publicly re-exported to avoid helper-name collisions. Every core module uses
 `--safe --without-K` and builtins only. Local checks use Agda 2.6.4.3.
 
+The applications layer lives beside the core in `src/EpistemicTypes/Applications/`:
+`OrderedGroup` (the arithmetic budget), `IntegerModel` (the discharged
+instance), `SortedRow` (rows and invariants), `QCriterion` (the bound lemma),
+`RapidNJSkip` (warrants, soundness, the factive modality), and
+`RapidNJExamples` (the worked scan and the runtime status mirror). It is
+checked by the same recursive gate as the core, and it is imported -- not
+publicly re-exported -- by `All.agda`. See
+link:applications/rapidnj-q-criterion.adoc[].
+
 == Notes
 
 * `Echo C y`, `BoundedEcho C measure budget y`, and `E κ A` have separate roles.
-* `just check` runs the core proof graph and eleven semantic rejection fixtures.
+* `just check` runs the proof graph (seventeen modules, including the
+  applications layer) and twelve semantic rejection fixtures.
 * `just check-canonical` separately checks correspondence against actual sibling
   Echo sources; it requires an explicit standard-library source path.

@@ -146,10 +146,12 @@ agda --no-libraries --safe --without-K --ignore-interfaces -i src src/EpistemicT
 just check-canonical /path/to/echo-types /path/to/agda-stdlib/src
 ----
 
-The core and examples have been checked with Agda 2.6.4.3. `just check` covers
-all eleven source modules and eleven semantic rejection fixtures: the four
+The core, examples and applications layer have been checked with Agda 2.6.4.3.
+`just check` covers every source module under `src/EpistemicTypes/` (seventeen
+at the time of writing) and every semantic rejection fixture (twelve): the four
 proof-transport controls plus `StaleSample`, `FakeFreshness`, `ForkedHistory`,
-`ForgedResidue`, `MismatchedSource`, `UnderstatedBound`, and `InventedMigration`.
+`ForgedResidue`, `MismatchedSource`, `UnderstatedBound`, `InventedMigration`, and
+`UncheckedSkip`.
 An unrelated import or tool failure fails the rejection gate.
 
 The optional canonical integration also checks successfully with the locally

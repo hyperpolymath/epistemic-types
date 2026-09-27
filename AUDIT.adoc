@@ -18,9 +18,11 @@ The owner authorized proof/security CI and protected-main enforcement on
 billing incident are superseded. Existing GitHub workflows already run; their
 current proof coverage is extended by this change.
 
-* The eleven-module core is checked with Agda 2.6.4.3, safe mode, without-K,
-  internal double checking and warnings as errors. Each source module is checked.
-* Eleven deliberate rejection fixtures must fail for their intended type mismatch.
+* Every module under `src/EpistemicTypes/` -- seventeen at the time of writing,
+  including the applications layer -- is checked with Agda 2.6.4.3, safe mode,
+  without-K, internal double checking and warnings as errors. Each source
+  module is checked.
+* Twelve deliberate rejection fixtures must fail for their intended type mismatch.
 * Canonical Echo residue correspondence is checked against pinned sibling source.
 * CodeQL analyzes Actions workflows, and the shared scanner checks secrets.
 * Main receives changes through PRs with required proof/security checks. Signed

@@ -12,6 +12,29 @@ the changelog records what is actually proved, not what is aspired to.
 
 === https://github.com/hyperpolymath/epistemic-types/compare/v0.1.0...HEAD[Unreleased]
 
+[[added--2026-09-27]]
+==== Added — 2026-09-27
+
+* New applications section, `src/EpistemicTypes/Applications/`, with the
+  RapidNJ per-row Q-criterion bound as its first worked example:
+  `OrderedGroup` (minimal arithmetic budget), `IntegerModel` (the integers as
+  difference pairs, with all four laws and a decidable order), `SortedRow`
+  (rows, invariants, prefix/suffix composition), `QCriterion` (the bound lemma
+  `qBound-≤-Q` and the row and composition lemmas), `RapidNJSkip` (checkability
+  seam, generated warrant and soundness, the factive modality, and the belief
+  reading), and `RapidNJExamples` (the executable integer check, a worked scan,
+  a refutation of over-eager comparisons, and the runtime status mirror).
+* Skipping a matrix quadrant now *generates* a valid warrant whose soundness
+  map is proved from the bound; no soundness is assumed, and the bound consumes
+  no ring, multiplication or division laws. Rational input is an explicitly
+  stated obligation, documented in `docs/applications/rapidnj-q-criterion.adoc`.
+* New rejection fixture `UncheckedSkip`: a recorded check the numbers do not
+  meet is refused, so the rejection manifest is now twelve fixtures.
+* `EchoBridge`'s `_≤ℕ_` gained an `infix 4` declaration at its definition site.
+  A fixity declaration only; no definition changed.
+* New documentation: `docs/applications/rapidnj-q-criterion.adoc`, plus README,
+  documentation-index, proof-status and machine-readable state updates.
+
 [[fixed--2026-09-07]]
 ==== Fixed — 2026-09-07
 

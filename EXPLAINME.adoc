@@ -91,6 +91,29 @@ claims. The theorem remains relative to the specified meaning and checker
 proof; it does not establish cryptography or physical facts. See
 link:docs/proof-transport.adoc[].
 
+=== Skipping a search quadrant generates a warrant, not an assumption
+
+How this is implemented::
+`src/EpistemicTypes/Applications/` formalizes the per-row bound RapidNJ uses
+when searching for the neighbour-joining minimum. `QCriterion.qBound-≤-Q`
+proves the bound over an arbitrary `OrderedGroup` using only monotonicity,
+antitonicity, transitivity and `Nat`-indexed scaling. `RapidNJSkip` turns a
+skip certificate (sorted-row invariant, running-maximum invariant, accepted
+exact check) into a `Warrant`, proves its soundness from the bound
+(`skip-known`), and instantiates `FactiveModality.reflect` with that soundness
+map; held without it, the same run is belief
+(`no-receipt-reflection`).
+
+Caveat::
+The rational case is a *stated obligation*, not a theorem. What is discharged
+is the integer model: `IntegerModel` proves every law the bound consumes, and
+`RapidNJExamples` runs a worked scan by computation. Making rational input
+first-class needs either a rational carrier instance or the common-denominator
+rescaling transport; the bound itself never multiplies or divides carrier
+elements, so no field law is needed either way. Anything rounded cannot meet
+the `Checkable` reflection law, as `no-always-true` shows. See
+link:docs/applications/rapidnj-q-criterion.adoc[].
+
 == Dogfooded Across The Account
 
 [cols="1,2,2", options="header"]
@@ -111,6 +134,16 @@ link:docs/proof-transport.adoc[].
 |===
 
 == Known gaps
+
+[CAUTION]
+====
+**The applications layer has no rational instance yet.** The RapidNJ
+Q-criterion bound is proved order-generically and discharged for the integers;
+a rational carrier (or the common-denominator rescaling transport) is stated as
+an obligation in `docs/applications/rapidnj-q-criterion.adoc`, together with the
+row-insertion update and cross-iteration bound reuse.
+====
+
 
 [CAUTION]
 ====

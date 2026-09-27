@@ -12,6 +12,13 @@ open import Agda.Builtin.Equality using (_≡_)
 -- This record intentionally does not include return/η : A -> E κ A.
 -- Such an introduction rule says that truth is epistemically available at κ,
 -- which is stronger than a generic modal interface.
+--
+-- `FactiveModality.reflect` is where an application plugs in: an algorithm
+-- that can prove a claim from the evidence it records instantiates `reflect`
+-- with that proof, and the claim is then knowledge rather than assumption.
+-- `Applications.RapidNJSkip` does exactly this for a bound-checked skip of a
+-- search quadrant (docs/applications/rapidnj-q-criterion.adoc).  No
+-- application-specific obligation is added to this interface.
 record Modality {kℓ : Level} (K : Set kℓ) (ℓ : Level)
   : Set (kℓ ⊔ lsuc ℓ) where
   field

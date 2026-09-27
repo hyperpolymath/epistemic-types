@@ -1,0 +1,274 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= Applications: the RapidNJ Q-criterion, formally
+Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+v0.1.0, 2026-09-27: applications note 1
+:toc: preamble
+:toc-title: Contents
+
+This note is the prose half of `src/EpistemicTypes/Applications/`. It states
+what is formalized about RapidNJ's per-row Q-criterion bound, how a skipped
+quadrant of the search space generates a *valid* warrant in the sense of
+`EpistemicTypes.Warrant`, and exactly which rational-arithmetic obligations
+remain stated-but-unproved. The Agda source is the authority; where this note
+and a module disagree, the module is right.
+
+== The algorithm being explained
+
+Canonical neighbour-joining (Saitou and Nei 1987; Studier and Keppler 1988)
+joins, at each of `r` iterations, the pair of clusters minimizing
+
+    q(i,j) = (r - 2) * d(i,j) - t(i) - t(j),        t(i) = sum_k d(i,k)
+
+with `r` the number of remaining clusters and `t` the row sums of the current
+distance matrix. A naive implementation scans all `O(r^2)` pairs per
+iteration, giving `Theta(r^3)` overall.
+
+RapidNJ (Simonsen, Mailund, Pedersen 2008) prunes that scan with two
+structures beside the matrix `D`: a matrix `S` whose rows are the rows of `D`
+sorted by increasing distance, and an index map `I` back into `D`, plus a
+maximal row sum `t_max`. For a fixed row `i`, walking `S(i)` from small to
+large `d(i,j)` and maintaining the smallest q-value seen so far (`q_min`),
+one maintains the lower bound
+
+    qBound(i) = (r - 2) * d(i,next) - t(i) - t_max,
+
+where `d(i,next)` is the smallest distance not yet examined in the row and
+`t_max = max_k t(k)`. Because `r`, `t(i)` and `t_max` are constant during one
+row scan and the `d` values are non-decreasing, `qBound` is non-decreasing
+along the row. Hence the moment `qBound(i) >= q_min` no unexamined entry of
+row `i` can improve on `q_min`, and the rest of the row -- the quadrant
+`{ (i,j) : d(i,j) >= d(i,next) }` in the (index, distance) plane -- is skipped.
+After the bounded scan of every row, the canonical minimum is guaranteed.
+Wheeler's NINJA preprint states the rule in exactly this form and notes it is
+"the approach of RapidNJ"; the ERapidNJ paper (2011) records the same
+structure, with the improved heuristic replacing `t_max` by a tighter
+per-row bound over the remaining rows.
+
+What is formalized here is that row rule, and only that: the bound, the
+skipping, and the epistemic status of the resulting claim. Nothing in this
+section is proved about NJ's correctness as a clustering method, about the
+tree produced, or about the order in which joins happen.
+
+== What a skip must carry: three invariants
+
+The formal development makes the preconditions of the row rule into carried
+proof objects rather than comments. A skip certificate is a triple:
+
+1. *Sorted-row invariant* -- the distance at the stop cursor is a lower bound
+   for every unexamined entry (`Row.AllDistAtLeast`). Without it, `d(i,next)`
+   is not a lower bound and the bound says nothing.
+2. *Running-maximum invariant* -- every unexamined row sum is at most
+   `t_max` (`Row.AllRowSumAtMost`). Without it, `-t_max` is not a lower bound
+   on `-t(j)`.
+3. *An accepted check* -- the executable comparison returns `true` for
+   `q_min <= qBound` (`Skip.CheckStatement`), through a `Checkable`
+   instance whose verdicts reflect the order (`decide-true`).
+
+The first two are why skipping is safe; the third is how a *run* knows it is
+safe. The implementation maintains 1 and 2 when it inserts the new cluster's
+row into `S` after a join; this development does not model that update, only
+consumes the invariants.
+
+== The modules
+
+[cols="2,3", options="header"]
+|===
+| Module | Contents
+
+| `Applications.OrderedGroup`
+| The arithmetic budget: a carrier with `_⊕_`, `neg`, `zeroC`, `_≤_`, and
+  laws `≤-refl`, `≤-trans`, joint monotonicity `≤-⊕`, antitonicity `≤-neg`.
+  Derived: `_⊖_`, `scale` (Nat-indexed repeated addition), `scale-mono`.
+
+| `Applications.IntegerModel`
+| The integers as difference pairs over `Nat`: ring-free group operations,
+  the cross-multiplied order `_≤ℤ_`, all four `OrderedGroup` laws, the group
+  instance `ℤ-group` (the non-vacuity witness), and `dec-≤ℤ`, a decision
+  procedure for the order.
+
+| `Applications.SortedRow`
+| Rows as lists of `Entry` (column index, distance, row sum), the `All`
+  predicate, membership, the two invariants, row concatenation and the
+  membership decomposition `∈-append` that lets an examined prefix and a
+  skipped suffix compose.
+
+| `Applications.QCriterion`
+| `Q` and `qBound` over an arbitrary `OrderedGroup`, the bound lemma
+  `qBound-≤-Q`, the row lemma `qBound-≤-suffix`, claim weakening
+  (`noBetter-weaken`), and the prefix/suffix composition `noBetter-append`.
+
+| `Applications.RapidNJSkip`
+| The epistemic layer: `Checkable` (the exactness seam), `ScanState`,
+  `SkipEvidence`, the generated `skipWarrant` and `skipSoundWarrant`, the
+  factive modality `rapidKnowledge` whose `reflect` *is* `sound-epi`, the
+  belief-only modality `rapidBelief`, `no-receipt-reflection`, the theorems
+  `skip-generates-knowledge`, `skip-known`, `whole-row-known`, and the
+  declared-not-assumed `WeakeningObligation`.
+
+| `Applications.RapidNJExamples`
+| `Checkable` for the integer model built from `dec-≤ℤ`; the refutation
+  `no-always-true` (an over-eager comparison cannot meet the obligation); a
+  worked four-taxon scan discharged by computation; and the `Status` mirror
+  of the runtime vocabulary (`Factive` / `Belief` / `Collapsed` / `SansFibre`).
+|===
+
+The load-bearing proof is `qBound-≤-Q`:
+
+    qBound-≤-Q : (k : Nat) -> dnext ≤ d -> tj ≤ tmax
+               -> qBound k ti tmax dnext ≤ Q k ti tj d
+
+It is proved by adding the same tail to both scaled distances, replacing
+`t(j)` by the larger `t_max` under `neg`, and chaining -- that is, using only
+`≤-refl`, `≤-trans`, `≤-⊕`, `≤-neg` and `scale-mono` (induction on the
+coefficient). No associativity, commutativity, distributivity, inverse or
+unit law is used, and no multiplication or division of carrier elements
+occurs anywhere in the development.
+
+== The mapping onto the epistemic core
+
+The question that motivates the module: how does a `FactiveModality` map onto
+the Q-criterion bound, and how does skipping a quadrant *automatically*
+generate a valid warrant? The answer is one line long, and it lives in
+`RapidNJSkip.Skip`:
+
+    FactiveModality.reflect  ==  sound-epi  ==  skip-sound
+
+`reflect : E κ A -> A` is instantiated by the soundness map of the generated
+skip warrant, whose proof is the bound lemma. So the chain a run follows is
+
+    run data (numbers, cursor, suffix, verdict)
+      -- skipWarrant ............-> Warrant κ "nothing skipped beats q(min)"
+      -- skip-sound (bound lemma) -> SoundWarrant κ (same claim)
+      -- reflect = sound-epi .....-> the claim itself
+
+and `skip-known` packages the whole chain as one theorem: given the two
+invariants and an accepted check for a concrete `ScanState`, the claim holds
+for every entry of the skipped suffix, with no soundness assumed anywhere.
+
+[cols="2,2,2", options="header"]
+|===
+| Core notion | In this application | Runtime vocabulary (`EpistemicTypes.jl`)
+
+| `FactiveModality.reflect`
+| `skip-sound`, proved by `qBound-≤-Q` from an accepted `Checkable` verdict
+| `epi_status = :Factive`
+
+| `BeliefModality` (no `reflect`)
+| the same run packaged as `Epi` (warrant + token, no soundness map)
+| `epi_status = :Belief`
+
+| `Warrant.Evidence`
+| the recorded numbers, cursor, suffix, invariants and verdict
+| `Receipt(k, w, y, sig)` plus the raw run fields
+
+| `no-receipt-reflection`
+| a token alone never yields the claim
+| why `:Belief` must not be read as `:Factive`
+
+| evidence but no accepted check
+| the gate is not passed, so no `SkipClaimAt` can be produced
+| `epi_status = :Collapsed`
+
+| no warrant at all
+| nothing was recorded for the row
+| `epi_status = :SansFibre`
+|===
+
+`RapidNJExamples.Status` names those four statuses and
+`skipStatus` reproduces `epi_status`'s decision order (verify the receipt,
+then run the gates, then read the rank); `status-of-skip-is-factive` records
+that a skip holding an accepted check is `:Factive`. The correspondence is
+vocabulary-level on purpose: the runtime is Julia, this development is Agda,
+and the shared claim is only that both sides use the same four readings of
+evidence.
+
+== Exact arithmetic: the ℚ obligation, stated
+
+The user-facing constraint is that skipping must not violate the rational
+constraints of the distances it is computed on. The development answers this
+in three parts.
+
+*What the bound needs.* Only the ordered-group budget above. Any carrier with
+an exact, monotone `+`, an antitone `-`, and a decidable order that *reflects*
+it can run the whole pipeline. In particular no field, no division, and no
+multiplication of two carrier elements is used: the coefficient `(r - 2)` is a
+`Nat` applied by repeated addition (`scale`).
+
+*What is discharged.* The integers, in full: `IntegerModel.ℤ-group` proves
+the four laws, `RapidNJExamples.ℤ-checkable` turns `dec-≤ℤ` into a
+`Checkable`, and the worked scan in the same module is decided by
+computation. So the integer case is not merely consistent -- it is running.
+
+*What is stated and not proved.* A rational instance. Two routes are honest,
+and neither is claimed here:
+
+. *Common-denominator rescaling.* For a finite matrix of rationals choose a
+  positive integer `f` clearing all denominators. Scaling every distance by
+  `f` scales every row sum by `f`, hence scales both `Q` and `qBound` by `f`;
+  the comparison, and therefore every skip decision, is unchanged. The
+  transport needs scaling laws that the current `OrderedGroup` deliberately
+  does not assume (`scale f (x ⊕ y) ≡ scale f x ⊕ scale f y`,
+  `scale f (neg x) ≡ neg (scale f x)`, and the interchange
+  `scale k (scale f x) ≡ scale f (scale k x)`); each is provable for the
+  integer model from componentwise arithmetic, and none is derivable from the
+  record as it stands. Formalizing the rescaling theorem is the natural next
+  increment.
+. *A rational carrier directly.* A numerator/denominator representation with
+  the cross-multiplied order satisfies the same interface; it owes the same
+  four group laws, plus the `Checkable` obligation. More proof work, same
+  seam.
+
+*What is excluded.* Floating point. `Checkable.decide-true` is a reflection
+law, and rounded arithmetic does not satisfy it in general; the abstract
+obstruction is made precise by `RapidNJExamples.no-always-true`, which shows
+that a comparison answering `true` for every pair would prove that every
+integer is below every other. The practical rule for the runtime is therefore:
+the moment a rounding-tolerant `Float64` value participates in a *bound
+comparison*, the claim cannot be `:Factive`; record it as `:Belief` until an
+exact comparison decides it.
+
+== What is proved, and what is not
+
+Proved (all machine-checked under `--safe --without-K`, no postulates):
+
+* `qBound-≤-Q`, `qBound-≤-suffix`, `noBetter-weaken`, `noBetter-append`;
+* `skipWarrant` / `skipSoundWarrant` construction and `skip-known`,
+  `skip-generates-knowledge`, `whole-row-known`;
+* `no-receipt-reflection`, so the belief reading is genuinely weaker;
+* the integer instance: `ℤ-group`, `ℤ-checkable`, the worked scan, the status
+  mirror, and the refutation `no-always-true`.
+
+Not proved, and deliberately so:
+
+* that neighbour-joining (or RapidNJ) computes a correct tree, or that the
+  row scan finds the true minimum -- the row rule is conditional on the two
+  invariants and an accepted check;
+* the row-insertion update that maintains the invariants across iterations;
+* the rescaling transport, and any rational instance;
+* the cross-iteration reuse of bounds (`Skip.WeakeningObligation`: declared,
+  unused, uninstantiated);
+* anything about the tighter ERapidNJ/NINJA bounds, which replace `t_max` by
+  a per-row bound.
+
+No novelty is claimed. The formal content is a transcription of the
+documented RapidNJ rule into an order-generic setting, plus the observation
+that its soundness map is exactly the `reflect` of a `FactiveModality` and
+that skipping yields a warrant rather than an assumption.
+
+== References
+
+* N. Saitou, M. Nei. The neighbor-joining method. _Mol. Biol. Evol._ 4(4),
+  1987.
+* J. A. Studier, K. J. Keppler. A note on the neighbor-joining algorithm of
+  Saitou and Nei. _Mol. Biol. Evol._ 5(6), 1988.
+* M. Simonsen, T. Mailund, C. N. S. Pedersen. Rapid Neighbour-Joining. In
+  _Algorithms in Bioinformatics_ (WABI 2008), LNCS 5251, 113--122.
+  doi:10.1007/978-3-540-87361-7_10.
+* M. Simonsen, T. Mailund, C. N. S. Pedersen. Inference of Large Phylogenies
+  using Neighbour-Joining (ERapidNJ). 2011. Available from the BIRC software
+  pages (birc.au.dk/software/rapidnj).
+* T. J. Wheeler. Large-scale neighbor-joining with NINJA (preprint),
+  wheelerlab.org/software/ninja -- source of the quotable statement of the
+  bound `q_bound = (r - 2) * d_ij - t_i - t_max` and of its stopping rule.
+* T. Mailund, C. N. S. Pedersen. QuickJoin -- fast neighbour-joining tree
+  reconstruction. _Bioinformatics_ 20, 2004.
