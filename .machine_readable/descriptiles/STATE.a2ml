@@ -1,7 +1,7 @@
 [metadata]
 project = "epistemic-types"
 version = "0.1.0"
-last-updated = "2026-06-15"
+last-updated = "2026-09-27"
 status = "prototype"  # prototype | active | paused | archived
 
 [project-context]
@@ -29,6 +29,12 @@ aggregator = "src/EpistemicTypes/All.agda re-exports every module."
 # Agda modules under src/EpistemicTypes/.
 list = [
   "EpistemicTypes.Access",
+  "EpistemicTypes.Applications.IntegerModel",
+  "EpistemicTypes.Applications.OrderedGroup",
+  "EpistemicTypes.Applications.QCriterion",
+  "EpistemicTypes.Applications.RapidNJExamples",
+  "EpistemicTypes.Applications.RapidNJSkip",
+  "EpistemicTypes.Applications.SortedRow",
   "EpistemicTypes.All",
   "EpistemicTypes.Base",
   "EpistemicTypes.ContinuityExamples",
@@ -50,6 +56,12 @@ surreal-bridge = "SurrealAccess carrier + GradedSurrealModality + daySurrealAcce
 examples = "Worked instances exercising the interfaces."
 proof-transport = "proofSound derives Meaning holder artifact claim from an accepted sound checker. Receipts alone do not certify; transfer requires the target-holder meaning."
 proof-transport-example = "Boolean certificate checker with legitimate acceptance and refutations for false claims, changed artifacts and holder-sensitive replay."
+applications-ordered-group = "Minimal arithmetic budget for the applications layer: carrier with addition, negation, zero, order, reflexivity, transitivity, joint monotonicity and antitone negation; derived subtraction and Nat-indexed scaling."
+applications-integer-model = "The integers as difference pairs over Nat, with the cross-multiplied order, all four OrderedGroup laws, the instance 'ℤ-group', and a decision procedure for the order."
+applications-sorted-row = "Rows as entries (index, distance, row sum), the All predicate, membership, the sorted-row and running-maximum invariants, and prefix/suffix composition."
+applications-qcriterion = "Q and qBound over any OrderedGroup, the bound lemma qBound-≤-Q, the row lemma qBound-≤-suffix, claim weakening, and prefix/suffix composition."
+applications-rapidnj-skip = "Checkable (the exactness seam), scan state, skip evidence, the generated warrant and soundness map, the factive modality, the belief-only reading, and the declared-not-assumed cross-iteration obligation."
+applications-rapidnj-examples = "Executable integer check, refutation of an over-eager comparison, a worked four-taxon scan, and the runtime status mirror (Factive / Belief / Collapsed / SansFibre)."
 
 [route-to-mvp]
 milestones = [
@@ -59,6 +71,8 @@ milestones = [
   { name = "Concrete Kripke-style semantics", completion = 0 },
   { name = "Evidence-state and observation-rule examples", completion = 0 },
   { name = "Richer day-bounded surreal fragments as SurrealAccess instances", completion = 0 },
+  { name = "Applications layer: RapidNJ Q-criterion bound and skip warrants", completion = 100 },
+  { name = "Rational (ℚ) instance and the common-denominator rescaling transport", completion = 0 },
   { name = "Lawful instances (only after proving or explicitly assuming laws)", completion = 0 },
 ]
 
@@ -69,10 +83,12 @@ items = [
   "Add richer day-bounded surreal fragments as instances of the abstract SurrealAccess interface.",
   "Add lawful instances only after proving or explicitly assuming laws.",
   "Extend the echo bridge without importing a full graded comonad.",
+  "Add a rational carrier instance for the applications layer, or prove the common-denominator rescaling transport.",
+  "Model the row-insertion update that maintains the scan invariants, and cross-iteration bound reuse.",
 ]
 
 [progress-summary]
-note = "Prototype. The base interface and all eleven modules typecheck under 'just check' (Agda 2.6.4.3, --safe --without-K, --no-libraries, no postulates). The endofunctor/Modality formers, Warrant, Access transport, EchoBridge residue, SurrealBridge tower, ProofTransport, and its K9-SVC/A2ML attestation example are in place. Remaining work is semantics and lawful instances — see [roadmap]."
+note = "Prototype. The base interface and all seventeen modules typecheck under 'just check' (Agda 2.6.4.3, --safe --without-K, --no-libraries, no postulates), against twelve rejection fixtures. The endofunctor/Modality formers, Warrant, Access transport, EchoBridge residue, SurrealBridge tower, ProofTransport, its K9-SVC/A2ML attestation example, and the applications layer (RapidNJ Q-criterion bound, generated skip warrants, discharged integer instance) are in place. Remaining work is semantics, lawful instances, and the rational/rescaling obligation — see [roadmap]."
 
 [blockers-and-issues]
 # No active blockers.

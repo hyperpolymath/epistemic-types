@@ -98,6 +98,36 @@ See link:docs/continuity-foundations.adoc[the breaking API correction and proof
 boundaries]. An optional integration gate proves correspondence with the actual
 sibling `EchoResidue.EchoR`; the core remains dependency-free.
 
+== Applications: the RapidNJ Q-criterion
+
+The `Applications/` tree is where the core interfaces are exercised against
+algorithmic claims that arrive with their own arithmetic. Its first example is
+the per-row branch-and-bound rule used by RapidNJ (Simonsen, Mailund, Pedersen
+2008) when searching for the neighbour-joining minimum: while scanning a row of
+distances in increasing order, the row is abandoned as soon as
+
+    qBound = (r - 2) * d(i,next) - t(i) - t_max
+
+is at least the incumbent `q_min`, because no unexamined entry can beat it.
+
+The development is order-generic: `Applications.QCriterion.qBound-≤-Q` proves
+the bound for any carrier with monotone addition, antitone negation and a
+transitive order -- no multiplication or division of carrier elements occurs
+anywhere, and the coefficient `(r - 2)` enters only as a `Nat`-indexed repeated
+sum. A skip certificate carries the sorted-row invariant, the running-maximum
+invariant and an accepted executable check; `Applications.RapidNJSkip` then
+*generates* a warrant for the skipped quadrant, and its soundness map is
+exactly the `reflect` of a `FactiveModality`:
+
+    run data -> skipWarrant -> skip-sound (the bound lemma) -> reflect -> the claim
+
+So skipping a quadrant yields knowledge only through a proved bound, never by
+assumption, and the same run held without the soundness map is belief. The
+integer model is discharged in full (`Applications.IntegerModel`,
+`Applications.RapidNJExamples`); the rational case is a *stated* obligation, not
+a claim -- see link:docs/applications/rapidnj-q-criterion.adoc[the applications
+note] for the rescaling argument and the exact-arithmetic seam.
+
 == Proof transport across trust boundaries
 
 `ProofTransport` is parameterised by agents, claim labels, artefacts,
@@ -150,6 +180,10 @@ interface is a breaking correction documented in link:docs/proof-transport.adoc[
 | Proof transport with explicit semantic soundness
 | **Novel formalisation**
 | `EpistemicTypes.ProofTransport`
+
+| Order-generic RapidNJ Q-criterion bound and skip warrants
+| Transcription of a documented algorithm; no novelty theorem
+| `EpistemicTypes.Applications.QCriterion`
 |===
 
 == What remains intentionally unformalized
@@ -164,6 +198,10 @@ This is a prototype, not a complete epistemic logic. The following are **intenti
 * Proof irrelevance or decidability
 * Global soundness of warrants
 * Monadic (`bind`) or comonadic (`extract`) structure for `E`
+* A rational (ℚ) instance of the applications layer, and the rescaling
+  transport that would lift the integer certificate to rational input
+* Cross-iteration reuse of a skip bound, and the row-insertion update that
+  maintains the scan invariants (`Applications.RapidNJSkip.WeakeningObligation`)
 
 == Build
 
@@ -184,6 +222,7 @@ agda --no-libraries -i src src/EpistemicTypes/All.agda
 * link:EXPLAINME.adoc[EXPLAINME] — claim-by-claim receipts and known gaps
 * link:docs/continuity-foundations.adoc[Continuity foundations] — store coherence, retained information, bounds, and next obligations
 * link:docs/proof-transport.adoc[Proof transport] — semantic verification across boundaries
+* link:docs/applications/rapidnj-q-criterion.adoc[Applications: the RapidNJ Q-criterion] — the bound, the skip warrant, the exact-arithmetic obligation
 
 == License
 

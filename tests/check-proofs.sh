@@ -3,8 +3,9 @@ set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 
 # Check each source module, including any new module omitted from All.agda.
-shopt -s nullglob
-modules=(src/EpistemicTypes/*.agda)
+# The search is recursive so that modules in subdirectories (for example the
+# Applications/ tree) are gated even when they are not re-exported by All.agda.
+mapfile -t modules < <(find src/EpistemicTypes -name '*.agda' | sort)
 [[ ${#modules[@]} -gt 0 ]] || { echo 'FAIL: no proof modules'; exit 1; }
 for module in "${modules[@]}"; do
   agda --no-libraries --safe --without-K --double-check --ignore-interfaces \

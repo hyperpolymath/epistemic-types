@@ -8,6 +8,35 @@ Verification status of the epistemic-types Agda formalisation. The whole library
 self-contained (`--no-libraries`: it imports only `Agda.Builtin.*` /
 `Agda.Primitive`). This records a reproduced `agda` run, not a "looks fine" reading.
 
+== Applications layer — 2026-09-27
+
+`src/EpistemicTypes/Applications/` adds the first worked application: the
+per-row Q-criterion bound used by RapidNJ when searching for the
+neighbour-joining minimum. Five modules and one example module pass the same
+gate (`--safe --without-K --no-libraries --double-check -W error`, no
+postulates):
+
+* `QCriterion.qBound-≤-Q` proves the row bound over an arbitrary
+  `OrderedGroup`, using only reflexivity, transitivity, monotone addition,
+  antitone negation and `Nat`-indexed scaling -- no ring law, no multiplication
+  or division of carrier elements.
+* `RapidNJSkip` generates a warrant from a skip certificate (sorted-row
+  invariant, running-maximum invariant, accepted exact check) and proves
+  `skip-known`: the skipped quadrant's entries cannot beat the incumbent. The
+  soundness map is `FactiveModality.reflect = sound-epi`; without it the same
+  run is belief (`no-receipt-reflection`).
+* `IntegerModel` discharges the arithmetic budget for the integers, and
+  `RapidNJExamples` turns `dec-≤ℤ` into a `Checkable`, runs a worked four-taxon
+  scan by computation, and refutes an over-eager comparison
+  (`no-always-true`).
+* One new rejection fixture (`UncheckedSkip`) refuses a recorded check that the
+  numbers do not meet.
+
+Not claimed: any rational (ℚ) instance, the rescaling transport from a rational
+matrix to its common-denominator integer form, the row-insertion update that
+maintains the invariants, and cross-iteration bound reuse. These are stated as
+obligations in link:docs/applications/rapidnj-q-criterion.adoc[].
+
 == Current continuity-foundations correction — 2026-09-07
 
 `ReadView` now entails equality with the indexed store contents. Cached-read
@@ -19,8 +48,9 @@ and migration have explicit obligations. The collision theorem refutes every
 migration requiring a distinction discarded by the retained pair. Resource
 bounds require measure inequalities; arbitrary grade retagging is removed.
 
-The eleven-module core and eleven deliberate rejection fixtures pass with
-Agda 2.6.4.3 under `--safe --without-K --no-libraries`, without warnings.
+The eleven-module core and eleven deliberate rejection fixtures (the counts at
+that date; `just check` now reports seventeen modules and twelve fixtures) pass
+with Agda 2.6.4.3 under `--safe --without-K --no-libraries`, without warnings.
 The additional canonical Echo integration proves both representation round
 trips and agreement of lowering; its standard-library dependencies emit Cubical
 compatibility warnings. See link:docs/continuity-foundations.adoc[] for commands,

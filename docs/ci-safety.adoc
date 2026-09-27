@@ -10,8 +10,8 @@ The owner explicitly authorized maintaining these CI and merge safeguards on
 `Proof core and rejection controls` checks every file under
 `src/EpistemicTypes/`, including a file accidentally omitted from `All.agda`.
 It uses Agda 2.6.4.3 with `--safe --without-K --double-check
---ignore-interfaces -W error --no-libraries`. It also runs all eleven enumerated
-false-claim controls. The rejection runner requires Agda's type-error exit code
+--ignore-interfaces -W error --no-libraries`. It also runs all enumerated
+false-claim controls (twelve at the time of writing). The rejection runner requires Agda's type-error exit code
 and the intended semantic diagnostic; import and environment failures do not pass.
 
 `Canonical Echo correspondence` imports the actual `echo-types` source pinned to
