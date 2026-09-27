@@ -34,6 +34,12 @@ the changelog records what is actually proved, not what is aspired to.
   A fixity declaration only; no definition changed.
 * New documentation: `docs/applications/rapidnj-q-criterion.adoc`, plus README,
   documentation-index, proof-status and machine-readable state updates.
+* Added `docs/secret-types.adoc` as an in-repository research note for the
+  security-polarity direction (issue #29). It corrects the preserved draft's
+  scope against the current APIs, makes no security-implementation claim, and
+  sets out staged proof and runtime obligations. README and documentation
+  index link to the note; no Agda API changed and the retired `AUDIT.adoc` was
+  not restored.
 
 [[fixed--2026-09-07]]
 ==== Fixed — 2026-09-07
