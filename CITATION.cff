@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
-title: "epistemic-types"
+title: "Epistemic Types"
 abstract: "Constructive Agda prototype for standpoint-indexed epistemic modalities, separating knowledge (factive) from belief and warrant. Provides a tropical-graded bridge from standpoint access to echo-type residues, and a compositional proof-transport calculus with a no-smuggling guarantee across trust boundaries."
 authors:
   - family-names: "Jewell"
