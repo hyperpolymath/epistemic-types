@@ -1,0 +1,23 @@
+{
+  "name": "epistemic-types (Agda 2.6.4.3, CI-matched)",
+  "build": {
+    "dockerfile": "Containerfile",
+    "context": "."
+  },
+  "postCreateCommand": "just check",
+  "containerEnv": {
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "banacorn.agda-mode",
+        "asciidoctor.asciidoctor-vscode",
+        "timonwong.shellcheck",
+        "skellock.just"
+      ]
+    }
+  },
+  "shutdownAction": "stopContainer"
+}

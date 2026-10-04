@@ -1,7 +1,7 @@
 [metadata]
 project = "epistemic-types"
 version = "0.1.0"
-last-updated = "2026-09-27"
+last-updated = "2026-10-04"
 status = "prototype"  # prototype | active | paused | archived
 
 [project-context]
@@ -19,10 +19,16 @@ maturity = "experimental"  # experimental | alpha | beta | production | lts
 discipline = "Constructive. Compiles under {-# OPTIONS --safe --without-K #-}. No postulates. No Agda standard library (built with 'agda --no-libraries'; only Agda.Builtin.* / Agda.Primitive)."
 honesty-rule = "Laws appear as explicit fields when not derivable; lawful instances are added only after proving or explicitly assuming the laws. No smuggling."
 
+[boundaries]
+secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153: label-constrained flow with explicit declassification and type-family-map registration; D154: reuse an existing lattice two-point-first, prove noninterference, declassify only at explicit audited points). This repository adds no Secret API and no information-flow implementation; docs/secret-types.adoc is retained as the boundary/history note. epistemic-types#29 is resolved and stays closed; the transfer of epistemic-types#32 to secret-types is pending GitHub issue-write access and must not be duplicated."
+
 [build]
-checker = "Agda 2.6.4.3"
+checker = "Agda 2.6.4.3 (CI-matched)"
 command = "just check"
+entry-point = "scripts/check.sh — local agda when present, else 'guix shell -D -f build/guix.scm -- bash scripts/check.sh'"
 expands-to = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'"
+ci-entry-point = ".github/workflows/agda.yml asserts 'Agda version 2.6.4.3', then runs 'bash scripts/check.sh'"
 aggregator = "src/EpistemicTypes/All.agda re-exports every module."
 
 [modules]

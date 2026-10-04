@@ -49,6 +49,13 @@ or physical continuity.
 
 == Reproduce
 
+`just check` runs `scripts/check.sh`, the same entry point the core CI job uses:
+a local Agda when one is on `PATH`, otherwise the checked-in Guix environment
+(`build/guix.scm`). The dev container in `.devcontainer/` pins the same base
+image digest and Agda version as CI and runs `just check` on creation, so a
+green container check and a green CI check are the same gate on the same
+toolchain (see link:../.devcontainer/README.adoc[]).
+
 [source,sh]
 ----
 just check

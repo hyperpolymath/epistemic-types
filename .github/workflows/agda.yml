@@ -40,8 +40,7 @@ jobs:
       - name: Verify toolchain and proof constructions
         run: |
           test "$(agda --version)" = 'Agda version 2.6.4.3'
-          bash tests/check-proofs.sh
-          bash tests/check-rejections.sh
+          bash scripts/check.sh
 
   echo:
     name: Canonical Echo correspondence

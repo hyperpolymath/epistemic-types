@@ -1,0 +1,33 @@
+# Dev container image for epistemic-types.
+#
+# Toolchain parity with .github/workflows/agda.yml: the same Debian 13 base
+# image digest as CI, with the same pinned Agda (agda-bin=2.6.4.3-1+b2), so a
+# first run inside this container reproduces the CI proof gates. ripgrep is
+# required by tests/check-rejections.sh; just is the task runner entry point.
+#
+# Build manually with:
+#   docker build -t epistemic-types-dev -f .devcontainer/Containerfile .
+# or let VS Code Dev Containers / Codespaces / the devcontainer CLI build it.
+
+FROM debian:13-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+ && apt-get install --no-install-recommends -y \
+      bash \
+      ca-certificates \
+      git \
+      just \
+      make \
+      ripgrep \
+      agda-bin=2.6.4.3-1+b2 \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN test "$(agda --version)" = 'Agda version 2.6.4.3'
+
+WORKDIR /workspaces/epistemic-types
+
+CMD ["bash"]

@@ -12,6 +12,26 @@ the changelog records what is actually proved, not what is aspired to.
 
 === https://github.com/hyperpolymath/epistemic-types/compare/v0.1.0...HEAD[Unreleased]
 
+[[changed--2026-10-04]]
+==== Changed — 2026-10-04
+
+* First-run environment. `just check` now calls `scripts/check.sh`, which uses a
+  local Agda when one is on `PATH` and otherwise enters the checked-in Guix
+  environment (`build/guix.scm`). A dev container (`.devcontainer/`) pinned to
+  the same Debian 13 base image digest and the same Agda
+  (`agda-bin=2.6.4.3-1+b2`) as CI runs `just check` after creation, and the core
+  CI job now invokes `scripts/check.sh` after asserting the Agda version, so a
+  green container check and a green CI check are the same gate on the same
+  toolchain. `build/guix.scm` gains `ripgrep` and `findutils` (required by the
+  rejection-manifest check and the recursive module scan); README, the
+  documentation index, `docs/ci-safety.adoc` and the machine-readable state
+  describe the environment.
+* Boundary. Per the owner decision of 2026-10-04, `hyperpolymath/secret-types`
+  is the standalone home for secret types (D153, D154). `docs/secret-types.adoc`
+  is retained as the boundary/history note with the decision recorded and the
+  superseded placement section marked; no `Secret` API or information-flow
+  implementation is added here, and `epistemic-types#29` stays closed.
+
 [[added--2026-09-27]]
 ==== Added — 2026-09-27
 

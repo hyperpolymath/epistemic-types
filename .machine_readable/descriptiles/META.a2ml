@@ -3,7 +3,7 @@
 
 [metadata]
 version = "0.1.0"
-last-updated = "2026-06-15"
+last-updated = "2026-10-04"
 
 [project-info]
 name = "epistemic-types"
@@ -23,7 +23,8 @@ adrs = [
   { id = "ADR-003", title = "Compile under --safe --without-K", status = "accepted", date = "2026-06-15" },
   { id = "ADR-004", title = "No Agda standard library; build with agda --no-libraries", status = "accepted", date = "2026-06-15" },
   { id = "ADR-005", title = "Keep certified residues and resource bounds distinct from epistemic standpoints", status = "accepted", date = "2026-06-15" },
-  { id = "ADR-006", title = "ProofTransport: no smuggling by construction", status = "accepted", date = "2026-06-15" }
+  { id = "ADR-006", title = "ProofTransport: no smuggling by construction", status = "accepted", date = "2026-06-15" },
+  { id = "ADR-007", title = "Secret types and information-flow control are specified outside this repository", status = "accepted", date = "2026-10-04" }
 ]
 
 [architecture-decisions.ADR-001]
@@ -68,14 +69,21 @@ context = "When attestations cross trust boundaries, a naive design lets a sende
 decision = "`View : Agent -> Artifact -> Status -> Claim -> Set` is standpoint-indexed. `transmit` downgrades a sender's `Proof` to a receiver's `Receipt`; `verify` upgrades `Data -> Proof` only with the receiver's OWN checker and evidence (`proofNeedsChecker`). Public views are portable, designated views are receiver-bound, and receipt-only views never certify."
 consequence = "No-smuggling holds structurally rather than by side-condition. The engineering rendering for a2ml/k9 lives in `.machine_readable/proof-transport/`; the worked attestation is `ProofTransportExample` (issuer K9SVC, receiver Alice, third party Bob, claim ActionWasPerformed, artifact AttestationBlob)."
 
+[architecture-decisions.ADR-007]
+title = "Secret types and information-flow control are specified outside this repository"
+status = "accepted"
+context = "Issue #29 preserved a secret-types research note here; issue #32 then proposed an in-repository security model. On 2026-10-04 the owner ruled that hyperpolymath/secret-types is the standalone home, with D153 (a secret type is a value whose flow is constrained by a confidentiality label with explicit declassification, registered in the type-family map on that boundary) and D154 (reuse an existing lattice, two-point first then general; prove noninterference; declassify only at explicit audited points)."
+decision = "This repository adds no Secret API and no information-flow implementation. docs/secret-types.adoc is retained as the boundary/history note; the specification itself, lattice reuse, the noninterference theorem, and audited declassification belong to hyperpolymath/secret-types."
+consequence = "The epistemic core keeps its scope: no confidentiality claim attaches to BeliefModality, Echo grades, or Access. epistemic-types#29 stays closed; the move of issue #32 must not be duplicated."
+
 [development-practices]
 build-tool = "just"
 build-command = "just check"
-check-command = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+check-command = "bash scripts/check.sh (local Agda when present, otherwise 'guix shell -D -f build/guix.scm -- bash scripts/check.sh')"
 agda-version = "2.6.4.3"
-package-manager = "none (single agda-lib; no external Agda dependencies)"
-ci-platform = "none (billing wall; see AUDIT.adoc)"
-container-runtime = "none"
+package-manager = "none (single agda-lib; no external Agda dependencies); development environment in build/guix.scm"
+ci-platform = "GitHub Actions (Proof Safety, Governance, CodeQL, secret scan); see docs/ci-safety.adoc"
+container-runtime = "dev container in .devcontainer/ (Debian 13 base digest and agda-bin version matched to CI)"
 
 [design-rationale]
 posture = "Mathematical honesty over API size. The library is small on purpose: every law is either proved or an explicit obligation, and nothing is postulated."
