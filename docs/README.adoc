@@ -36,10 +36,11 @@ authority.
   public / designated / receipt distinctions.
 
 | `docs/secret-types.adoc`
-| Issue #32's proposed two-level information-flow model: label order, attacker
-  and observation boundary, target noninterference property, distinction from
-  existing interfaces, and an early repository-placement decision. No API or
-  security theorem is implemented.
+| Boundary and history for secret types: the 2026-10-04 owner decision that
+  `hyperpolymath/secret-types` is the standalone home (D153/D154), the retained
+  two-level information-flow proposal (label order, attacker and observation
+  boundary, noninterference target), and the reason no `Secret` API or security
+  theorem exists in this repository.
 |===
 
 == Continuity foundations

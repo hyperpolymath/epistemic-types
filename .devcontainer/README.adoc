@@ -1,0 +1,43 @@
+= Dev container — epistemic-types
+:revdate: 2026-10-04
+
+== What this is
+
+`.devcontainer/Containerfile` builds a Debian 13 image pinned to the same base
+digest as the repository's Proof Safety workflow, and installs the same Agda
+(`agda-bin=2.6.4.3-1+b2`) plus `bash`, `git`, `just`, `make` and `ripgrep`
+(`tests/check-rejections.sh` needs `rg`). `devcontainer.json` runs `just check`
+once, after creation, so a fresh container either reproduces the positive and
+expected-rejection proof gates or reports the failing gate.
+
+== Usage
+
+* *VS Code*: install the *Dev Containers* extension and choose
+  **Reopen in Container** from the command palette.
+* *Codespaces / GitHub web*: **Code > Codespaces > New codespace**.
+* *CLI*: run the standard devcontainer CLI against this repository, or build the
+  image directly:
+
+[source,sh]
+----
+docker build -t epistemic-types-dev -f .devcontainer/Containerfile .
+docker run --rm -it -v "$PWD":/workspaces/epistemic-types epistemic-types-dev
+# then inside the container:
+just check
+----
+
+== Toolchain parity
+
+The image digest in the `FROM` line is the digest used by
+`.github/workflows/agda.yml` for both of its jobs, and the Agda package version
+is the one CI asserts before running the gates. CI invokes the same
+`scripts/check.sh` entry point, so a passing container check and a passing CI
+check mean the same gate, on the same toolchain.
+
+== What is not verified here
+
+This container defines the first-run environment; it is not a claim about
+non-Linux hosts, other Agda versions, or the optional canonical-Echo gate
+(`just check-canonical`), which needs a reviewed `echo-types` checkout and a
+writable Agda standard-library source tree and is therefore not part of first
+run.

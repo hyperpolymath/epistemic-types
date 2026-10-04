@@ -4,7 +4,7 @@ title = "epistemic-types — universal AI agent entry point"
 version = "0.1.0"
 format = "a2ml"
 status = "prototype"
-last-updated = "2026-09-07"
+last-updated = "2026-10-04"
 
 [project]
 name = "epistemic-types"
@@ -36,11 +36,17 @@ format = "AsciiDoc (.adoc) is the default; existing lowercase doc filenames are 
 scm-files-location = ".machine_readable/ ONLY — a2ml and scm/Nickel/k9 files never live at repo root"
 license = "MPL-2.0"
 build = "just check"
-build-expansion = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+build-expansion = "bash scripts/check.sh → bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 agda-options = "{-# OPTIONS --safe --without-K #-} ; no postulates; no Agda standard library (only Agda.Builtin.* / Agda.Primitive)"
 agda-version = "2.6.4.3"
 echo-distinction = "Do not collapse Echo C y and E κ A. Echo retains certified residues; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
 ci = "Proof and security workflows configured; required merge checks are described in docs/ci-safety.adoc"
+secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153/D154). Do not add a Secret API or information-flow implementation here; docs/secret-types.adoc is the boundary/history note. epistemic-types#29 stays closed."
+
+[first-run]
+dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'."
+local = "just check → scripts/check.sh: local Agda when present, otherwise 'guix shell -D -f build/guix.scm -- bash scripts/check.sh'."
+ci = ".github/workflows/agda.yml asserts 'Agda version 2.6.4.3' and runs 'bash scripts/check.sh' in the pinned Debian 13 container."
 
 [source]
 root = "src/EpistemicTypes/"
@@ -91,7 +97,7 @@ step-3 = "Read .machine_readable/descriptiles/META.a2ml for architecture and des
 step-4 = "Read .machine_readable/descriptiles/ECOSYSTEM.a2ml for ecosystem position and sibling repos."
 step-5 = "Read .machine_readable/descriptiles/AGENTIC.a2ml, NEUROSYM.a2ml, and PLAYBOOK.a2ml for agent guidance."
 step-6 = "Read README.adoc and explainme.adoc for the human-facing overview."
-step-7 = "Run 'just check' to check every source module and semantic rejection fixture before and after changes."
+step-7 = "Run 'just check' (→ scripts/check.sh: local Agda or the Guix environment, or the dev container) to check every source module and semantic rejection fixture before and after changes."
 
 [policy]
 rules = [
@@ -101,6 +107,7 @@ rules = [
   "Keep a2ml / Nickel / k9 files under .machine_readable/ only.",
   "License and SPDX changes are owner-manual; do not add LICENSE files or SPDX headers.",
   "Maintain owner-authorized proof and security CI; do not bypass failing checks.",
+  "Secret types and information-flow control stay outside this repository (D153/D154, docs/secret-types.adoc); do not duplicate the move of issue #32.",
 ]
 
 [ecosystem]

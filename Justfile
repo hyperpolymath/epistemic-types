@@ -1,5 +1,8 @@
-check: check-proofs check-rejections
+# Full proof gate through the first-run entry point: local Agda, else Guix.
+check:
+	bash scripts/check.sh
 
+# Individual gates (also invoked by scripts/check.sh and by CI).
 check-proofs:
 	bash tests/check-proofs.sh
 
