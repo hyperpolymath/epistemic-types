@@ -12,6 +12,22 @@ the changelog records what is actually proved, not what is aspired to.
 
 === https://github.com/hyperpolymath/epistemic-types/compare/v0.1.0...HEAD[Unreleased]
 
+[[changed--2026-10-05]]
+==== Changed — 2026-10-05
+
+* Cross-reference review of the Secret Types transition. `docs/secret-types.adoc`
+  now records that issue #32 **stays in this repository, open**, as the
+  origin/decision record: the specification moved to
+  `hyperpolymath/secret-types` (canonical spec and ADR 0004, PR #4 `d1122d8`,
+  2026-10-04), but no issue transfer occurs, and closure waits on the standalone
+  specification's own review checklist. The provenance blob (`583017cfd5fa…`,
+  the PR #33 revision) was verified, the stale downstream cross-references were
+  recorded, and the exact proposed issue update (prepared, not posted) is in
+  `docs/secret-types-transition-review-2026-10-05.adoc`. `README`, the
+  documentation index, `STATE.a2ml`, `META.a2ml` (ADR-007) and
+  `0-AI-MANIFEST.a2ml` were corrected where they described a pending transfer of
+  issue #32. No Agda source changed.
+
 [[changed--2026-10-04]]
 ==== Changed — 2026-10-04
 

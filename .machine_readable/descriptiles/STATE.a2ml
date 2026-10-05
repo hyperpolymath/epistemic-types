@@ -1,7 +1,7 @@
 [metadata]
 project = "epistemic-types"
 version = "0.1.0"
-last-updated = "2026-10-04"
+last-updated = "2026-10-05"
 status = "prototype"  # prototype | active | paused | archived
 
 [project-context]
@@ -20,7 +20,7 @@ discipline = "Constructive. Compiles under {-# OPTIONS --safe --without-K #-}. N
 honesty-rule = "Laws appear as explicit fields when not derivable; lawful instances are added only after proving or explicitly assuming the laws. No smuggling."
 
 [boundaries]
-secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153: label-constrained flow with explicit declassification and type-family-map registration; D154: reuse an existing lattice two-point-first, prove noninterference, declassify only at explicit audited points). This repository adds no Secret API and no information-flow implementation; docs/secret-types.adoc is retained as the boundary/history note. epistemic-types#29 is resolved and stays closed; the transfer of epistemic-types#32 to secret-types is pending GitHub issue-write access and must not be duplicated."
+secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153: label-constrained flow with explicit declassification and type-family-map registration; D154: reuse an existing lattice two-point-first, prove noninterference, declassify only at explicit audited points). This repository adds no Secret API and no information-flow implementation; docs/secret-types.adoc is retained as the boundary/history note. epistemic-types#29 is resolved and stays closed; epistemic-types#32 stays in this repository and stays open as the origin/decision record (no transfer) and must not be duplicated. It closes only after the standalone specification's review checklist is completed item by item; see docs/secret-types.adoc and docs/secret-types-transition-review-2026-10-05.adoc."
 
 [build]
 checker = "Agda 2.6.4.3 (CI-matched)"

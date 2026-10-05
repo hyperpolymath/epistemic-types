@@ -41,7 +41,7 @@ agda-options = "{-# OPTIONS --safe --without-K #-} ; no postulates; no Agda stan
 agda-version = "2.6.4.3"
 echo-distinction = "Do not collapse Echo C y and E κ A. Echo retains certified residues; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
 ci = "Proof and security workflows configured; required merge checks are described in docs/ci-safety.adoc"
-secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153/D154). Do not add a Secret API or information-flow implementation here; docs/secret-types.adoc is the boundary/history note. epistemic-types#29 stays closed."
+secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153/D154). Do not add a Secret API or information-flow implementation here; docs/secret-types.adoc is the boundary/history note. epistemic-types#29 stays closed; issue #32 stays open here as the origin/decision record (no transfer) until the standalone specification's review checklist completes."
 
 [first-run]
 dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'."
@@ -107,7 +107,7 @@ rules = [
   "Keep a2ml / Nickel / k9 files under .machine_readable/ only.",
   "License and SPDX changes are owner-manual; do not add LICENSE files or SPDX headers.",
   "Maintain owner-authorized proof and security CI; do not bypass failing checks.",
-  "Secret types and information-flow control stay outside this repository (D153/D154, docs/secret-types.adoc); do not duplicate the move of issue #32.",
+  "Secret types and information-flow control stay outside this repository (D153/D154; canonical specification in hyperpolymath/secret-types). Issue #32 stays in this repository, open, as the origin/decision record: do not transfer it, close it, or duplicate it, and treat closure as pending the standalone specification's review checklist (docs/secret-types.adoc, docs/secret-types-transition-review-2026-10-05.adoc).",
 ]
 
 [ecosystem]
