@@ -73,8 +73,8 @@ consequence = "No-smuggling holds structurally rather than by side-condition. Th
 title = "Secret types and information-flow control are specified outside this repository"
 status = "accepted"
 context = "Issue #29 preserved a secret-types research note here; issue #32 then proposed an in-repository security model. On 2026-10-04 the owner ruled that hyperpolymath/secret-types is the standalone home, with D153 (a secret type is a value whose flow is constrained by a confidentiality label with explicit declassification, registered in the type-family map on that boundary) and D154 (reuse an existing lattice, two-point first then general; prove noninterference; declassify only at explicit audited points)."
-decision = "This repository adds no Secret API and no information-flow implementation. docs/secret-types.adoc is retained as the boundary/history note; the specification itself, lattice reuse, the noninterference theorem, and audited declassification belong to hyperpolymath/secret-types."
-consequence = "The epistemic core keeps its scope: no confidentiality claim attaches to BeliefModality, Echo grades, or Access. epistemic-types#29 stays closed; the move of issue #32 must not be duplicated."
+decision = "This repository adds no Secret API and no information-flow implementation. docs/secret-types.adoc is retained as the boundary/history note; the specification itself (canonical text in hyperpolymath/secret-types docs/secret-types.adoc; placement in docs/decisions/0004-standalone-repo-and-scope.adoc, PR #4 d1122d8), lattice reuse, the noninterference theorem, and audited declassification belong to hyperpolymath/secret-types."
+consequence = "The epistemic core keeps its scope: no confidentiality claim attaches to BeliefModality, Echo grades, or Access. epistemic-types#29 stays closed. Issue #32 stays in this repository and stays open as the origin/decision record - no transfer and no duplicate - until the standalone specification's review checklist is completed item by item (docs/secret-types.adoc, docs/secret-types-transition-review-2026-10-05.adoc)."
 
 [development-practices]
 build-tool = "just"
