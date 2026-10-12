@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 = Kripke semantics and warrant soundness — status 2026-10-12
 
-README lists *complete epistemic logic / Kripke semantics* and *global
-soundness of warrants* as intentionally unformalised. The three modules
-under `src/EpistemicTypes/Kripke/` change that status as follows.
+The modules under `src/EpistemicTypes/Kripke/` formalise Kripke semantics
+and the results below. Complete epistemic logic and soundness for
+data-dependent warrants remain outstanding; E-6 records the open external
+verification for type-determined warrants.
 
 [cols="1,3,1",options="header"]
 |===
@@ -13,7 +14,7 @@ under `src/EpistemicTypes/Kripke/` change that status as follows.
 | E-3 | Correspondences, constructively: reflexive ⇔ factive (T, both directions); transitive ⇔ positively introspective (4, both directions); Euclidean ⇒ 5; serial ⇒ D. The converses of 5 and D need classical reasoning and are not claimed | PROVEN / OPEN as stated
 | E-4 | A reflexive frame yields an `IndexedFactive` (`factive`) | PROVEN
 | E-5 | *The non-factive model*: two worlds, access only w₀ → w₁; at w₀ there is a `Warrant` (evidence: a `Box` proof) for a false proposition, and no `sound` field can exist for it. `Warrant ≠ SoundWarrant`, witnessed | PROVEN (`Kripke/Belief.agda`: `believed`, `false-at-w₀`, `no-sound-warrant`); TESTED (`tests/reject/BeliefIsKnowledge`: factivity refused on this frame)
-| E-6 | Global soundness of warrants in a reflexive frame — every type-determined warrant sound — is discharged externally in choreographic-types (`Choreographic.Kripke`, which imports this repo's `Warrant` at 495db9c) | PROVEN there; recorded here
+| E-6 | Global soundness of warrants in a reflexive frame — every type-determined warrant sound — is reported externally in choreographic-types (`Choreographic.Kripke`, citing this repo's `Warrant` at `495db9c`) | OPEN (an immutable external revision containing the theorem and its import, and a successful type-check, are not recorded here)
 |===
 
 Separation (family bar, criterion 2): the belief model is a modality with

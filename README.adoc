@@ -15,7 +15,7 @@ When an agent observes a fact, the type of their access matters. Knowledge is fa
 
 Epistemic types provide a mechanised vocabulary for these distinctions. Given a type of standpoints `K` (agents, observers, evidence states), the modality `E : K → Set ℓ → Set ℓ` reads: `E κ A` is the type of `A` as epistemically available from standpoint `κ`.
 
-This repo does not define a complete epistemic logic or Kripke semantics. It provides the minimal interfaces — factive vs. non-factive modalities, warrants, accessibility preorder, and compositional proof transport — and proves the structural laws that hold generically, while making explicit what must be assumed.
+This repo does not define a complete epistemic logic. It provides Kripke semantics and the minimal interfaces — factive vs. non-factive modalities, warrants, accessibility preorder, and compositional proof transport — and proves the structural laws that hold generically, while making explicit what must be assumed.
 
 == The modality spectrum
 
@@ -190,7 +190,7 @@ interface is a breaking correction documented in link:docs/proof-transport.adoc[
 
 [NOTE]
 ====
-2026-10-12: Kripke semantics, the frame-condition correspondences, a non-factive model (`Warrant ≠ SoundWarrant` witnessed), the residual-evidence frame and the dependence test now live under `src/EpistemicTypes/Kripke/`; see link:docs/kripke-status-2026-10-12.adoc[]. The items below are updated accordingly: Kripke semantics is no longer unformalised; global warrant soundness is discharged for type-determined warrants (externally, choreographic-types) and remains an assumption for data-dependent ones.
+2026-10-12: Kripke semantics, the frame-condition correspondences, a non-factive model (`Warrant ≠ SoundWarrant` witnessed), the residual-evidence frame and the dependence test now live under `src/EpistemicTypes/Kripke/`; see link:docs/kripke-status-2026-10-12.adoc[]. Global warrant soundness for type-determined warrants is reported externally in choreographic-types but remains open pending an immutable external revision containing the theorem and its import and a successful type-check (E-6). Soundness for data-dependent warrants remains an assumption.
 ====
 
 [CAUTION]
@@ -198,10 +198,10 @@ interface is a breaking correction documented in link:docs/proof-transport.adoc[
 This is a prototype, not a complete epistemic logic. The following are **intentionally omitted** as future commitments, not hidden assumptions:
 ====
 
-* Complete epistemic logic or Kripke semantics
+* Complete epistemic logic
 * Graded comonad for echo-type composition
 * Proof irrelevance or decidability
-* Global soundness of warrants
+* Soundness for data-dependent warrants
 * Monadic (`bind`) or comonadic (`extract`) structure for `E`
 * A rational (ℚ) instance of the applications layer, and the rescaling
   transport that would lift the integer certificate to rational input
