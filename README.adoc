@@ -188,6 +188,11 @@ interface is a breaking correction documented in link:docs/proof-transport.adoc[
 
 == What remains intentionally unformalized
 
+[NOTE]
+====
+2026-10-12: Kripke semantics, the frame-condition correspondences, a non-factive model (`Warrant ≠ SoundWarrant` witnessed), the residual-evidence frame and the dependence test now live under `src/EpistemicTypes/Kripke/`; see link:docs/kripke-status-2026-10-12.adoc[]. The items below are updated accordingly: Kripke semantics is no longer unformalised; global warrant soundness is discharged for type-determined warrants (externally, choreographic-types) and remains an assumption for data-dependent ones.
+====
+
 [CAUTION]
 ====
 This is a prototype, not a complete epistemic logic. The following are **intentionally omitted** as future commitments, not hidden assumptions:
