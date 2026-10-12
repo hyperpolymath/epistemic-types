@@ -5,6 +5,11 @@ module EpistemicTypes.All where
 open import EpistemicTypes.Base public
 open import EpistemicTypes.Warrant public
 open import EpistemicTypes.Access public
+import EpistemicTypes.Kripke.Indexed
+import EpistemicTypes.Kripke.Frame
+import EpistemicTypes.Kripke.Belief
+import EpistemicTypes.Kripke.Residual
+import EpistemicTypes.Kripke.Dependence
 open import EpistemicTypes.EchoBridge public
 -- Imported (checked) but NOT re-exported publicly: ReadConsistency keeps
 -- its own self-contained ⊥/¬_ (matching the Examples.agda convention),

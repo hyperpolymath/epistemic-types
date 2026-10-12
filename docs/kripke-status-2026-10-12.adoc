@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= Kripke semantics and warrant soundness — status 2026-10-12
+
+The modules under `src/EpistemicTypes/Kripke/` formalise Kripke semantics
+and the results below. Complete epistemic logic and soundness for
+data-dependent warrants remain outstanding; E-6 records the open external
+verification for type-determined warrants.
+
+[cols="1,3,1",options="header"]
+|===
+| ID | Claim | Status
+| E-1 | `Modality` cannot express Kripke knowledge: its carrier has no world index. `IndexedModality`/`IndexedFactive`/`IndexedAccessible` are `Base`/`Access` field for field with `E : K → (W → Set) → (W → Set)`; the originals are the `W = ⊤` case (`toModality`) | PROVEN (`Kripke/Indexed.agda`)
+| E-2 | Frames and `Box`; `Box` is an `IndexedModality` | PROVEN (`Kripke/Frame.agda`)
+| E-3 | Correspondences, constructively: reflexive ⇔ factive (T, both directions); transitive ⇔ positively introspective (4, both directions); Euclidean ⇒ 5; serial ⇒ D. The converses of 5 and D need classical reasoning and are not claimed | PROVEN / OPEN as stated
+| E-4 | A reflexive frame yields an `IndexedFactive` (`factive`) | PROVEN
+| E-5 | *The non-factive model*: two worlds, access only w₀ → w₁; at w₀ there is a `Warrant` (evidence: a `Box` proof) for a false proposition, and no `sound` field can exist for it. `Warrant ≠ SoundWarrant`, witnessed | PROVEN (`Kripke/Belief.agda`: `believed`, `false-at-w₀`, `no-sound-warrant`); TESTED (`tests/reject/BeliefIsKnowledge`: factivity refused on this frame)
+| E-6 | Global soundness of warrants in a reflexive frame — every type-determined warrant sound — is reported externally in choreographic-types (`Choreographic.Kripke`, citing this repo's `Warrant` at `495db9c`) | OPEN (an immutable external revision containing the theorem and its import, and a successful type-check, are not recorded here)
+|===
+
+Separation (family bar, criterion 2): the belief model is a modality with
+evidence and no extraction, which no grade algebra and no secret label can
+express; the factive/non-factive split is the family's own.
+
+Builtins only; checked with the repo's own flags (`--safe --without-K
+--double-check -W error`).
+
+== Residual-evidence, read in the frame (`Kripke/Residual.agda`)
+
+[cols="1,3,1",options="header"]
+|===
+| ID | Claim | Status
+| E-7 | residual-evidence-types' `Holds c P` is `Box` over the accessibility "is a candidate" (same reading, satisfies the evidence): the Echo fibre cut down by evidence. Its four verdicts are the joint cases of `Box P`, `Box (¬ P)` | PROVEN by definition (`residualFrame`, `Holds`)
+| E-8 | "Presence without identification" is de dicto without de re: `Box (∃ x. Is x)` with no `Box (Is x)`; witnessed on a three-world model | PROVEN (`presence`, `no-identification`)
+| E-9 | DECISION-002 test 1 (dependence is not a function of the candidate set), run in a faithful mirror of residual-evidence's `Dependent`: contexts `[P]` and `[P, P]` have the same candidates pointwise, yet a claim can rest on a *proper* sub-context in the second and not the first. A box sees worlds; dependence sees assumptions | PROVEN in the mirror (`Kripke/Dependence.agda`); re-proof against residual-evidence's own record OPEN (same kernel, same shape)
+|===
