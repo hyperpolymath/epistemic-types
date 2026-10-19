@@ -8,28 +8,15 @@ workflows:
     '.github/workflows/codeql.yml':
         - 'actions/checkout@v6.0.3'
         - 'github/codeql-action@v4.36.2'
-    '.github/workflows/governance.yml': []
+    '.github/workflows/governance.yml':
+        - 'hyperpolymath/standards@75bd5994470661a099df562d6d5ad2fe744dbd66'
     '.github/workflows/label-triage.yml': []
     '.github/workflows/labels.yml': []
     '.github/workflows/push-email-notify.yml':
         - 'hyperpolymath/smtp-notify-action@v0.2.0'
-    '.github/workflows/secret-scanner.yml': []
+    '.github/workflows/secret-scanner.yml':
+        - 'hyperpolymath/standards@75bd5994470661a099df562d6d5ad2fe744dbd66'
 dependencies:
-    'actions/checkout@v6.0.3':
-        ref: 'v6.0.3'
-        commit: 'sha1-df4cb1c069e1874edd31b4311f1884172cec0e10'
-        owner_id: 44036562
-        repo_id: 197814629
-    'github/codeql-action@v4.36.2':
-        ref: 'v4.36.2'
-        commit: 'sha1-8aad20d150bbac5944a9f9d289da16a4b0d87c1e'
-        owner_id: 9919
-        repo_id: 259445878
-    'hyperpolymath/smtp-notify-action@v0.2.0':
-        ref: 'v0.2.0'
-        commit: 'sha1-ede1191ef6ff3ac02c4f4d9efdf837ee517e11d7'
-        owner_id: 6759885
-        repo_id: 1352485172
     'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9':
         ref: 'v6.1.0'
         commit: 'sha1-55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
@@ -40,6 +27,21 @@ dependencies:
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
+    'actions/checkout@v6.0.3':
+        ref: 'v6.0.3'
+        commit: 'sha1-df4cb1c069e1874edd31b4311f1884172cec0e10'
+        owner_id: 44036562
+        repo_id: 197814629
+    'denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed':
+        ref: 'v2.0.5'
+        commit: 'sha1-22d081ff2d3a40755e97629de92e3bcbfa7cf2ed'
+        owner_id: 42048915
+        repo_id: 356423100
+    'editorconfig-checker/action-editorconfig-checker@51f63319f592f97930c73d9c46184d20bd206393':
+        ref: 'v3.0.0'
+        commit: 'sha1-51f63319f592f97930c73d9c46184d20bd206393'
+        owner_id: 26415196
+        repo_id: 297874902
     'editorconfig-checker/action-editorconfig-checker@840e866d93b8e032123c23bac69dece044d4d84c':
         ref: 'v2.2.0'
         commit: 'sha1-840e866d93b8e032123c23bac69dece044d4d84c'
@@ -50,3 +52,30 @@ dependencies:
         commit: 'sha1-54075bcc5e249e4758d363f27d099f55d843f124'
         owner_id: 47606891
         repo_id: 331103973
+    'github/codeql-action@v4.36.2':
+        ref: 'v4.36.2'
+        commit: 'sha1-8aad20d150bbac5944a9f9d289da16a4b0d87c1e'
+        owner_id: 9919
+        repo_id: 259445878
+    'hyperpolymath/smtp-notify-action@v0.2.0':
+        ref: 'v0.2.0'
+        commit: 'sha1-ede1191ef6ff3ac02c4f4d9efdf837ee517e11d7'
+        owner_id: 6759885
+        repo_id: 1352485172
+    'hyperpolymath/standards@75bd5994470661a099df562d6d5ad2fe744dbd66':
+        ref: '75bd5994470661a099df562d6d5ad2fe744dbd66'
+        commit: 'sha1-75bd5994470661a099df562d6d5ad2fe744dbd66'
+        owner_id: 6759885
+        repo_id: 1116521501
+        uses:
+            - 'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
+            - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+            - 'denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed'
+            - 'editorconfig-checker/action-editorconfig-checker@51f63319f592f97930c73d9c46184d20bd206393'
+            - 'erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124'
+            - 'oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6'
+    'oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6':
+        ref: 'v2.2.0'
+        commit: 'sha1-0c5077e51419868618aeaa5fe8019c62421857d6'
+        owner_id: 108928776
+        repo_id: 512644635
