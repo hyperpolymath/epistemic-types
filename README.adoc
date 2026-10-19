@@ -190,7 +190,7 @@ interface is a breaking correction documented in link:docs/proof-transport.adoc[
 
 [NOTE]
 ====
-2026-10-12: Kripke semantics, the frame-condition correspondences, a non-factive model (`Warrant ≠ SoundWarrant` witnessed), the residual-evidence frame and the dependence test now live under `src/EpistemicTypes/Kripke/`; see link:docs/kripke-status-2026-10-12.adoc[]. Global warrant soundness for type-determined warrants is reported externally in choreographic-types but remains open pending an immutable external revision containing the theorem and its import and a successful type-check (E-6). Soundness for data-dependent warrants remains an assumption.
+2026-10-12: Kripke semantics, the frame-condition correspondences, a non-factive model (`Warrant ≠ SoundWarrant` witnessed), the residual-evidence frame and the dependence test now live under `src/EpistemicTypes/Kripke/`; see link:docs/kripke-status-2026-10-12.adoc[]. Global warrant soundness for type-determined warrants is proved externally in choreographic-types, at the recorded revision `d8536184366f4ac4567aa066c5dbcb9220e3607a` with a successful CI type-check, and is not re-checked here (E-6). Soundness for data-dependent warrants remains an assumption.
 ====
 
 [CAUTION]
