@@ -211,10 +211,13 @@ This is a prototype, not a complete epistemic logic. The following are **intenti
   out of scope for this repository. The standalone home is
   link:https://github.com/hyperpolymath/secret-types[`hyperpolymath/secret-types`]
   (D153/D154); link:docs/secret-types.adoc[the boundary/history note] records
-  the decision and the pointer. No `Secret` API exists here. Issue #32 stays
-  open in this repository as the origin/decision record (no transfer);
+  the decision and the pointer. No `Secret` API exists here. Issue #32 was
+  closed on 2026-10-05 as delivered here (no transfer; the successor guard is
+  link:https://github.com/hyperpolymath/epistemic-types/issues/39[#39]);
   link:docs/secret-types-transition-review-2026-10-05.adoc[the transition
-  review] records the cross-references.
+  review] records the cross-references, and the boundary note's 2026-10-25
+  status update records the standalone repository's proved noninterference
+  theorem.
 
 == Build
 
