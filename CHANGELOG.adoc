@@ -12,6 +12,36 @@ the changelog records what is actually proved, not what is aspired to.
 
 === https://github.com/hyperpolymath/epistemic-types/compare/v0.1.0...HEAD[Unreleased]
 
+[[changed--2026-10-25]]
+==== Changed — 2026-10-25
+
+* Secret-types pointer sync (issue #39, items 1 and 3). `epistemic-types#32` was
+  **closed on 2026-10-05T06:37Z** by the owner as delivered here, with no
+  transfer ("no transfer of this issue occurred or is required, and none should
+  be attempted"); the successor guard is `#39`. The previous text — that #32
+  stays open here and must not be closed — was accurate on 2026-10-05 and is now
+  false, so `docs/secret-types.adoc` (new section *Status update — 2026-10-25*
+  plus corrected boundary, transition-review and decision paragraphs),
+  `docs/secret-types-transition-review-2026-10-05.adoc` (kept as history, with
+  dated supersession notes), `README.adoc`, `docs/README.adoc`, `STATE.a2ml`,
+  `META.a2ml` (ADR-007) and `0-AI-MANIFEST.a2ml` were corrected. The
+  machine-readable agent instruction that said "do not close #32" now says it is
+  closed and must not be reopened.
+* Recorded the standalone repository's current state at
+  `hyperpolymath/secret-types` `main`
+  `ccdcb3ec42792337a9ab6047e1f99de9d20a4f96` (2026-10-19, proof gate green in
+  run 39305922644): N-1, N-2, N-3 and N-7 PROVEN (TINI at the two-point lattice
+  and over an arbitrary `Lattice` record, public-expression agreement,
+  confinement), N-4/N-5/N-6 TESTED, N-8 PROVEN (countermodels). The fragment has
+  no declassification, so D154's audited-declassification requirement is not yet
+  implemented.
+* Recorded that D153's family-map row landed in `nextgen-typing`
+  `docs/TYPE-CONNECTIONS.adoc` on 2026-10-05 and `nextgen-typing#118` is closed
+  (that map's explanatory note still claims no noninterference theorem exists),
+  and that `valence-shell` `docs/THEORY-FEED.adoc` remains stale under `#210`
+  with `#92` unselected. Those corrections belong to their own repositories.
+* No Agda source changed; the proof gates are unaffected.
+
 [[changed--2026-10-05]]
 ==== Changed — 2026-10-05
 

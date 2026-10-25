@@ -40,14 +40,17 @@ authority.
   `hyperpolymath/secret-types` is the standalone home (D153/D154), the retained
   two-level information-flow proposal (label order, attacker and observation
   boundary, noninterference target), and the reason no `Secret` API or security
-  theorem exists in this repository. Issue #32 stays open here as the
-  origin/decision record (no transfer).
+  theorem exists in this repository. Issue #32 was closed on 2026-10-05 as
+  delivered here (no transfer; successor guard #39), and the note's 2026-10-25
+  status update records the standalone repository's proved noninterference
+  theorem.
 
 | `docs/secret-types-transition-review-2026-10-05.adoc`
 | Cross-reference review of the Secret Types transition: the evidence and
   verified provenance of `secret-types` PR #4, the ownership split (what moved,
   what remains here, where follow-up belongs), the stale downstream trackers,
-  and the exact proposed issue #32 update (prepared, not posted).
+  and the exact proposed issue #32 update (prepared, never posted — the owner
+  posted a different closing comment on 2026-10-05). Kept as history.
 |===
 
 == Continuity foundations
