@@ -41,7 +41,7 @@ agda-options = "{-# OPTIONS --safe --without-K #-} ; no postulates; no Agda stan
 agda-version = "2.6.4.3"
 echo-distinction = "Do not collapse Echo C y and E κ A. Echo retains certified residues; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
 ci = "Proof and security workflows configured; required merge checks are described in docs/ci-safety.adoc"
-secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153/D154). Do not add a Secret API or information-flow implementation here; docs/secret-types.adoc is the boundary/history note. epistemic-types#29 stays closed. Issue #32 was closed on 2026-10-05 as delivered here (no transfer); do not reopen, transfer, or duplicate it - the successor guard is #39. The standalone repository now carries a proved noninterference theorem (ccdcb3e, 2026-10-19); see docs/secret-types.adoc section Status update 2026-10-25."
+secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153/D154). Do not add a Secret API or information-flow implementation here; docs/secret-types.adoc is the boundary/history note. epistemic-types#29 stays closed. Issue #32 was closed on 2026-10-05 as delivered here (no transfer); do not reopen, transfer, or duplicate it - the successor guard is #39. The standalone repository now carries a proved noninterference theorem (ccdcb3ec42792337a9ab6047e1f99de9d20a4f96, 2026-10-19); see docs/secret-types.adoc section Status update 2026-10-25."
 
 [first-run]
 dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'."
