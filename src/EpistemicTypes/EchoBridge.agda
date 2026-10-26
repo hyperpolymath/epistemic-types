@@ -165,8 +165,8 @@ data _≤G_ : Grade -> Grade -> Set where
   top≤    : {g : Grade} -> g ≤G infinity
 
 ≤G-trans : {a b c : Grade} -> a ≤G b -> b ≤G c -> a ≤G c
+≤G-trans _ top≤ = top≤
 ≤G-trans (finite≤ p) (finite≤ q) = finite≤ (≤ℕ-trans p q)
-≤G-trans p top≤ = top≤
 
 ≤G-plus : (a b : Grade) -> a ≤G gradePlus a b
 ≤G-plus (finite a) (finite b) = finite≤ (≤ℕ-plus a b)
