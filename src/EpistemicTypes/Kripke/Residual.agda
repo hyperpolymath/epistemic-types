@@ -45,8 +45,14 @@ E _ = ⊤
 -- "Thing x is here": true only at world x.
 Is : W → W → Set
 Is a a = ⊤
+Is a b = ⊥
+Is a c = ⊥
+Is b a = ⊥
 Is b b = ⊤
-Is _ _ = ⊥
+Is b c = ⊥
+Is c a = ⊥
+Is c b = ⊥
+Is c c = ⊥
 
 Present : W → Set
 Present w = Σ W (λ x → Is x w)

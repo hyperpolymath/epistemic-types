@@ -28,9 +28,9 @@ Payload _ _ = Bool
 open import EpistemicTypes.ProofTransport Agent Claim Artifact Meaning Payload
 
 checkPayload : (a : Artifact) -> (c : Claim) -> Payload a c -> Bool
+checkPayload _ ImpossibleClaim _ = false
 checkPayload true ArtifactIsTrue p = p
 checkPayload false ArtifactIsTrue _ = false
-checkPayload _ ImpossibleClaim _ = false
 
 checkPayloadSound :
   (holder : Agent) (a : Artifact) (c : Claim) (p : Payload a c) ->
