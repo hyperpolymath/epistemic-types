@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}
 module ReplayedArtifact where
 open import Agda.Builtin.Bool using (false)
 open import EpistemicTypes.ProofTransportExample using (Agent; Claim; Artifact; Meaning; Payload; Alice; ArtifactIsTrue; aliceProof)

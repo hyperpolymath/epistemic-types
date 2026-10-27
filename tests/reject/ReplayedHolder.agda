@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}
 module ReplayedHolder where
 open import Agda.Builtin.Bool using (true)
 open import EpistemicTypes.ProofTransportExample using (Bob; ArtifactIsTrue; module HolderBoundary)

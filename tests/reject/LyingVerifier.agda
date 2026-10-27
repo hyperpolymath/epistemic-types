@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}
 module LyingVerifier where
 open import Agda.Builtin.Bool using (true; false)
 open import Agda.Builtin.Equality using (refl)

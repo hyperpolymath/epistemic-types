@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}
 -- Rejection control: a skip whose check was not accepted.
 --
 -- The four-taxon scan below is unscannable past its cursor.  With r = 4

@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}
 module InventedMigration where
 open import Agda.Builtin.Bool
 open import Agda.Builtin.Equality
