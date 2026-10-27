@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}
 
 -- Proof statuses carry a successful check and entail a caller-supplied meaning.
 -- Soundness is relative to Meaning and the verifier's explicit soundness proof.

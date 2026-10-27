@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}
 module ForkedHistory where
 open import EpistemicTypes.ReadConsistency
 import EpistemicTypes.ContinuityExamples as Examples
