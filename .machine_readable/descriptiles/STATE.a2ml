@@ -30,6 +30,7 @@ expands-to = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash t
 dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'"
 ci-entry-point = ".github/workflows/agda.yml asserts 'Agda version 2.6.4.3', then runs 'bash scripts/check.sh'"
 warning-policy = "-W error with only noUnsupportedIndexedMatch disabled: locally for Kripke.Belief's indexed relation elimination and at the pinned external integration boundary. No Cubical transport computation is claimed for those functions."
+proof-status = "AGDA-VERIFIED; Mathesis Grade 3. Proof Safety run 41326349568 passed both core/rejection/policy and pinned integration jobs at checked revision bf9c75a38794d744ce466574e6323062e7d22533. Rocq/Lean/bridge legs remain open."
 aggregator = "src/EpistemicTypes/All.agda imports the full source graph; the recursive gate separately checks every source file, including modules not publicly re-exported."
 
 [modules]

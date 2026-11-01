@@ -59,16 +59,25 @@ at source commit `5422cd5bf1418c44321bf0f77e894737a451d8f5` (Agda 2.6.4.3), wher
 Because that command did not spell out the new CLI flag, it is retained as
 historical evidence, not as the receipt for the 2026-11-01 profile.
 
-Current profile status at the time of this edit: `AGDA-PENDING`. A successful
-hosted run of the command above is required before labelling this revision
-Mathesis Grade 3. No missing tool, import failure, or unexpected rejection is a
-pass.
+The fresh canonical-profile receipt is Proof Safety run
+https://github.com/hyperpolymath/epistemic-types/actions/runs/41326349568[41326349568]
+at checked revision `bf9c75a38794d744ce466574e6323062e7d22533` on 2026-11-01.
+Both `Proof core and rejection controls` and `Canonical Echo correspondence`
+passed with Agda 2.6.4.3. The core job ran the policy preflight, all 22 source
+modules, and all 13 intended rejections; the separate integration job checked
+the pinned Echo witness.
+
+Current profile status: `AGDA-VERIFIED`; the checked revision is *Mathesis
+Grade 3*. The immediately following status/metadata receipt update changes no
+Agda source, fixture, gate, option, or dependency pin and is itself rerun by the
+same PR workflow. No missing tool, import failure, or unexpected rejection
+counts as a pass.
 
 == Local proof ledger
 
-All `PROVEN` rows below describe the Agda model only. Until the current profile
-receipt lands, read them as the theorem inventory supported by the historical
-Agda receipt above, with the aggregate revision status still `AGDA-PENDING`.
+All `PROVEN` rows below describe the Agda model only. They are covered by the
+canonical hosted receipt above; they do not thereby establish an external
+runtime or an unlisted mathematical correspondence.
 
 [cols="1,4,1,3",options="header"]
 |===
@@ -206,8 +215,9 @@ build dependencies, or independent proof legs for this repository.
 == Mathesis grade and independent proof legs
 
 Mathesis Grade 3 means that the Agda source checks under the strict profile at a
-recorded revision, without an independent foundational translation. This
-revision is a *Grade 3 candidate* while its `AGDA-PENDING` run is outstanding.
+recorded revision, without an independent foundational translation. Hosted run
+`41326349568` closes that requirement for checked revision `bf9c75a`; this
+proof corpus is *Mathesis Grade 3*.
 
 No theorem in this repository currently has a theorem-by-theorem Rocq or Lean
 leg with an exact statement comparison:
@@ -215,7 +225,7 @@ leg with an exact statement comparison:
 [cols="2,1,3",options="header"]
 |===
 | Leg | Status | Consequence
-| Agda canonical profile | AGDA-PENDING | Hosted receipt required for Grade 3
+| Agda canonical profile | AGDA-VERIFIED | Grade 3 receipt: run `41326349568`, revision `bf9c75a`
 | Rocq/Coq | OPEN / NOT-INVENTORIED | No Grade 2i/2ii credit
 | Lean | OPEN / NOT-INVENTORIED | No Grade 2i/2ii credit
 | Proposition/semantics bridge | BRIDGE-PENDING | No claim of reconciliation

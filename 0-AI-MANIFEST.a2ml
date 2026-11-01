@@ -41,6 +41,7 @@ agda-options = "--safe --without-K --cubical-compatible plus source hardening --
 agda-version = "2.6.4.3"
 echo-distinction = "Do not collapse Echo C y and E κ A. Echo retains certified residues; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
 ci = "Proof and security workflows configured; required merge checks are described in docs/ci-safety.adoc"
+proof-status = "AGDA-VERIFIED; Mathesis Grade 3. Canonical Proof Safety receipt 41326349568 at checked revision bf9c75a38794d744ce466574e6323062e7d22533. Independent Rocq/Lean/bridge legs remain open."
 secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone production home (D153/D154). Do not add a Secret API, IFC implementation or confidentiality theorem here. #29 stays closed; #32 closed on 2026-10-05 with no transfer and must not be reopened/duplicated (guard #39). Source-reviewed at standalone f581f8295bdee854f76291ab884a16cc8114dc6f on 2026-11-01: generic TINI and its two-point instance are PROVEN; termination-sensitive noninterference and declassification remain OPEN. No theorem is imported here."
 
 [first-run]

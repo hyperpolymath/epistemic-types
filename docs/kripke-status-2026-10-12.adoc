@@ -88,6 +88,8 @@ stabilise that sibling API or infer a dependency from the conceptual reading.
 
 The 2026-10-27 hosted run at commit `5422cd5` checked all five Kripke modules
 under the then-current gate. The 2026-11-01 profile additionally requires the
-CLI to state `--cubical-compatible` explicitly. Until a hosted run under that
-profile succeeds, the aggregate revision is `AGDA-PENDING` and a Mathesis Grade
-3 label is not attached. Rocq, Lean, and proposition-bridge legs remain open.
+CLI to state `--cubical-compatible` explicitly and records the narrow
+`UnsupportedIndexedMatch` computation boundary for `believed`. Proof Safety run
+`41326349568` passed that profile at checked revision `bf9c75a`; the Agda leg is
+`AGDA-VERIFIED` and the corpus is Mathesis Grade 3. Rocq, Lean, and
+proposition-bridge legs remain open.
