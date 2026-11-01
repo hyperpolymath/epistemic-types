@@ -161,9 +161,9 @@ reviewed `UnsupportedIndexedMatch` warning emitted by those external
 dependencies. The run establishes the stated representation/lowering
 correspondence at those pins; it does not establish full Cubical computation
 compatibility for the dependencies. The core build has no standard-library
-dependency. It disables the same warning category only for the separately
-documented indexed relation elimination in `Kripke/Belief.agda`; all other
-warnings are errors.
+dependency. Its strict pass disables the same warning category, but a second
+pass requires the exact 23-span core manifest in `tests/check-proofs.sh`; all
+other warnings are errors and location drift fails.
 
 == Next obligations
 

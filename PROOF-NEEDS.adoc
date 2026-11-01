@@ -15,9 +15,10 @@ results and exact limits are in link:PROOF-STATUS.adoc[].
 | ID | Obligation | Status
 | P0-1 | Run all 22 source modules with Agda 2.6.4.3 under explicit
 `--safe --without-K --cubical-compatible`, double checking, no libraries, no
-interfaces, and warnings as errors except the documented
-`UnsupportedIndexedMatch` transport-computation warning | CLOSED — run
-`41326349568`, revision `bf9c75a`
+interfaces, and warnings as errors except the exact-location-audited
+`UnsupportedIndexedMatch` transport-computation manifest | CLOSED — run
+`41326349568`, revision `bf9c75a`; exact 23-span audit added on 2026-11-01 and
+awaiting its final-head hosted receipt
 | P0-2 | Run all 13 rejection fixtures and require the intended type mismatch,
 Agda exit 42, and no import/tool failure | CLOSED — run `41326349568`
 | P0-3 | Run the proof-policy inventory, banned-construct/import checks, and the

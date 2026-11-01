@@ -269,7 +269,7 @@ command proves an external implementation.
 | `Kripke/Dependence.agda`, `docs/kripke-status-2026-10-12.adoc`
 | The local mirror is checked; identity with the sibling's current record is not
 
-| Semantic malformed-construction controls
+| Semantic rejection controls
 | tested-only
 | Agda 2.6.4.3; expected exit 42 and per-fixture diagnostic
 | `tests/check-rejections.sh`, `tests/reject/`

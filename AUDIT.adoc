@@ -21,13 +21,14 @@ current proof coverage is extended by this change.
 * Every one of the 22 modules under `src/EpistemicTypes/` -- core,
   applications, and Kripke -- is checked with Agda 2.6.4.3 under explicit
   `--safe --without-K --cubical-compatible`, internal double checking and
-  warnings as errors. The sole documented exception is Agda 2.6.4.3's
-  `UnsupportedIndexedMatch` category for the `Kripke.Belief` indexed relation
-  elimination; no Cubical transport-computation claim is made for it.
+  warnings as errors. The `UnsupportedIndexedMatch` category is accepted only
+  at the 23 exact source spans in `tests/check-proofs.sh`; no Cubical
+  transport-computation claim is made for those eliminations.
 * Thirteen deliberate rejection fixtures must fail for their intended type
   mismatch.
-* The policy gate enforces the source inventory, complete strict pragma,
-  standalone import boundary, zero escape hatches, and a planted-postulate
+* The policy gate enforces exact source/rejection/integration path manifests,
+  exactly one complete strict pragma per module, the standalone import
+  boundary, zero escape hatches, fail-closed searches, and a planted-postulate
   negative control.
 * Canonical Echo residue correspondence is checked against pinned sibling source.
 * CodeQL analyzes Actions workflows, and the shared scanner checks secrets.

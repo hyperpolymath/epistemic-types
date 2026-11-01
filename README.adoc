@@ -252,11 +252,12 @@ agda --no-libraries --safe --without-K --cubical-compatible \
   -i src src/EpistemicTypes/All.agda
 ----
 
-The narrow warning exception is for Agda 2.6.4.3's
-`UnsupportedIndexedMatch` warning at the `Kripke.Belief.believed` indexed
-relation elimination. The proof checks in safe mode; the repository does not
-claim that this function computes when applied to Cubical transports. All
-other warnings remain errors.
+Agda 2.6.4.3's `UnsupportedIndexedMatch` category is disabled in the strict
+pass, then rerun without warnings-as-errors and compared with the exact 23-span
+manifest in `tests/check-proofs.sh`. A warning at a new location, or a stale
+manifest entry, fails the gate. The proofs check in safe mode; the repository
+does not claim that those indexed eliminations compute when applied to Cubical
+transports. All other warnings remain errors.
 
 == Documentation
 
