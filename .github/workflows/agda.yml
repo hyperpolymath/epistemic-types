@@ -38,6 +38,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Verify toolchain and proof constructions
+        shell: bash
         run: |
           test "$(agda --version)" = 'Agda version 2.6.4.3'
           set +e
