@@ -68,7 +68,8 @@ postulate
 AGDA
 status=0
 diagnostic=$(agda --no-libraries --safe --without-K --cubical-compatible \
-  --double-check --ignore-interfaces -W error "$tmpdir/SafeFlagPostulate.agda" 2>&1) || status=$?
+  --double-check --ignore-interfaces -W error -i "$tmpdir" \
+  "$tmpdir/SafeFlagPostulate.agda" 2>&1) || status=$?
 if [[ "$status" -ne 42 ]] || \
     ! rg -q '\[SafeFlagPostulate\]|Cannot postulate .*safe flag' <<< "$diagnostic"; then
   printf 'FAIL: --safe negative control failed for an unexpected reason (exit %s)\n%s\n' \
