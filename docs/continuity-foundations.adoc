@@ -161,7 +161,9 @@ reviewed `UnsupportedIndexedMatch` warning emitted by those external
 dependencies. The run establishes the stated representation/lowering
 correspondence at those pins; it does not establish full Cubical computation
 compatibility for the dependencies. The core build has no standard-library
-dependency and suppresses no warning.
+dependency. It disables the same warning category only for the separately
+documented indexed relation elimination in `Kripke/Belief.agda`; all other
+warnings are errors.
 
 == Next obligations
 
@@ -175,5 +177,6 @@ an acceptance checker with a soundness proof. These remain separate work.
 
 The core, deliberate rejection controls and pinned canonical Echo correspondence
 are CI gates; see link:ci-safety.adoc[]. Only the documented Cubical transport
-compatibility warning is suppressed for the integration. The core remains
-warning-free with no standard-library dependency.
+compatibility warning category is disabled: locally for `Kripke.Belief` and at
+the pinned external integration boundary. The core remains standalone; no
+other warning is suppressed.

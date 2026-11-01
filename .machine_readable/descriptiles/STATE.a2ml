@@ -29,6 +29,7 @@ entry-point = "scripts/check.sh — local agda when present, else 'guix shell -D
 expands-to = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'"
 ci-entry-point = ".github/workflows/agda.yml asserts 'Agda version 2.6.4.3', then runs 'bash scripts/check.sh'"
+warning-policy = "-W error with only noUnsupportedIndexedMatch disabled: locally for Kripke.Belief's indexed relation elimination and at the pinned external integration boundary. No Cubical transport computation is claimed for those functions."
 aggregator = "src/EpistemicTypes/All.agda imports the full source graph; the recursive gate separately checks every source file, including modules not publicly re-exported."
 
 [modules]

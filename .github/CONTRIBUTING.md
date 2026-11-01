@@ -64,7 +64,8 @@ Requirements:
 
 `All.agda` imports the full graph, but the gate also checks every source file
 independently so an omitted aggregate import cannot hide a module. A change is
-not done until `just check` passes with no errors and no warnings.
+not done until `just check` passes with no errors and no warnings outside the
+single documented `UnsupportedIndexedMatch` transport-computation category.
 
 CI checks every source module, semantic rejection controls and pinned
 canonical Echo correspondence. Proof and security gates must pass before

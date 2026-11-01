@@ -247,9 +247,16 @@ To check a single module or the aggregate directly:
 [source,bash]
 ----
 agda --no-libraries --safe --without-K --cubical-compatible \
-  --double-check --ignore-interfaces -W error \
+  --double-check --ignore-interfaces \
+  -W error -W noUnsupportedIndexedMatch \
   -i src src/EpistemicTypes/All.agda
 ----
+
+The narrow warning exception is for Agda 2.6.4.3's
+`UnsupportedIndexedMatch` warning at the `Kripke.Belief.believed` indexed
+relation elimination. The proof checks in safe mode; the repository does not
+claim that this function computes when applied to Cubical transports. All
+other warnings remain errors.
 
 == Documentation
 

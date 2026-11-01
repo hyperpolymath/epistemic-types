@@ -42,8 +42,11 @@ bash tests/check-rejections.sh
 Every first-party Agda entry point is invoked with the canonical theory profile
 `--safe --without-K --cubical-compatible`; source files additionally declare
 `--exact-split --no-sized-types --no-guardedness`. Positive source checks use
-`--no-libraries --double-check --ignore-interfaces -W error`. The policy gate
-also inventories all 22 source modules and 13 rejection fixtures, rejects proof
+`--no-libraries --double-check --ignore-interfaces -W error`. The single narrow
+exception is `-W noUnsupportedIndexedMatch`: Agda 2.6.4.3 emits that warning for
+the indexed relation elimination in `Kripke/Belief.agda`; its safe proof still
+checks, but no Cubical transport-computation claim is made for `believed`. The
+policy gate also inventories all 22 source modules and 13 rejection fixtures, rejects proof
 escape hatches and non-core imports, and verifies a generated negative control:
 `--safe` must reject a planted postulate with Agda's expected diagnostic and
 exit code.

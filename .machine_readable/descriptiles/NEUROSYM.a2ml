@@ -39,6 +39,7 @@ rules = [
 checker-of-record = "bash scripts/check.sh"
 canonical-agda-profile = "--safe --without-K --cubical-compatible"
 source-hardening = "--exact-split --no-sized-types --no-guardedness"
+warning-boundary = "All warnings are errors except Agda 2.6.4.3's UnsupportedIndexedMatch category, narrowly disabled for Kripke.Belief's indexed relation elimination and the pinned external integration; no Cubical transport computation is claimed there."
 trust-boundary = "Hypatia findings are advisory here. Agda proof gates and exact expected-rejection diagnostics block proof regressions."
 
 [neural-config]

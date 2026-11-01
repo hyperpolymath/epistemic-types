@@ -15,7 +15,9 @@ results and exact limits are in link:PROOF-STATUS.adoc[].
 | ID | Obligation | Status
 | P0-1 | Run all 22 source modules with Agda 2.6.4.3 under explicit
 `--safe --without-K --cubical-compatible`, double checking, no libraries, no
-interfaces, and warnings as errors | OPEN (`AGDA-PENDING` until hosted receipt)
+interfaces, and warnings as errors except the documented
+`UnsupportedIndexedMatch` transport-computation warning | OPEN (`AGDA-PENDING`
+until hosted receipt)
 | P0-2 | Run all 13 rejection fixtures and require the intended type mismatch,
 Agda exit 42, and no import/tool failure | OPEN with historical green evidence
 | P0-3 | Run the proof-policy inventory, banned-construct/import checks, and the
