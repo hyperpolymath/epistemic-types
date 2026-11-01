@@ -11,6 +11,7 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 required_agda=2.6.4.3
 
 run_gates() {
+  bash tests/check-policy.sh
   bash tests/check-proofs.sh
   bash tests/check-rejections.sh
 }

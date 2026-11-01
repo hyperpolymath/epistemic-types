@@ -1,35 +1,93 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
-= Kripke semantics and warrant soundness — status 2026-10-12
+= Kripke semantics and warrant soundness — 2026-10-12 result, current scope
+:revdate: 2026-11-01
+:toc:
 
-The modules under `src/EpistemicTypes/Kripke/` formalise Kripke semantics
-and the results below. Complete epistemic logic and soundness for
-data-dependent warrants remain outstanding; E-6 records the external
-verification for type-determined warrants.
+This document preserves the Kripke milestone first recorded on 2026-10-12 while
+stating its current exact scope. The owning current ledger is
+link:../PROOF-STATUS.adoc[]. The implementation is constructive and lives under
+`src/EpistemicTypes/Kripke/`; it is a scoped Kripke semantics, not a complete
+epistemic logic.
 
-[cols="1,3,1",options="header"]
-|===
-| ID | Claim | Status
-| E-1 | `Modality` cannot express Kripke knowledge: its carrier has no world index. `IndexedModality`/`IndexedFactive`/`IndexedAccessible` are `Base`/`Access` field for field with `E : K → (W → Set) → (W → Set)`; the originals are the `W = ⊤` case (`toModality`) | PROVEN (`Kripke/Indexed.agda`)
-| E-2 | Frames and `Box`; `Box` is an `IndexedModality` | PROVEN (`Kripke/Frame.agda`)
-| E-3 | Correspondences, constructively: reflexive ⇔ factive (T, both directions); transitive ⇔ positively introspective (4, both directions); Euclidean ⇒ 5; serial ⇒ D. The converses of 5 and D need classical reasoning and are not claimed | PROVEN / OPEN as stated
-| E-4 | A reflexive frame yields an `IndexedFactive` (`factive`) | PROVEN
-| E-5 | *The non-factive model*: two worlds, access only w₀ → w₁; at w₀ there is a `Warrant` (evidence: a `Box` proof) for a false proposition, and no `sound` field can exist for it. `Warrant ≠ SoundWarrant`, witnessed | PROVEN (`Kripke/Belief.agda`: `believed`, `false-at-w₀`, `no-sound-warrant`); TESTED (`tests/reject/BeliefIsKnowledge`: factivity refused on this frame)
-| E-6 | Global soundness of warrants in a reflexive frame — every type-determined warrant sound — is proved externally in choreographic-types (`Choreographic.Kripke`, `Frame.sound-warrant`), which imports this repo's `EpistemicTypes.Warrant` at `495db9cca003e12066a3cb9c9f2d7afa1a953aec` (`Warrant.agda`, `Base.agda` and `Access.agda` are unchanged between that commit and this one). Recorded external revision: choreographic-types `d8536184366f4ac4567aa066c5dbcb9220e3607a`. Type-check: its `Agda proofs` workflow, run 39288705455 on that commit, succeeded under Agda 2.6.4.3 with `--safe --without-K --no-libraries --ignore-interfaces --double-check` (the import is pinned by `scripts/fetch-siblings.sh` there) | RECORDED externally on 2026-10-19 (revision and CI run above; the rest of this table is the 2026-10-12 snapshot); not re-checked in this repository
-|===
-
-Separation (family bar, criterion 2): the belief model is a modality with
-evidence and no extraction, which no grade algebra and no secret label can
-express; the factive/non-factive split is the family's own.
-
-Builtins only; checked with the repo's own flags (`--safe --without-K
---double-check -W error`).
-
-== Residual-evidence, read in the frame (`Kripke/Residual.agda`)
+== Local checked claims
 
 [cols="1,3,1",options="header"]
 |===
 | ID | Claim | Status
-| E-7 | residual-evidence-types' `Holds c P` is `Box` over the accessibility "is a candidate" (same reading, satisfies the evidence): the Echo fibre cut down by evidence. Its four verdicts are the joint cases of `Box P`, `Box (¬ P)` | PROVEN by definition (`residualFrame`, `Holds`)
-| E-8 | "Presence without identification" is de dicto without de re: `Box (∃ x. Is x)` with no `Box (Is x)`; witnessed on a three-world model | PROVEN (`presence`, `no-identification`)
-| E-9 | DECISION-002 test 1 (dependence is not a function of the candidate set), run in a faithful mirror of residual-evidence's `Dependent`: contexts `[P]` and `[P, P]` have the same candidates pointwise, yet a claim can rest on a *proper* sub-context in the second and not the first. A box sees worlds; dependence sees assumptions | PROVEN in the mirror (`Kripke/Dependence.agda`); re-proof against residual-evidence's own record OPEN (same kernel, same shape)
+| E-1 | `IndexedModality`, `IndexedFactive`, and `IndexedAccessible` are the
+world-indexed analogues of the base interfaces; `toModality` constructs the
+one-world case. The stronger prose claim that no other encoding could use the
+unindexed API is not a theorem. | PROVEN (construction only,
+`Kripke/Indexed.agda`)
+| E-2 | Frames and `Box`; `Box` has the indexed map action. | PROVEN
+(`Kripke/Frame.agda`)
+| E-3 | Reflexive iff the T/factivity map exists; transitive iff the
+4/positive-introspection map exists; Euclidean implies 5; serial implies D.
+The converses of 5 and D are not claimed. | PROVEN for the six named
+constructive maps; converse 5 and D OPEN (`Kripke/Frame.agda`)
+| E-4 | A reflexive frame constructs an `IndexedFactive`. | PROVEN (`factive`)
+| E-5 | On a two-world non-reflexive frame, a `Box` witness and an
+`epistemic-types.Warrant` exist for a proposition false at the current world,
+and no soundness map for that evidence exists. | PROVEN
+(`Kripke/Belief.agda`: `believed`, `false-at-w₀`, `warrant`,
+`no-sound-warrant`, `not-reflexive`); the `BeliefIsKnowledge` expected
+rejection is TESTED
 |===
+
+These declarations prove the propositions in their types. They do not prove
+completeness of an epistemic calculus, decidability, proof irrelevance,
+classical modal correspondences, or a runtime implementation.
+
+== Warrant soundness boundary
+
+Choreographic-types provides external evidence for the explicitly scoped
+result formerly recorded as E-6: on its reflexive frame, warrants determined by
+the finite binary/plain-merge choreography are sound. Its current ledger also
+reports K-CUT-LOSS, directional K-CUT-WARRANT bounds and transport, plus
+asynchronous variants, for that fragment. Data-dependent warrants, recursion,
+full merge, and broader asynchronous results remain open there.
+
+This repository retains its originally pinned evidence:
+
+* epistemic-types source pin
+  `495db9cca003e12066a3cb9c9f2d7afa1a953aec`;
+* choreographic-types source pin
+  `d8536184366f4ac4567aa066c5dbcb9220e3607a`;
+* successful choreographic-types Agda workflow run `39288705455`.
+
+That is external pinned evidence, not a local recheck and not a theorem of
+global warrant soundness. In this repository, `SoundWarrant` remains an
+explicit interface and data-dependent soundness remains `OPEN`.
+
+== Residual-evidence reading
+
+[cols="1,3,1",options="header"]
+|===
+| ID | Claim | Status
+| E-7 | For the local definition, residual `Holds` is `Box` over accessibility
+"is a candidate" (matching observation and evidence). | PROVEN by definition
+(`Kripke/Residual.agda`: `residualFrame`, `Holds`)
+| E-8 | Presence without identification: `Box (∃ x. Is x)` while no chosen
+`Box (Is x)` holds, witnessed on a three-world model. | PROVEN
+(`presence`, `no-identification`)
+| E-9 | In the local faithful mirror, contexts `[P]` and `[P,P]` have
+pointwise-equivalent candidate interpretations while proper dependence differs.
+| PROVEN locally (`Kripke/Dependence.agda`)
+| E-10 | E-9 is propositionally identical to residual-evidence-types' current
+owning `Dependent` record. | ASSUMED documentary correspondence; re-proof
+against the owning record OPEN
+|===
+
+Residual-evidence-types is operated in production, while its owning README
+still classifies the mathematical/API maturity as early research with no stable
+API. Its checked corpus now includes composition, revision/retraction, and a
+certified finite checker/explorer correspondence. This repository does not
+stabilise that sibling API or infer a dependency from the conceptual reading.
+
+== Verification classification
+
+The 2026-10-27 hosted run at commit `5422cd5` checked all five Kripke modules
+under the then-current gate. The 2026-11-01 profile additionally requires the
+CLI to state `--cubical-compatible` explicitly. Until a hosted run under that
+profile succeeds, the aggregate revision is `AGDA-PENDING` and a Mathesis Grade
+3 label is not attached. Rocq, Lean, and proposition-bridge legs remain open.

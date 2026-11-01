@@ -6,13 +6,13 @@ project = "epistemic-types"
 repo = "hyperpolymath/epistemic-types"
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-06-15"
+last-updated = "2026-11-01"
 author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
 
 [purpose]
 summary = "Agda prototypes for standpoint-indexed modal, epistemic, and echo-like type formers."
 stance = "Favours mathematical honesty over a large API."
-detail = "A small, deliberately honest Agda formalization. Constructive; compiles under {-# OPTIONS --safe --without-K #-}. No postulates. No Agda standard library (built with 'agda --no-libraries', using only Agda.Builtin.* / Agda.Primitive)."
+detail = "A small, deliberately honest Agda formalization. All first-party modules declare --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness. Core source has no postulates, escape hatches or standard-library imports."
 core-form = "E : K -> Set ℓ -> Set ℓ. E κ A reads 'A is epistemically available at standpoint κ'."
 base-interface = "A plain indexed endofunctor (map only) — NOT a monad/comonad; no generic return/reflect."
 
@@ -26,7 +26,7 @@ echo_distinction = "Echo values have explicit retention certificates; resource b
 no_collapse = "Do not collapse Echo C y and E κ A. Their composition is meaningful, but they are not the same modality."
 
 [typecheck]
-command = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+command = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 just-target = "just check"
 agda-version = "2.6.4.3"
 
@@ -36,6 +36,6 @@ agda-version = "2.6.4.3"
 present = ["0-AI-MANIFEST.a2ml", "AGENTIC.a2ml", "ECOSYSTEM.a2ml", "META.a2ml", "NEUROSYM.a2ml", "PLAYBOOK.a2ml", "README.adoc", "STATE.a2ml"]
 
 [invariants]
-single-source-of-truth = "This directory is authoritative; no duplicate metadata in the root directory."
+single-source-of-truth = "This directory is authoritative; the root 0-AI-MANIFEST.a2ml is a universal pointer and must agree with it."
 no-stale-metadata = true
 ci = "Proof and security workflows configured; see docs/ci-safety.adoc."

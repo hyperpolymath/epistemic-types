@@ -1,5 +1,5 @@
 = Proof Transport Across Trust Boundaries
-:revdate: 2026-09-07
+:revdate: 2026-11-01
 :toc:
 
 The module `EpistemicTypes.ProofTransport` enforces semantic soundness relative
@@ -105,10 +105,11 @@ empty meaning. The examples establish:
 These are proofs about an actual Boolean checking function in the model,
 not certificates that an external physical action occurred.
 
-`just check` checks the whole library and four files that must be rejected:
-`LyingVerifier`, `ForgedAcceptance`, `ReplayedArtifact`, and
-`ReplayedHolder`. The rejection runner requires the intended type-mismatch
-diagnostic; a missing import or broken tool does not count as a pass.
+`just check` checks all 22 source modules and 13 expected-rejection controls.
+Four controls target proof transport directly: `LyingVerifier`,
+`ForgedAcceptance`, `ReplayedArtifact`, and `ReplayedHolder`. The rejection
+runner requires Agda exit 42 and the intended type-mismatch diagnostic; a
+missing import or broken tool does not count as a pass.
 
 == Migration and remaining scope
 

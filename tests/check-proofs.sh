@@ -8,7 +8,7 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 mapfile -t modules < <(find src/EpistemicTypes -name '*.agda' | sort)
 [[ ${#modules[@]} -gt 0 ]] || { echo 'FAIL: no proof modules'; exit 1; }
 for module in "${modules[@]}"; do
-  agda --no-libraries --safe --without-K --double-check --ignore-interfaces \
-    -W error -W noUnsupportedIndexedMatch -i src "$module"
+  agda --no-libraries --safe --without-K --cubical-compatible --double-check --ignore-interfaces \
+    -W error -i src "$module"
 done
 printf 'PASS: %s source modules checked under the required proof discipline\n' "${#modules[@]}"

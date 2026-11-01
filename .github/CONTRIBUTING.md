@@ -3,15 +3,15 @@
 `epistemic-types` is a small, deliberately honest Agda formalization of
 standpoint-indexed modal / epistemic / echo-like type formers. It
 favours mathematical honesty over a large API. Contributions are
-welcome, but the bar is **everything still type-checks under `--safe`
-`--without-K`, with no shortcuts**.
+welcome, but the bar is **everything still passes the canonical
+`--safe --without-K --cubical-compatible` profile, with no shortcuts**.
 
 - **Author:** Jonathan D.A. Jewell (hyperpolymath)
-  [j.d.a.jewell@open.ac](j.d.a.jewell@open.ac).uk
+  [j.d.a.jewell@open.ac.uk](mailto:j.d.a.jewell@open.ac.uk)
 
 - **Version:** 0.1.0 (status: prototype)
 
-- **Last updated:** 2026-06-15
+- **Last updated:** 2026-11-01
 
 ’’’’’
 
@@ -21,8 +21,8 @@ epistemic-types follows the estate-wide **Tri-Perimeter Contribution
 Framework (TPCF)** — graduated trust without gatekeeping:
 
 - **Perimeter 1 — Core Systems (maintainers only).** The proof kernel:
-  `src/EpistemicTypes/*.agda` (Base, Access, Warrant, ProofTransport,
-  the EchoBridge/SurrealBridge), the `All.agda` wiring, and build
+  all 22 modules recursively under `src/EpistemicTypes/` (core,
+  applications, and Kripke semantics), the `All.agda` wiring, and proof
   tooling.
 
 - **Perimeter 2 — Expert Extensions (trusted contributors).** New
@@ -35,9 +35,9 @@ Framework (TPCF)** — graduated trust without gatekeeping:
 ### Fork workflow
 
 External contributors use the standard **fork**-and-pull-request
-workflow: fork the repository, branch from `main`, run `just` `check`
-(the full `--safe` `--without-K` type-check) locally, and open a PR.
-Proofs are load-bearing — a red `agda` check blocks merge, and no
+workflow: fork the repository, branch from `main`, run `just check`
+(the policy gate, all positive modules, and all expected rejections) locally,
+and open a PR. Proofs are load-bearing — a red `agda` check blocks merge, and no
 `postulate` / `believe_me` shortcuts are accepted.
 
 ## Build and check
@@ -46,9 +46,10 @@ The combined proof and rejection gate must stay green:
 
     just check
 
-This checks every source module (including `All.agda`) and runs
-`tests/check-rejections.sh`. Deliberate rejection fixtures stay outside
-the positive `All.agda` import graph.
+This runs `tests/check-policy.sh`, checks all 22 source modules recursively,
+and validates all 13 expected-rejection fixtures. Deliberate rejection
+fixtures stay outside the positive `All.agda` import graph; coverage does not
+depend on `All.agda` alone.
 
 Requirements:
 
@@ -61,9 +62,9 @@ Requirements:
   `check-canonical`; its dependencies stay outside the default core
   gate.
 
-`All.agda` imports every core module, so `just` `check` checks the whole
-library. A change is not done until `just` `check` passes with no errors
-and no warnings.
+`All.agda` imports the full graph, but the gate also checks every source file
+independently so an omitted aggregate import cannot hide a module. A change is
+not done until `just check` passes with no errors and no warnings.
 
 CI checks every source module, semantic rejection controls and pinned
 canonical Echo correspondence. Proof and security gates must pass before
@@ -84,13 +85,14 @@ merged.
   `BeliefModality`), so the assumption is visible at the type level
   rather than smuggled in.
 
-- **No standard library.** As above: `Agda.Builtin.*` and
-  `Agda.Primitive` only.
+- **No standard library in core source.** As above: `Agda.Builtin.*`,
+  `Agda.Primitive`, and local modules only. The optional pinned integration is
+  a separate boundary.
 
-- **`--safe` `--without-K`.** Every module compiles under `{-#`
-  `OPTIONS` `--safe` `--without-K` `#-}`. This rules out `postulate`,
-  unsafe pragmas, axiom K, and `--type-in-type`. Do not weaken these
-  options.
+- **Complete strict profile.** Every first-party module starts with
+  `{-# OPTIONS --safe --without-K --cubical-compatible --exact-split
+  --no-sized-types --no-guardedness #-}`. The command line repeats the first
+  three canonical flags. Do not weaken or partially restate this profile.
 
 - **No too-strong rules.** Keep the interfaces as weak as the proofs
   allow. The base form `E` `:` `K` `→` `Set` `ℓ` `→` `Set` `ℓ` is a
@@ -129,15 +131,15 @@ these separations when extending:
 
 ## Adding a module or lemma
 
-1.  Put Agda source under `src/EpistemicTypes/` and add the new module
-    to the `import`/re-export list in `src/EpistemicTypes/All.agda` so
-    `just` `check` covers it.
+1.  Put Agda source under `src/EpistemicTypes/` and wire it into
+    `src/EpistemicTypes/All.agda` where the full graph requires it. The
+    recursive gate will detect the new module; update the explicit 22-module
+    policy/metadata inventory in the same change rather than bypassing it.
 
-2.  Open each module with `{-#` `OPTIONS` `--safe` `--without-K` `#-}`.
+2.  Open each module with the exact complete strict `OPTIONS` line shown above.
 
-3.  Keep modules small and single-purpose, mirroring the existing
-    layout: `Base`, `Warrant`, `Access`, `EchoBridge`, `SurrealBridge`,
-    `ProofTransport`, `ProofTransportExample`, `Examples`.
+3.  Keep modules small and single-purpose, following the existing core,
+    `Applications/`, and `Kripke/` layout.
 
 4.  State assumptions as interface fields, not postulates. Add lawful
     instances only after the laws are proved or explicitly required as
@@ -156,8 +158,9 @@ keep the Agda model and the machine-readable description in step.
 - **AsciiDoc (`.adoc`) is the default** for documentation. Update the
   relevant `.adoc` file alongside any behavioural or interface change.
 
-- Existing docs keep their current names: `README.adoc` and
-  `explainme.adoc`. Do **not** rename or duplicate them.
+- Preserve exact current names and roles: `README.adoc` is the overview,
+  `explainme.adoc` the concise narrative, and `EXPLAINME.adoc` the detailed
+  claims/evidence ledger.
 
 - Machine-readable descriptions live under `.machine_readable/` (a2ml +
   Nickel/k9). a2ml files use the canonical TOML-like dialect:
@@ -230,10 +233,9 @@ check.
 
 ## Licence note
 
-The licence is owner-managed. Do **not** add `LICENSE`,
-`SPDX-License-Identifier` headers, or copyright header lines in a PR.
-The repo is currently SPDX-free and stays consistent; licensing is
-handled separately by the owner.
+The licence and existing SPDX declarations are owner-managed. Do **not** add,
+remove, or alter licence files, SPDX identifiers, or copyright lines without
+explicit owner instruction.
 
 ’’’’’
 
@@ -242,8 +244,9 @@ handled separately by the owner.
 `epistemic-types` sits alongside (and should stay coherent with) these
 estate repos:
 
-- **echo-types** — Agda loss-with-residue formalism; `EchoBridge`
-  composes with it. Audit it before duplicating echo machinery here.
+- **echo-types** — canonical proof-relevant Echo sibling. The optional pin
+  checks representation and one-way lowering; Echo is not a resource instance.
+  Audit it before duplicating Echo machinery here.
 
 - **ephapax** — sibling formal language (four-layer redesign with echo
   obligations).

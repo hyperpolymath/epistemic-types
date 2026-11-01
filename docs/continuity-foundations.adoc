@@ -142,23 +142,26 @@ migration. The canonical retention axis remains distinct from resource grades.
 [source,sh]
 ----
 just check
-agda --no-libraries --safe --without-K --ignore-interfaces -i src src/EpistemicTypes/All.agda
+agda --no-libraries --safe --without-K --cubical-compatible --ignore-interfaces -i src src/EpistemicTypes/All.agda
 just check-canonical /path/to/echo-types /path/to/agda-stdlib/src
 ----
 
-The core, examples and applications layer have been checked with Agda 2.6.4.3.
-`just check` covers every source module under `src/EpistemicTypes/` (seventeen
-at the time of writing) and every semantic rejection fixture (twelve): the four
-proof-transport controls plus `StaleSample`, `FakeFreshness`, `ForkedHistory`,
-`ForgedResidue`, `MismatchedSource`, `UnderstatedBound`, `InventedMigration`, and
-`UncheckedSkip`.
-An unrelated import or tool failure fails the rejection gate.
+The source tree has been checked with Agda 2.6.4.3. `just check` covers every
+source module under `src/EpistemicTypes/` (22: core, applications, and Kripke)
+and every semantic rejection fixture (13): the four proof-transport controls,
+`StaleSample`, `FakeFreshness`, `ForkedHistory`, `ForgedResidue`,
+`MismatchedSource`, `UnderstatedBound`, `InventedMigration`, `UncheckedSkip`,
+and `BeliefIsKnowledge`. An unrelated import or tool failure fails the
+rejection gate. The current 2026-11-01 aggregate receipt status is recorded in
+link:../PROOF-STATUS.adoc[].
 
-The optional canonical integration also checks successfully with the locally
-available standard library 2.1. Its dependencies emit `UnsupportedIndexedMatch`
-compatibility warnings about Cubical transports; this run establishes ordinary
-`--without-K` checking, not Cubical computation compatibility. The core build
-has no standard-library dependency and emits no warnings.
+The optional canonical integration uses standard library 2.1 and pinned Echo
+source. It now invokes `--cubical-compatible` explicitly, while suppressing the
+reviewed `UnsupportedIndexedMatch` warning emitted by those external
+dependencies. The run establishes the stated representation/lowering
+correspondence at those pins; it does not establish full Cubical computation
+compatibility for the dependencies. The core build has no standard-library
+dependency and suppresses no warning.
 
 == Next obligations
 

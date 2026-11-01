@@ -3,13 +3,17 @@
 = AFFIRMATION — epistemic-types, as of 2026-06-16
 :toc: macro
 
-NOTE: The dated historical affirmation below is superseded in scope by the
-2026-09-07 repairs. Proof transport now entails its explicit Meaning;
-ReadConsistency now models store histories with contents agreement; Echo now
-uses certified residues, source compatibility, migration laws, and separate
-measured bounds. Neither these proofs nor the earlier affirmation establishes
-external-store or runtime refinement. Current evidence and limitations are in
-`PROOF-STATUS.adoc` and `docs/continuity-foundations.adoc`.
+NOTE: This is a frozen 2026-06-16 receipt, not current inventory. Later work
+supersedes its ten-module count, licence/CI observations, and statement that
+Kripke semantics is absent. The current tree has 22 source modules, 13
+expected-rejection fixtures, and a scoped constructive Kripke semantics. The
+2026-09-07 repairs also made proof transport entail explicit `Meaning`, tied
+reads to store histories, and replaced unconstrained Echo tokens with certified
+residues, migration laws, and separate measured bounds. Do not silently read
+those later facts back into the historical attestation. Current evidence,
+Mathesis grade, and limitations are in `PROOF-STATUS.adoc`, `PROOF-NEEDS.adoc`,
+`docs/kripke-status-2026-10-12.adoc`, and
+`docs/continuity-foundations.adoc`.
 :toclevels: 2
 
 _the No-Bullshit file: what we affirm was true and checkable at this moment_

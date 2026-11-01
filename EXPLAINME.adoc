@@ -30,10 +30,12 @@ A warrant records the type of evidence for a claim without assuming the evidence
 ____
 
 How this is implemented::
-`link:src/EpistemicTypes/Warrant.agda[]` defines `Warrant κ A` (type of evidence tokens), `Epi κ A` (token + warrant), and `SoundWarrant` (separate interface adding `soundness : Epi κ A → A`).
+`link:src/EpistemicTypes/Warrant.agda[]` defines `Warrant K κ A` (type of
+evidence tokens), `Epi K κ A` (token + warrant), and `SoundWarrant` (separate
+interface adding `sound : Warrant.Evidence warrant → A`).
 
 Caveat::
-`SoundWarrant` is an optional interface. Nothing in the core forces warrants to be sound. This is the right default for security/attestation use cases where the receiver must verify locally, but it means `Epi κ A` cannot be used as a drop-in replacement for `A` without assuming `SoundWarrant`.
+`SoundWarrant` is an optional interface. Nothing in the core forces warrants to be sound. This is the right default for security/attestation use cases where the receiver must verify locally, but it means `Epi K κ A` cannot be used as a drop-in replacement for `A` without a `SoundWarrant` for the concrete warrant.
 
 === Accessibility is a preorder with transport
 
@@ -147,7 +149,11 @@ row-insertion update and cross-iteration bound reuse.
 
 [CAUTION]
 ====
-**No Kripke semantics.** The prototype defines the syntactic/type-theoretic interfaces for modalities but does not model them against a Kripke frame semantics. This is the largest open theoretical gap.
+**Kripke scope is deliberately limited.** `src/EpistemicTypes/Kripke/` now
+implements world-indexed `Box`, constructive T/4 correspondences, forward 5/D,
+a non-factive model, a residual-candidate frame, and a dependence mirror. It is
+not a complete epistemic logic; converse 5/D, data-dependent warrant soundness,
+and the cross-repository dependence correspondence remain open.
 ====
 
 [CAUTION]
@@ -185,6 +191,21 @@ row-insertion update and cross-iteration bound reuse.
 | `src/EpistemicTypes/Access.agda`
 | Preorder accessibility + transport
 
+| `src/EpistemicTypes/Kripke/Indexed.agda`
+| World-indexed modalities and the one-world reduction
+
+| `src/EpistemicTypes/Kripke/Frame.agda`
+| `Box`; T and 4 in both constructive directions; Euclidean-to-5 and serial-to-D
+
+| `src/EpistemicTypes/Kripke/Belief.agda`
+| Concrete non-factive `Warrant` and refutation of its soundness map
+
+| `src/EpistemicTypes/Kripke/Residual.agda`
+| Residual-candidate `Box` and presence without identification
+
+| `src/EpistemicTypes/Kripke/Dependence.agda`
+| Candidate-equivalent contexts whose proper dependence differs, in the local mirror
+
 | `src/EpistemicTypes/SurrealBridge.agda`
 | BoundedEcho resource-bound weakening, with GradedSurrealModality as an explicit interface and finite daySurrealAccess
 
@@ -193,4 +214,76 @@ row-insertion update and cross-iteration bound reuse.
 
 | `src/EpistemicTypes/ProofTransportExample.agda`
 | Sound Boolean verification, false-claim rejection, and holder-boundary counterexample
+
+| `tests/check-policy.sh`
+| Inventory/profile/import/escape-hatch guards and the generated `--safe` negative control
+
+| `tests/check-rejections.sh`
+| Exact manifest and intended diagnostics for all 13 expected rejections
+|===
+
+[[proof-ledger]]
+== Proof Ledger
+
+The detailed theorem inventory is link:PROOF-STATUS.adoc[]. These rows group
+that inventory by trust boundary rather than pretending that one successful
+command proves an external implementation.
+
+[cols="2,1,2,2,2", options="header"]
+|===
+| Obligation | Status | Checker (version, flags) | Where | Trust boundary
+
+| Map-only modal/warrant/access separation
+| proven
+| Agda 2.6.4.3, `--safe --without-K --cubical-compatible`, builtins only
+| `src/EpistemicTypes/{Base,Warrant,Access,Examples}.agda`
+| Records prove only their stated fields; concrete law instances remain separate
+
+| Proof-transport semantic soundness
+| proven
+| Agda 2.6.4.3, `--safe --without-K --cubical-compatible`, builtins only
+| `src/EpistemicTypes/ProofTransport*.agda`
+| Relative to the supplied `Meaning`, checker, and acceptance-soundness proof
+
+| Store/retention/resource model
+| proven
+| Agda 2.6.4.3, `--safe --without-K --cubical-compatible`, builtins only
+| `ReadConsistency.agda`, `EchoBridge.agda`, `SurrealBridge.agda`
+| No external store, scheduler, physical measure, or runtime refinement
+
+| RapidNJ integer certificate
+| proven
+| Agda 2.6.4.3, `--safe --without-K --cubical-compatible`, builtins only
+| `src/EpistemicTypes/Applications/`
+| Rational/rescaling, insertion, and cross-iteration obligations remain open
+
+| Scoped constructive Kripke semantics
+| proven
+| Agda 2.6.4.3, `--safe --without-K --cubical-compatible`, builtins only
+| `src/EpistemicTypes/Kripke/`
+| Not completeness; no converse 5/D or data-dependent global warrant soundness
+
+| Residual dependence correspondence to the owning sibling record
+| argued
+| —
+| `Kripke/Dependence.agda`, `docs/kripke-status-2026-10-12.adoc`
+| The local mirror is checked; identity with the sibling's current record is not
+
+| Semantic malformed-construction controls
+| tested-only
+| Agda 2.6.4.3; expected exit 42 and per-fixture diagnostic
+| `tests/check-rejections.sh`, `tests/reject/`
+| Rejection tests do not replace positive theorems
+
+| Pinned canonical Echo representation/lowering correspondence
+| tested-only
+| Agda 2.6.4.3 + stdlib 2.1 + pinned Echo source
+| `tests/integration/CanonicalEcho.agda`
+| Pinned source correspondence only; no full sibling or runtime equivalence
+
+| Rocq and Lean theorem rechecks and statement bridges
+| open
+| —
+| `PROOF-NEEDS.adoc`
+| Required for Mathesis Grade 2 or reconciliation; none claimed
 |===

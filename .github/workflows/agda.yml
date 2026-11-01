@@ -65,7 +65,7 @@ jobs:
       - name: Prove representation round trips and lowering agreement
         run: |
           test "$(agda --version)" = 'Agda version 2.6.4.3'
-          agda --no-libraries --safe --without-K --double-check --ignore-interfaces \
+          agda --no-libraries --safe --without-K --cubical-compatible --double-check --ignore-interfaces \
             -W error -W noUnsupportedIndexedMatch -i src -i tests/integration \
             -i .ci-deps/echo-types/proofs/agda -i /usr/share/agda-stdlib/src \
             tests/integration/CanonicalEcho.agda

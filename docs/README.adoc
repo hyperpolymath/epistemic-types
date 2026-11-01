@@ -1,6 +1,6 @@
 = Documentation Index — epistemic-types
 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
-v0.1.0, 2026-06-15: prototype
+v0.1.0, 2026-11-01: prototype
 
 `epistemic-types` is a small, deliberately honest Agda formalization of
 standpoint-indexed modal / epistemic / echo-like type formers.  It favours
@@ -29,6 +29,15 @@ authority.
   `FactiveModality.reflect`, and the exact-arithmetic (ℚ) obligation stated
   rather than assumed.
 
+| `PROOF-STATUS.adoc` / `PROOF-NEEDS.adoc` (repo root)
+| Current proof ledger, Mathesis grade boundary, exact checker profile, and the
+  open Agda/Rocq/Lean/correspondence obligations. Historical counts in
+  `AFFIRMATION.adoc` do not override these files.
+
+| `docs/kripke-status-2026-10-12.adoc`
+| The implemented constructive Kripke fragment, exact frame-condition theorem
+  scope, non-factive model, residual reading, and external-warrant boundary.
+
 | `docs/proof-transport.adoc`
 | Focused walkthrough of `EpistemicTypes.ProofTransport`: how `transmit`
   downgrades a sender's `Proof` to a receiver's `Receipt`, how `verify` upgrades
@@ -41,9 +50,10 @@ authority.
   two-level information-flow proposal (label order, attacker and observation
   boundary, noninterference target), and the reason no `Secret` API or security
   theorem exists in this repository. Issue #32 was closed on 2026-10-05 as
-  delivered here (no transfer; successor guard #39), and the note's 2026-10-25
-  status update records the standalone repository's proved noninterference
-  theorem.
+  delivered here (no transfer; successor guard #39). The boundary note records
+  the 2026-11-01 source review: generic and two-point termination-insensitive
+  noninterference are proved there; termination-sensitive noninterference and
+  declassification remain open.
 
 | `docs/secret-types-transition-review-2026-10-05.adoc`
 | Cross-reference review of the Secret Types transition: the evidence and
@@ -81,11 +91,14 @@ The Agda modules remain authoritative; these files restate them as data.
 
 == Source modules (authority)
 
-The core lives in `src/EpistemicTypes/`. `All.agda` checks `Base`, `Warrant`,
+The source lives in `src/EpistemicTypes/`. `All.agda` checks `Base`, `Warrant`,
 `Access`, `ReadConsistency`, `EchoBridge`, `SurrealBridge`, `ContinuityExamples`,
-`Examples`, `ProofTransport`, and `ProofTransportExample`. Some imports are not
-publicly re-exported to avoid helper-name collisions. Every core module uses
-`--safe --without-K` and builtins only. Local checks use Agda 2.6.4.3.
+`Examples`, `ProofTransport`, `ProofTransportExample`, and all five
+`Kripke/` modules. Some imports are not publicly re-exported to avoid
+helper-name collisions. Every source module declares
+`--safe --without-K --cubical-compatible --exact-split --no-sized-types
+--no-guardedness` and imports only builtins or local modules. CI pins Agda
+2.6.4.3.
 
 The applications layer lives beside the core in `src/EpistemicTypes/Applications/`:
 `OrderedGroup` (the arithmetic budget), `IntegerModel` (the discharged
@@ -99,7 +112,8 @@ link:applications/rapidnj-q-criterion.adoc[].
 == Notes
 
 * `Echo C y`, `BoundedEcho C measure budget y`, and `E κ A` have separate roles.
-* `just check` runs the proof graph (seventeen modules, including the
-  applications layer) and twelve semantic rejection fixtures.
+* `just check` enforces the policy profile, checks all 22 source modules
+  (including applications and Kripke), and validates 13 semantic rejection
+  fixtures.
 * `just check-canonical` separately checks correspondence against actual sibling
   Echo sources; it requires an explicit standard-library source path.

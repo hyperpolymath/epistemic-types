@@ -1,4 +1,5 @@
 = Governance Model
+:revdate: 2026-11-01
 :toc: preamble
 
 This document describes how `epistemic-types` (`hyperpolymath/epistemic-types`)
@@ -16,9 +17,9 @@ model is intentionally lightweight and matches the size of the project.
 * Proposals, issues, and pull requests are welcome and are reviewed on
   technical merit.
 * Decisions are recorded in the open, through GitHub issues, pull requests,
-  and `CHANGELOG.md`.
+  and `CHANGELOG.adoc`.
 
-The project's stewardship bias is the same one stated in `readme.adoc`: it
+The project's stewardship bias is the same one stated in `README.adoc`: it
 **favours mathematical honesty over a large API**. Governance exists mainly to
 protect that bias.
 
@@ -30,8 +31,10 @@ protect that bias.
 
 | **Honesty over surface area**
 | A change that adds convenience but hides an unproved assumption is declined.
-  Postulates and a dependence on the Agda standard library are out of scope by
-  design (the build runs `agda --no-libraries` under `--safe --without-K`).
+  Postulates and a standard-library dependency in core source are out of scope
+  by design (the core gate runs `agda --no-libraries` under
+  `--safe --without-K --cubical-compatible`). The optional canonical-Echo
+  integration is pinned and checked separately.
 
 | **Stewardship, not gatekeeping**
 | The maintainer has the final say but prefers to merge well-scoped, honest
@@ -42,7 +45,7 @@ protect that bias.
   them.
 
 | **Transparency**
-| Significant decisions are documented in the issue, PR, or `CHANGELOG.md`.
+| Significant decisions are documented in the issue, PR, or `CHANGELOG.adoc`.
 
 | **Open contribution**
 | Anyone may fork and open a pull request.
@@ -94,7 +97,8 @@ checked locally, never assumed.
 
 === Routine decisions
 
-* Documentation fixes (in `readme.adoc`, `explainme.adoc`, or the other docs)
+* Documentation fixes (in `README.adoc`, `explainme.adoc`, `EXPLAINME.adoc`,
+  or the other docs)
 * Small proof clarifications that keep the same statements
 * Typos, comment fixes, formatting
 
@@ -112,7 +116,7 @@ checked locally, never assumed.
 
 . Open an issue describing the change and the mathematics it commits to.
 . Discuss; the maintainer checks it against the "honesty over API" bias and
-  against what `readme.adoc` lists as *intentionally unformalized*.
+  against what `README.adoc` lists as *intentionally unformalized*.
 . The maintainer decides and records the rationale in the issue or PR.
 
 === Structural decisions
@@ -122,8 +126,8 @@ checked locally, never assumed.
 * Ownership transfer
 
 **Process:** the maintainer decides, and the decision is recorded in
-`CHANGELOG.md`. Licence and SPDX matters are handled manually by the owner and
-are out of scope for automated changes.
+`CHANGELOG.adoc`. Licence and SPDX declarations are owner-managed and must not
+be changed without explicit owner instruction.
 
 == Contribution lifecycle
 
@@ -133,12 +137,13 @@ are out of scope for automated changes.
 
 | **Idea**
 | Open an issue. Worth checking the *roadmap* and *what remains intentionally
-  unformalized* sections of `readme.adoc` first — some omissions are deliberate.
+  unformalized* sections of `README.adoc` first — some omissions are deliberate.
 
 | **Development**
-| Fork, implement, and make it type-check: `just check`
-  (i.e. `agda --no-libraries -i src src/EpistemicTypes/All.agda`, Agda 2.8.0).
-  No postulates; no Agda standard library.
+| Fork, implement, and run `just check` under the CI-matched Agda 2.6.4.3.
+  The gate enforces policy, checks all 22 source modules under explicit
+  `--safe --without-K --cubical-compatible`, and validates all 13 expected
+  rejections. No postulates; no Agda standard library in core source.
 
 | **Review**
 | Open a PR. The maintainer reviews on a best-effort basis (this is a personal
@@ -148,8 +153,8 @@ are out of scope for automated changes.
 | The maintainer merges or requests changes.
 
 | **Release**
-| The maintainer tags and updates `CHANGELOG.md`. There is no automated release
-  pipeline.
+| The maintainer tags and updates `CHANGELOG.adoc`. There is no automated
+  release pipeline.
 |===
 
 == Conflict resolution
@@ -161,13 +166,12 @@ are out of scope for automated changes.
 
 == Project policies
 
-* **Licence:** the repository is the owner's sole work and is classified
-  MPL-2.0 at the estate level. The working tree is currently SPDX-free by
-  choice; licence files and SPDX headers are added manually by the owner and
-  are not part of automated changes. See `AUDIT.adoc`.
-* **Code of conduct:** see `CODE_OF_CONDUCT.md`.
-* **Security:** see `SECURITY.md`.
-* **Contributing:** see `CONTRIBUTING.md`.
+* **Licence:** MPL-2.0 for code and CC-BY-SA-4.0 where marked for documentation.
+  The checked-in licence and SPDX declarations are owner-managed. See
+  `AUDIT.adoc`.
+* **Code of conduct:** see `CODE_OF_CONDUCT.adoc`.
+* **Security:** see `SECURITY.adoc`.
+* **Contributing:** see `.github/CONTRIBUTING.md`.
 
 == Repository conventions
 
@@ -179,15 +183,16 @@ are out of scope for automated changes.
 | `just check` is the single source of truth. A change that does not
   type-check is not merged.
 
-| **No postulates, no stdlib**
-| The formalization stays constructive and self-contained
-  (`Agda.Builtin.*` / `Agda.Primitive` only).
+| **No postulates, no core stdlib**
+| The core formalisation stays constructive and standalone
+  (`Agda.Builtin.*`, `Agda.Primitive`, and local modules only). The optional
+  sibling integration is kept outside that core boundary.
 
 | **Docs**
-| AsciiDoc (`.adoc`) is the default. Existing docs keep their lowercase names
-  (`readme.adoc`, `explainme.adoc`). Only `CONTRIBUTING.md`,
-  `CODE_OF_CONDUCT.md`, `SECURITY.md`, and `CHANGELOG.md` are Markdown, for
-  GitHub community-health recognition.
+| AsciiDoc (`.adoc`) is the default. `README.adoc` is the project overview;
+  `explainme.adoc` is the concise narrative; `EXPLAINME.adoc` is the detailed
+  claim/evidence ledger. The contributing guide remains Markdown under
+  `.github/`.
 
 | **Machine-readable**
 | `a2ml` + Nickel/`k9` artefacts live under `.machine_readable/`, including the
@@ -195,32 +200,35 @@ are out of scope for automated changes.
   `.machine_readable/proof-transport/`.
 
 | **CI/CD**
-| Not enabled. There are no GitHub Actions workflows or status badges; see
-  `AUDIT.adoc` for the reasons.
+| Proof and security workflows are enabled. The `Proof Safety` workflow pins
+  Agda 2.6.4.3 and runs the canonical gate; branch-protection expectations are
+  recorded in `AUDIT.adoc` and `docs/ci-safety.adoc`.
 |===
 
 == Ecosystem position
 
 `epistemic-types` is a sibling, not a dependency, of the related estate
-formalizations. The `EchoBridge` module is written so it can compose with
-`echo-types` (the loss-with-residue formalism) without importing it; `ephapax`
-shares the echo-obligation framing; the `a2ml`/`k9` tooling in `standards` is
-the engineering target for `ProofTransport`. Governance of those repositories
-is separate and lives in their own `GOVERNANCE` documents.
+formalizations. `EchoBridge` owns a local certified-residue model, while the
+optional pinned integration checks representation and one-way lowering against
+`echo-types`; Echo is not a resource instance. `ephapax` shares the
+Echo-obligation framing; the `a2ml`/`k9` tooling in `standards` is the
+engineering target for `ProofTransport`. Governance and proof responsibilities
+of sibling repositories remain separate.
 
 == Governance evolution
 
 If the project grows, this model may change — for example by adding a
 co-maintainer or a trusted reviewer (see *graduated trust* above). Any such
-change is itself a structural decision and is recorded in `CHANGELOG.md`.
+change is itself a structural decision and is recorded in `CHANGELOG.adoc`.
 
 == See also
 
-* link:readme.adoc[readme] — what the prototype is and how to type-check it
-* link:explainme.adoc[explainme] — the longer-form explanation
+* link:README.adoc[README] — what the prototype is and how to type-check it
+* link:explainme.adoc[explainme] — concise narrative explanation
+* link:EXPLAINME.adoc[EXPLAINME] — detailed claims and evidence ledger
 * link:.github/CONTRIBUTING.md[Contributing]
-* link:CODE_OF_CONDUCT.md[Code of Conduct]
-* link:SECURITY.md[Security policy]
+* link:CODE_OF_CONDUCT.adoc[Code of Conduct]
+* link:SECURITY.adoc[Security policy]
 * link:AUDIT.adoc[Audit] — build, CI, and licence status
 
 == Changelog

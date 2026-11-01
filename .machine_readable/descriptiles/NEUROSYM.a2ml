@@ -1,55 +1,52 @@
 # NEUROSYM.a2ml — Neurosymbolic integration metadata
-# Hypatia scanning + symbolic-rule configuration for epistemic-types.
-# This is a small Agda formal-methods prototype, checked by `just check`
-# (== `agda --no-libraries -i src src/EpistemicTypes/All.agda`, Agda 2.6.4.3).
-# Rules below are right-sized to that single-tool library; honesty over breadth.
+# Hypatia scanning boundary plus repository-owned Agda policy rules.
+# Hypatia's active rule engine is Elixir under its lib/rules/ tree. This
+# repository does not vendor those rules and does not claim an enabled Hypatia
+# scan; its blocking proof authority remains Agda via scripts/check.sh.
 
 [metadata]
 project = "epistemic-types"
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-06-15"
+last-updated = "2026-11-01"
 author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
 
 [hypatia-config]
 scan-enabled = false
 scan-depth = "standard"  # quick | standard | deep
-report-format = "logtalk"
+report-format = "json"   # Hypatia CLI/AssailReport exchange format
+rule-engine = "Hypatia Elixir rules (upstream lib/rules); no rules vendored here"
 scan-paths = [ "src/EpistemicTypes" ]
 file-globs = [ "*.agda" ]
 
 [symbolic-rules]
-# Custom symbolic rules for this repository.
-# Agda has no `believe_me`/`unsafeCoerce`; the honest analogues to flag are
-# escape hatches and library coupling that would weaken the constructive,
-# `--safe --without-K`, no-postulate, no-stdlib discipline of this repo.
+# Repository-local syntactic guards. These are input policy for an optional
+# Hypatia scan; tests/check-policy.sh and the Agda kernel are authoritative.
 rules = [
-  { name = "no-postulate", pattern = "postulate", severity = "critical", note = "This repo postulates nothing. Any `postulate` is a silent axiom; laws must be fields or proofs." },
-  { name = "no-terminating-pragma", pattern = "\\{-# TERMINATING #-\\}", severity = "critical", note = "Bypasses the termination checker; breaks the constructive honesty guarantee." },
-  { name = "no-non-terminating-pragma", pattern = "\\{-# NON_TERMINATING #-\\}", severity = "critical", note = "Same escape hatch as TERMINATING; not used here and must not appear." },
-  { name = "no-primTrustMe", pattern = "primTrustMe", severity = "critical", note = "Unsound equality witness; equivalent in spirit to believe_me. Must never appear." },
-  { name = "no-trustMe", pattern = "trustMe", severity = "critical", note = "Library-level wrapper over primTrustMe; same prohibition." },
-  { name = "no-no-positivity-check", pattern = "\\{-# NO_POSITIVITY_CHECK #-\\}", severity = "critical", note = "Disables the positivity checker; would admit non-strictly-positive (unsound) data." },
-  { name = "no-no-termination-check", pattern = "\\{-# NO_TERMINATION_CHECK #-\\}", severity = "critical", note = "Legacy termination bypass; forbidden for the same reason as TERMINATING." },
-  { name = "no-stdlib-import", pattern = "open import (Data|Relation|Function|Algebra|Category|Codata|Effect|Foreign|IO|Reflection|Tactic|Agda\\.Builtin\\.Reflection)\\b", severity = "high", note = "Repo builds with `agda --no-libraries`; only `Agda.Builtin.*` and `Agda.Primitive` are permitted. A standard-library import would not type-check under `just check` and breaks the self-contained guarantee." },
-  { name = "no-unsafe-options", pattern = "\\{-# OPTIONS[^#]*--type-in-type", severity = "critical", note = "`--type-in-type` is inconsistent; the repo target is `--safe --without-K`." },
-  { name = "echo-not-collapsed", pattern = "Echo .* = .* E ", severity = "medium", note = "Heuristic: Echo C y (certified residue and separately measured bounds) and E kappa A (epistemic availability) are distinct modalities. Their composition is meaningful; their identification is a modelling error. Manual review on hit." }
+  { name = "no-postulate", pattern = "postulate", severity = "critical", note = "Positive proof sources postulate nothing. Laws must be fields or proofs." },
+  { name = "no-terminating-pragma", pattern = "\\{-# TERMINATING #-\\}", severity = "critical", note = "Termination-checker bypass; forbidden." },
+  { name = "no-non-terminating-pragma", pattern = "\\{-# NON_TERMINATING #-\\}", severity = "critical", note = "Termination-checker bypass; forbidden." },
+  { name = "no-primTrustMe", pattern = "primTrustMe", severity = "critical", note = "Unsound equality witness; forbidden." },
+  { name = "no-trustMe", pattern = "trustMe", severity = "critical", note = "Library wrapper over primTrustMe; forbidden." },
+  { name = "no-no-positivity-check", pattern = "\\{-# NO_POSITIVITY_CHECK #-\\}", severity = "critical", note = "Positivity-checker bypass; forbidden." },
+  { name = "no-no-termination-check", pattern = "\\{-# NO_TERMINATION_CHECK #-\\}", severity = "critical", note = "Legacy termination-checker bypass; forbidden." },
+  { name = "no-stdlib-import", pattern = "open import (Data|Relation|Function|Algebra|Category|Codata|Effect|Foreign|IO|Reflection|Tactic|Agda\\.Builtin\\.Reflection)\\b", severity = "high", note = "Core source is checked with --no-libraries; only Agda builtins/primitive and local modules are permitted." },
+  { name = "no-unsafe-options", pattern = "\\{-# OPTIONS[^#]*--type-in-type", severity = "critical", note = "The source profile is --safe --without-K --cubical-compatible; type-in-type is forbidden." },
+  { name = "echo-not-collapsed", pattern = "Echo .* = .* E ", severity = "medium", note = "Heuristic manual-review hit: Echo residue, measured resource bounds, and epistemic availability are distinct." }
 ]
 
 [symbolic-rules.notes]
-# These are syntactic flags, not a proof of soundness. The real guarantee is
-# that `just check` succeeds under {-# OPTIONS --safe --without-K #-} with no
-# postulates and no libraries. Hypatia hits are advisory; `--safe` is the floor.
-checker-of-record = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
-safe-flags = "--safe --without-K"
+checker-of-record = "bash scripts/check.sh"
+canonical-agda-profile = "--safe --without-K --cubical-compatible"
+source-hardening = "--exact-split --no-sized-types --no-guardedness"
+trust-boundary = "Hypatia findings are advisory here. Agda proof gates and exact expected-rejection diagnostics block proof regressions."
 
 [neural-config]
-# Neural pattern detection is not configured for this prototype.
-# A formal Agda library is better served by the deterministic symbolic rules
-# above and by the type-checker than by learned pattern matching.
 enabled = false
+note = "No learned pattern model is configured for this formal library."
 
 [ci]
-# CI checks core proofs, semantic rejections, pinned Echo correspondence and workflow/secret security.
-# See AUDIT.adoc. Verification is local via `just check`.
-enabled = false
+hypatia-scan-enabled = false
+proof-ci-enabled = true
+proof-entry-point = "bash scripts/check.sh"
+note = "Proof, rejection, canonical Echo, governance, CodeQL and secret-scanning workflows exist; see docs/ci-safety.adoc. No Hypatia scan result is claimed."

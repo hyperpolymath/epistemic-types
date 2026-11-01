@@ -1,4 +1,5 @@
 = Maintainers
+:revdate: 2026-11-01
 :toc: preamble
 
 Maintainers of `epistemic-types` — a small Agda formalization of
@@ -23,18 +24,23 @@ lead maintainer.
 * *Core interface* (`Base`, `Warrant`, `Access`) — the indexed endofunctor
   `E : K -> Set ℓ -> Set ℓ` and its lawful / factive / belief / return
   variants; keeping the base interface honestly `map`-only.
-* *Echo + Surreal bridges* (`EchoBridge`, `SurrealBridge`) — the min-plus
-  graded loss/residue `Echo r A`, kept distinct from `E κ A`, and the
-  graded surreal access tower. Cross-checked against sibling `echo-types`.
+* *Echo + finite-day resource bridge* (`EchoBridge`, `SurrealBridge`) —
+  certified residue `Echo C y`, separately measured `BoundedEcho`, and the
+  finite-day access tower, all kept distinct from `E κ A`. The optional
+  representation/lowering integration is pinned to sibling `echo-types`.
+* *Kripke semantics* (`Kripke/*`) — preserve the exact constructive T/4/5/D
+  scope, non-factive countermodel, residual frame, and local dependence mirror;
+  do not upgrade external warrant results into global local soundness.
 * *Proof transport* (`ProofTransport`, `ProofTransportExample`) — the
   standpoint-indexed transport of attestations across trust boundaries
   (statuses, transmit/verify, no-smuggling), plus its a2ml/k9 engineering
   rendering under `.machine_readable/proof-transport/`.
-* *Build + honesty invariants* — that `just check` stays green
-  (`agda --no-libraries -i src src/EpistemicTypes/All.agda`, Agda 2.8.0),
-  under `--safe --without-K`, with no postulates and no standard library.
-* *Documentation* — `readme.adoc`, `explainme.adoc`, and the machine-readable
-  6a2 / contractile descriptors.
+* *Build + honesty invariants* — that `just check` stays green under Agda
+  2.6.4.3 and explicit `--safe --without-K --cubical-compatible`: policy
+  guard, all 22 source modules, all 13 intended rejections, no postulates, and
+  no standard-library import in core source.
+* *Documentation* — `README.adoc`, `explainme.adoc`, `EXPLAINME.adoc`, and the
+  machine-readable a2ml / contractile descriptors.
 
 == Contribution Process
 
@@ -44,7 +50,7 @@ Contributions are welcome via:
 2. *Pull Requests* — submit changes for review.
 
 Every change must keep `just check` green and preserve the honesty
-invariants (no postulates, no stdlib, `--safe --without-K`). All
+invariants (no postulates, no core stdlib, canonical strict Agda profile). All
 contributions are reviewed by the lead maintainer.
 
 == Decision Making
@@ -61,8 +67,9 @@ maintainer at mailto:j.d.a.jewell@open.ac.uk[j.d.a.jewell@open.ac.uk].
 
 == See Also
 
-* link:readme.adoc[Readme]
-* link:explainme.adoc[Explainme]
+* link:README.adoc[README]
+* link:explainme.adoc[Concise explanation]
+* link:EXPLAINME.adoc[Claims and evidence ledger]
 * link:.github/CONTRIBUTING.md[Contributing Guide]
-* link:CODE_OF_CONDUCT.md[Code of Conduct]
-* link:AUDIT.adoc[Audit] — CI is not enabled; see the audit for rationale.
+* link:CODE_OF_CONDUCT.adoc[Code of Conduct]
+* link:AUDIT.adoc[Audit] — proof/security CI and repository safeguards.

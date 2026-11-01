@@ -45,8 +45,9 @@ successes
 affected by our mistakes - Learning from the experience and avoiding
 repetition - Respecting others’ time and attention - Staying on topic in
 project spaces - Following project conventions (this is a
-`+--safe --without-K+` Agda library with no postulates and no standard
-library; corrections and proofs should preserve that discipline)
+`+--safe --without-K --cubical-compatible+` Agda library with no postulates
+and no standard-library imports in core source; corrections and proofs should
+preserve the complete strict profile)
 
 *Accessibility* - Using plain language and avoiding unnecessary jargon -
 Providing alt text for images and transcripts for audio/video - Being

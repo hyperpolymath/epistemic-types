@@ -1,7 +1,7 @@
 [metadata]
 project = "epistemic-types"
 version = "0.1.0"
-last-updated = "2026-10-05"
+last-updated = "2026-11-01"
 status = "prototype"  # prototype | active | paused | archived
 
 [project-context]
@@ -16,20 +16,20 @@ phase = "design"           # design | implementation | testing | maintenance | a
 maturity = "experimental"  # experimental | alpha | beta | production | lts
 
 [constraints]
-discipline = "Constructive. Compiles under {-# OPTIONS --safe --without-K #-}. No postulates. No Agda standard library (built with 'agda --no-libraries'; only Agda.Builtin.* / Agda.Primitive)."
+discipline = "Constructive. Every first-party module declares --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness. No postulates or proof escape hatches. Core source uses no Agda standard library (agda --no-libraries; only Agda.Builtin.*, Agda.Primitive and local modules)."
 honesty-rule = "Laws appear as explicit fields when not derivable; lawful instances are added only after proving or explicitly assuming the laws. No smuggling."
 
 [boundaries]
-secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone home for secret types (D153: label-constrained flow with explicit declassification and type-family-map registration; D154: reuse an existing lattice two-point-first, prove noninterference, declassify only at explicit audited points). This repository adds no Secret API and no information-flow implementation; docs/secret-types.adoc is retained as the boundary/history note. epistemic-types#29 is resolved and stays closed. epistemic-types#32 was closed on 2026-10-05 as delivered here, with no transfer (none required); do not reopen it, transfer it, or duplicate it - the successor guard is epistemic-types#39. The standalone repository is no longer specification-only: at ccdcb3ec42792337a9ab6047e1f99de9d20a4f96 (2026-10-19) its proof gate is green, TINI at the two-point lattice and over a Lattice record are PROVEN, and declassification is not yet implemented. Pointers: docs/secret-types.adoc section Status update 2026-10-25, and docs/secret-types-transition-review-2026-10-05.adoc kept as history."
+secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone production home for secret types (D153/D154). This repository adds no Secret API, IFC implementation or confidentiality theorem; docs/secret-types.adoc is the boundary/history note. epistemic-types#29 stays closed; #32 was closed on 2026-10-05 as delivered here with no transfer; do not reopen/duplicate it (successor guard #39). Source-reviewed at secret-types f581f8295bdee854f76291ab884a16cc8114dc6f on 2026-11-01: generic TINI over a Lattice record/down-closed observers and the two-point instance are PROVEN in its ledger; termination-sensitive noninterference and declassification remain OPEN. No theorem is imported here."
 
 [build]
 checker = "Agda 2.6.4.3 (CI-matched)"
 command = "just check"
 entry-point = "scripts/check.sh — local agda when present, else 'guix shell -D -f build/guix.scm -- bash scripts/check.sh'"
-expands-to = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+expands-to = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'"
 ci-entry-point = ".github/workflows/agda.yml asserts 'Agda version 2.6.4.3', then runs 'bash scripts/check.sh'"
-aggregator = "src/EpistemicTypes/All.agda re-exports every module."
+aggregator = "src/EpistemicTypes/All.agda imports the full source graph; the recursive gate separately checks every source file, including modules not publicly re-exported."
 
 [modules]
 # Agda modules under src/EpistemicTypes/.
@@ -46,6 +46,11 @@ list = [
   "EpistemicTypes.ContinuityExamples",
   "EpistemicTypes.EchoBridge",
   "EpistemicTypes.Examples",
+  "EpistemicTypes.Kripke.Belief",
+  "EpistemicTypes.Kripke.Dependence",
+  "EpistemicTypes.Kripke.Frame",
+  "EpistemicTypes.Kripke.Indexed",
+  "EpistemicTypes.Kripke.Residual",
   "EpistemicTypes.ProofTransport",
   "EpistemicTypes.ProofTransportExample",
   "EpistemicTypes.ReadConsistency",
@@ -68,14 +73,19 @@ applications-sorted-row = "Rows as entries (index, distance, row sum), the All p
 applications-qcriterion = "Q and qBound over any OrderedGroup, the bound lemma qBound-≤-Q, the row lemma qBound-≤-suffix, claim weakening, and prefix/suffix composition."
 applications-rapidnj-skip = "Checkable (the exactness seam), scan state, skip evidence, the generated warrant and soundness map, the factive modality, the belief-only reading, and the declared-not-assumed cross-iteration obligation."
 applications-rapidnj-examples = "Executable integer check, refutation of an over-eager comparison, a worked four-taxon scan, and the runtime status mirror (Factive / Belief / Collapsed / SansFibre)."
+kripke-indexed = "World-indexed modality/factivity/access records and the one-world reduction to the base Modality."
+kripke-frame = "Frame and Box; constructive reflexive iff T, transitive iff 4, Euclidean implies 5, serial implies D. Converse 5/D are not claimed."
+kripke-belief = "Two-world non-reflexive model with a warrant for a proposition false at the current world and a proof that no soundness map exists for that evidence."
+kripke-residual = "Residual candidates as a Box and a three-world presence-without-identification witness."
+kripke-dependence = "Local faithful mirror showing candidate-equivalent contexts can differ in proper dependence; identity with residual-evidence-types' owning record remains unproved."
 
 [route-to-mvp]
 milestones = [
   { name = "Base indexed-endofunctor interface (E, Modality and law-fields)", completion = 100 },
   { name = "Warrant / Access / EchoBridge / SurrealBridge formers", completion = 100 },
   { name = "ProofTransport core (View, statuses, modes, transmit/verify)", completion = 100 },
-  { name = "Concrete Kripke-style semantics", completion = 0 },
-  { name = "Evidence-state and observation-rule examples", completion = 0 },
+  { name = "Scoped constructive Kripke semantics and frame correspondences", completion = 100 },
+  { name = "Residual-candidate and presence-without-identification examples", completion = 100 },
   { name = "Richer day-bounded surreal fragments as SurrealAccess instances", completion = 0 },
   { name = "Applications layer: RapidNJ Q-criterion bound and skip warrants", completion = 100 },
   { name = "Rational (ℚ) instance and the common-denominator rescaling transport", completion = 0 },
@@ -84,8 +94,8 @@ milestones = [
 
 [roadmap]
 items = [
-  "Add concrete Kripke-style semantics.",
-  "Add evidence-state and observation-rule examples.",
+  "Extend the scoped Kripke fragment only with exact theorem statements; converse 5/D require explicit classical assumptions.",
+  "Re-prove the dependence mirror against residual-evidence-types' owning record before claiming correspondence.",
   "Add richer day-bounded surreal fragments as instances of the abstract SurrealAccess interface.",
   "Add lawful instances only after proving or explicitly assuming laws.",
   "Extend the echo bridge without importing a full graded comonad.",
@@ -94,17 +104,17 @@ items = [
 ]
 
 [progress-summary]
-note = "Prototype. The base interface and all seventeen modules typecheck under 'just check' (Agda 2.6.4.3, --safe --without-K, --no-libraries, no postulates), against twelve rejection fixtures. The endofunctor/Modality formers, Warrant, Access transport, EchoBridge residue, SurrealBridge tower, ProofTransport, its K9-SVC/A2ML attestation example, and the applications layer (RapidNJ Q-criterion bound, generated skip warrants, discharged integer instance) are in place. Remaining work is semantics, lawful instances, and the rational/rescaling obligation — see [roadmap]."
+note = "Prototype. Authoritative inventory: 22 source modules and 13 expected-rejection fixtures. The map-only core, explicit warrant/factivity boundary, proof transport, store consistency, certified Echo residue with separate measured bounds, finite-day surreal adapter, RapidNJ integer certificate, and scoped constructive Kripke semantics are implemented. The 2026-11-01 canonical profile is --safe --without-K --cubical-compatible; hosted receipt status and Mathesis grade are in PROOF-STATUS.adoc. Open work includes data-dependent warrant soundness, residual owning-record correspondence, lawful instances, rational/rescaling and update obligations, independent Rocq/Lean legs, and runtime refinement."
 
 [blockers-and-issues]
 # No active blockers.
 
 [critical-next-actions]
 actions = [
-  "Add concrete Kripke-style semantics for the standpoint-indexed formers.",
-  "Add evidence-state and observation-rule worked examples.",
+  "Obtain and record the hosted Agda receipt for the explicit 2026-11-01 canonical profile.",
+  "Inventory exact propositions before any Rocq/Lean recheck; do not infer correspondence from names.",
   "Prove or explicitly assume modality laws before exposing lawful instances.",
-  "Extend the echo bridge without importing a full graded comonad.",
+  "Discharge data-dependent warrant, rational/rescaling, row-update, and cross-iteration obligations without widening the base API.",
 ]
 
 [ci]
@@ -116,6 +126,9 @@ part-of = ["RSR Framework", "echo / epistemic formal-methods siblings"]
 siblings = [
   { name = "echo-types", relation = "Agda loss-with-residue formalism; EchoBridge composes with it." },
   { name = "ephapax", relation = "Sibling formal language; four-layer redesign carries echo obligations." },
+  { name = "choreographic-types", relation = "External consumer of Warrant with scoped K-CUT proofs; no universal/local proof import." },
+  { name = "residual-evidence-types", relation = "Production-operated early research neighbour with no stable API; local dependence mirror only." },
+  { name = "secret-types", relation = "Standalone production home for confidentiality/TINI; no local Secret API or theorem." },
   { name = "standards", relation = "Estate RSR/standards + k9-svc + a2ml tooling." },
   { name = "a2ml + k9", relation = "Machine-readable + contractile tooling; the engineering target for ProofTransport (see .machine_readable/proof-transport/)." },
 ]

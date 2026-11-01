@@ -7,7 +7,7 @@ repository = "hyperpolymath/epistemic-types"
 author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-06-15"
+last-updated = "2026-11-01"
 
 [agent-permissions]
 can-edit-source = true        # Agda modules under src/EpistemicTypes/
@@ -16,15 +16,17 @@ can-edit-machine-readable = true  # .machine_readable/ (descriptiles, proof-tran
 can-edit-build = true         # Justfile, epistemic-types.agda-lib, .gitignore
 can-create-files = true
 can-edit-license = false      # LICENSE / SPDX are owner-manual — agents MUST NOT touch
-can-add-spdx-headers = false  # repo is intentionally SPDX-free; keep it consistent
+can-add-spdx-headers = false  # licensing declarations remain owner-managed
 
 [agent-constraints]
 # What AI agents must NOT do in this repository:
 # Honesty discipline (the whole point of the library):
 # - Never add a postulate. There are zero postulates and that is load-bearing.
-# - Never weaken the pragma: keep {-# OPTIONS --safe --without-K #-} everywhere.
-# - Never import an Agda standard library. Build stays `agda --no-libraries`;
-#   only Agda.Builtin.* and Agda.Primitive are permitted.
+# - Never weaken the full strict pragma: --safe --without-K --cubical-compatible
+#   --exact-split --no-sized-types --no-guardedness.
+# - Never import an Agda standard library into core source. Build stays
+#   `agda --no-libraries`; only Agda.Builtin.*, Agda.Primitive and local modules
+#   are permitted. The separately pinned CanonicalEcho integration is the exception.
 # - Never introduce a too-strong rule. The base interface E : K -> Set ℓ -> Set ℓ
 #   is a plain indexed endofunctor (map only). Do NOT add a generic return,
 #   reflect, join, or extract that is not justified by an explicit field or proof.
@@ -55,10 +57,10 @@ release-claim-requires-hard-pass = true
 [verification]
 # The single source of truth for "does it hold".
 command = "just check"
-underlying = "bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+underlying = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh"
 agda-version = "2.6.4.3"
-entrypoint = "src/EpistemicTypes/All.agda"
-expected = "type-checks clean, no postulates, no warnings"
+entrypoint = "scripts/check.sh (recursive source gate; All.agda is the aggregate module)"
+expected = "22 source modules accepted, 13 intended rejections, strict profile/import/escape-hatch policy and planted-postulate control pass"
 
 [automation-hooks]
 # on-enter: Read 0-AI-MANIFEST.a2ml, then STATE.a2ml.
