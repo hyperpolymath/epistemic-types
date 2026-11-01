@@ -26,29 +26,29 @@ agda_flags=(
 # pass is paired with a second pass that must reproduce this exact location
 # manifest: a warning at any new span fails the gate, as does a stale entry.
 allowed_unsupported_locations=(
-  src/EpistemicTypes/Applications/IntegerModel.agda:80,1-21
-  src/EpistemicTypes/Applications/IntegerModel.agda:89,1-90,66
-  src/EpistemicTypes/Applications/IntegerModel.agda:236,22-43
-  src/EpistemicTypes/Applications/SortedRow.agda:58,3-59,54
-  src/EpistemicTypes/Applications/SortedRow.agda:78,3-82,24
-  src/EpistemicTypes/ContinuityExamples.agda:174,3-33
-  src/EpistemicTypes/EchoBridge.agda:156,1-157,49
-  src/EpistemicTypes/EchoBridge.agda:168,1-169,58
-  src/EpistemicTypes/Examples.agda:36,1-40,33
-  src/EpistemicTypes/Kripke/Belief.agda:32,1-23
-  src/EpistemicTypes/Kripke/Dependence.agda:76,1-77,67
-  src/EpistemicTypes/Kripke/Residual.agda:61,1-62,33
-  src/EpistemicTypes/ProofTransport.agda:108,1-111,91
-  src/EpistemicTypes/ProofTransport.agda:130,1-82
-  src/EpistemicTypes/ProofTransport.agda:187,1-189,59
-  src/EpistemicTypes/ProofTransport.agda:201,1-49
-  src/EpistemicTypes/ProofTransport.agda:224,1-81
-  src/EpistemicTypes/ProofTransport.agda:231,1-85
-  src/EpistemicTypes/ReadConsistency.agda:51,1-52,44
-  src/EpistemicTypes/ReadConsistency.agda:62,1-38
-  src/EpistemicTypes/SurrealBridge.agda:212,1-213,44
-  src/EpistemicTypes/SurrealBridge.agda:216,1-217,42
-  src/EpistemicTypes/SurrealBridge.agda:232,1-233,48
+  "src/EpistemicTypes/Applications/IntegerModel.agda:80,1-21"
+  "src/EpistemicTypes/Applications/IntegerModel.agda:89,1-90,66"
+  "src/EpistemicTypes/Applications/IntegerModel.agda:236,22-43"
+  "src/EpistemicTypes/Applications/SortedRow.agda:58,3-59,54"
+  "src/EpistemicTypes/Applications/SortedRow.agda:78,3-82,24"
+  "src/EpistemicTypes/ContinuityExamples.agda:174,3-33"
+  "src/EpistemicTypes/EchoBridge.agda:156,1-157,49"
+  "src/EpistemicTypes/EchoBridge.agda:168,1-169,58"
+  "src/EpistemicTypes/Examples.agda:36,1-40,33"
+  "src/EpistemicTypes/Kripke/Belief.agda:32,1-23"
+  "src/EpistemicTypes/Kripke/Dependence.agda:76,1-77,67"
+  "src/EpistemicTypes/Kripke/Residual.agda:61,1-62,33"
+  "src/EpistemicTypes/ProofTransport.agda:108,1-111,91"
+  "src/EpistemicTypes/ProofTransport.agda:130,1-82"
+  "src/EpistemicTypes/ProofTransport.agda:187,1-189,59"
+  "src/EpistemicTypes/ProofTransport.agda:201,1-49"
+  "src/EpistemicTypes/ProofTransport.agda:224,1-81"
+  "src/EpistemicTypes/ProofTransport.agda:231,1-85"
+  "src/EpistemicTypes/ReadConsistency.agda:51,1-52,44"
+  "src/EpistemicTypes/ReadConsistency.agda:62,1-38"
+  "src/EpistemicTypes/SurrealBridge.agda:212,1-213,44"
+  "src/EpistemicTypes/SurrealBridge.agda:216,1-217,42"
+  "src/EpistemicTypes/SurrealBridge.agda:232,1-233,48"
 )
 declare -A allowed_unsupported=()
 declare -A observed_unsupported=()

@@ -5,6 +5,7 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 
 required_options='{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}'
 
+# shellcheck disable=SC2034 # consumed through require_exact_inventory namerefs
 expected_source_modules=(
   src/EpistemicTypes/Access.agda
   src/EpistemicTypes/All.agda
@@ -29,6 +30,7 @@ expected_source_modules=(
   src/EpistemicTypes/SurrealBridge.agda
   src/EpistemicTypes/Warrant.agda
 )
+# shellcheck disable=SC2034 # consumed through require_exact_inventory namerefs
 expected_rejection_fixtures=(
   tests/reject/BeliefIsKnowledge.agda
   tests/reject/FakeFreshness.agda
@@ -44,20 +46,21 @@ expected_rejection_fixtures=(
   tests/reject/UncheckedSkip.agda
   tests/reject/UnderstatedBound.agda
 )
+# shellcheck disable=SC2034 # consumed through require_exact_inventory namerefs
 expected_integration_modules=(
   tests/integration/CanonicalEcho.agda
 )
 
 collect_agda_paths() {
   local root=$1 array_name=$2 output
+  local -n destination=$array_name
+  destination=()
   if ! output=$(find "$root" -type f -name '*.agda' -print | LC_ALL=C sort); then
     printf 'FAIL: could not enumerate Agda files below %s\n' "$root"
     exit 1
   fi
   if [[ -n $output ]]; then
-    mapfile -t "$array_name" <<< "$output"
-  else
-    eval "$array_name=()"
+    mapfile -t destination <<< "$output"
   fi
 }
 
@@ -99,7 +102,7 @@ for module in "${source_modules[@]}" "${rejection_fixtures[@]}" "${integration_m
   # later pragma from weakening exact splitting, termination or other policy.
   options_count=0
   line_number=0
-  while IFS= read -r line; do
+  while IFS= read -r line || [[ -n $line ]]; do
     ((line_number += 1))
     if [[ $line =~ \{\-\#[[:space:]]*OPTIONS([[:space:]]|#) ]]; then
       ((options_count += 1))
@@ -137,29 +140,103 @@ else
 fi
 
 # Core source is deliberately standalone: only Agda builtins/primitive and
-# modules owned by this repository may occur on import lines. Capture output
-# before parsing so a ripgrep failure cannot disappear in process substitution.
-if import_lines=$(rg -N --no-filename \
-    '^[[:space:]]*(open[[:space:]]+)?import[[:space:]]+' \
-    src/EpistemicTypes -g '*.agda'); then
-  while IFS= read -r import_line; do
-    [[ $import_line =~ import[[:space:]]+([^[:space:]]+) ]] || {
-      printf 'FAIL: could not parse import line: %s\n' "$import_line"
-      exit 1
-    }
-    imported=${BASH_REMATCH[1]}
-    case "$imported" in
-      Agda.Builtin.*|Agda.Primitive|EpistemicTypes.*) ;;
-      *) printf 'FAIL: non-core import in standalone source: %s\n' "$import_line"; exit 1 ;;
-    esac
-  done <<< "$import_lines"
-else
-  rg_status=$?
-  [[ $rg_status -eq 1 ]] || {
-    printf 'FAIL: import scan failed (rg exit %s)\n' "$rg_status"
-    exit 1
+# modules owned by this repository may be imported. Scan lexical tokens rather
+# than line starts so `module M where open import X` cannot evade the boundary;
+# strip line, nested block and string contents before interpreting `import`.
+check_core_imports() {
+  local module=$1 line code pair char token imported
+  local line_number=0 index comment_depth=0 in_string=0 escaped=0
+  local expect_module=0 import_line=0
+  local -a tokens=()
+
+  [[ -r $module ]] || {
+    printf 'FAIL: cannot read source while scanning imports: %s\n' "$module"
+    return 1
   }
-fi
+
+  while IFS= read -r line || [[ -n $line ]]; do
+    ((line_number += 1))
+    code=
+    in_string=0
+    escaped=0
+    for ((index = 0; index < ${#line}; index += 1)); do
+      char=${line:index:1}
+      pair=${line:index:2}
+
+      if ((comment_depth > 0)); then
+        if [[ $pair == '{-' ]]; then
+          ((comment_depth += 1))
+          ((index += 1))
+        elif [[ $pair == '-}' ]]; then
+          comment_depth=$((comment_depth - 1))
+          ((index += 1))
+        fi
+        continue
+      fi
+
+      if ((in_string)); then
+        if ((escaped)); then
+          escaped=0
+        elif [[ $char == '\\' ]]; then
+          escaped=1
+        elif [[ $char == '"' ]]; then
+          in_string=0
+        fi
+        code+=' '
+        continue
+      fi
+
+      if [[ $pair == '--' ]]; then
+        break
+      elif [[ $pair == '{-' ]]; then
+        ((comment_depth += 1))
+        ((index += 1))
+        code+=' '
+      elif [[ $char == '"' ]]; then
+        in_string=1
+        code+=' '
+      else
+        case "$char" in
+          ';'|'{'|'}'|'('|')') code+=' ' ;;
+          *) code+=$char ;;
+        esac
+      fi
+    done
+
+    tokens=()
+    read -r -a tokens <<< "$code"
+    for token in "${tokens[@]}"; do
+      if ((expect_module)); then
+        imported=$token
+        case "$imported" in
+          Agda.Builtin.*|Agda.Primitive|EpistemicTypes.*) ;;
+          *)
+            printf 'FAIL: non-core import in standalone source at %s:%s: %s\n' \
+              "$module" "$import_line" "$imported"
+            return 1
+            ;;
+        esac
+        expect_module=0
+      elif [[ $token == import ]]; then
+        expect_module=1
+        import_line=$line_number
+      fi
+    done
+  done < "$module"
+
+  ((comment_depth == 0)) || {
+    printf 'FAIL: unterminated block comment while scanning imports: %s\n' "$module"
+    return 1
+  }
+  ((expect_module == 0)) || {
+    printf 'FAIL: import without a module name at %s:%s\n' "$module" "$import_line"
+    return 1
+  }
+}
+
+for module in "${source_modules[@]}"; do
+  check_core_imports "$module"
+done
 
 # Negative control for the checker itself. A missing tool or unrelated parser
 # error is not accepted as evidence that --safe rejects postulates.
