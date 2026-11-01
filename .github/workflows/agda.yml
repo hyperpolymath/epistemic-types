@@ -40,7 +40,19 @@ jobs:
       - name: Verify toolchain and proof constructions
         run: |
           test "$(agda --version)" = 'Agda version 2.6.4.3'
-          bash scripts/check.sh
+          set +e
+          output=$(bash scripts/check.sh 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            annotation=$(tail -n 20 <<< "$output")
+            annotation=${annotation//'%'/'%25'}
+            annotation=${annotation//$'\r'/'%0D'}
+            annotation=${annotation//$'\n'/'%0A'}
+            printf '::error title=Canonical proof gate::%s\n' "$annotation"
+            exit "$status"
+          fi
 
   echo:
     name: Canonical Echo correspondence
