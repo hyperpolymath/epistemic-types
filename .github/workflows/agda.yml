@@ -38,9 +38,22 @@ jobs:
         with:
           persist-credentials: false
       - name: Verify toolchain and proof constructions
+        shell: bash
         run: |
           test "$(agda --version)" = 'Agda version 2.6.4.3'
-          bash scripts/check.sh
+          set +e
+          output=$(bash scripts/check.sh 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            annotation=$(tail -n 20 <<< "$output")
+            annotation=${annotation//'%'/'%25'}
+            annotation=${annotation//$'\r'/'%0D'}
+            annotation=${annotation//$'\n'/'%0A'}
+            printf '::error title=Canonical proof gate::%s\n' "$annotation"
+            exit "$status"
+          fi
 
   echo:
     name: Canonical Echo correspondence
@@ -65,7 +78,7 @@ jobs:
       - name: Prove representation round trips and lowering agreement
         run: |
           test "$(agda --version)" = 'Agda version 2.6.4.3'
-          agda --no-libraries --safe --without-K --double-check --ignore-interfaces \
+          agda --no-libraries --safe --without-K --cubical-compatible --double-check --ignore-interfaces \
             -W error -W noUnsupportedIndexedMatch -i src -i tests/integration \
             -i .ci-deps/echo-types/proofs/agda -i /usr/share/agda-stdlib/src \
             tests/integration/CanonicalEcho.agda

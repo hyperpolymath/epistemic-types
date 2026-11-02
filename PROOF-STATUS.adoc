@@ -1,112 +1,259 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
-= epistemic-types — Proof Status
+= epistemic-types — proof status
+:revdate: 2026-11-01
 :toc:
+:sectnums:
 
 [abstract]
-Verification status of the epistemic-types Agda formalisation. The whole library
-**type-checks under `--safe`** with **zero postulates** and is fully
-self-contained (`--no-libraries`: it imports only `Agda.Builtin.*` /
-`Agda.Primitive`). This records a reproduced `agda` run, not a "looks fine" reading.
+This is the current, source-anchored verification record for the Agda
+formalisation. The authoritative positive tree contains *22 source modules* and
+the negative-control manifest contains *13 expected-rejection fixtures*. The
+source is constructive, builtins-only, map-only at its base interface, and has
+no postulates or proof escape hatches. Exact theorem scope and trust boundaries
+are recorded below; historical snapshots remain in `AFFIRMATION.adoc` and are
+not current inventory.
 
-== Applications layer — 2026-09-27
+== Status vocabulary
 
-`src/EpistemicTypes/Applications/` adds the first worked application: the
-per-row Q-criterion bound used by RapidNJ when searching for the
-neighbour-joining minimum. Five modules and one example module pass the same
-gate (`--safe --without-K --no-libraries --double-check -W error`, no
-postulates):
+This document uses the estate proof-policy vocabulary:
 
-* `QCriterion.qBound-≤-Q` proves the row bound over an arbitrary
-  `OrderedGroup`, using only reflexivity, transitivity, monotone addition,
-  antitone negation and `Nat`-indexed scaling -- no ring law, no multiplication
-  or division of carrier elements.
-* `RapidNJSkip` generates a warrant from a skip certificate (sorted-row
-  invariant, running-maximum invariant, accepted exact check) and proves
-  `skip-known`: the skipped quadrant's entries cannot beat the incumbent. The
-  soundness map is `FactiveModality.reflect = sound-epi`; without it the same
-  run is belief (`no-receipt-reflection`).
-* `IntegerModel` discharges the arithmetic budget for the integers, and
-  `RapidNJExamples` turns `dec-≤ℤ` into a `Checkable`, runs a worked four-taxon
-  scan by computation, and refutes an over-eager comparison
-  (`no-always-true`).
-* One new rejection fixture (`UncheckedSkip`) refuses a recorded check that the
-  numbers do not meet.
+* `PROVEN` — accepted by the named kernel under its safe profile, with no proof
+  escape hatch;
+* `TESTED` — a bounded, sampled, integration, or expected-rejection control;
+* `ASSUMED` — an explicit premise or an externally reported correspondence not
+  rechecked by this repository;
+* `OPEN` — not discharged.
 
-Not claimed: any rational (ℚ) instance, the rescaling transport from a rational
-matrix to its common-denominator integer form, the row-insertion update that
-maintains the invariants, and cross-iteration bound reuse. These are stated as
-obligations in link:docs/applications/rapidnj-q-criterion.adoc[].
+The separate cross-prover labels `AGDA-PENDING`, `AGDA-VERIFIED`,
+`COQ-CHECKED`, `LEAN-CHECKED`, `BRIDGE-PENDING`, and `RECONCILED` describe
+verification legs; they do not strengthen the proof-policy status.
 
-== Current continuity-foundations correction — 2026-09-07
+== Verification profile and current receipt
 
-`ReadView` now entails equality with the indexed store contents. Cached-read
-freshness is tied to a particular store history; every write invalidates old
-freshness, and synchronization reads current contents in the model.
+The policy entry point is `scripts/check.sh`. It runs:
 
-`Echo` now carries a specified residue certificate. Source compatibility, recovery,
-and migration have explicit obligations. The collision theorem refutes every
-migration requiring a distinction discarded by the retained pair. Resource
-bounds require measure inequalities; arbitrary grade retagging is removed.
-
-The eleven-module core and eleven deliberate rejection fixtures (the counts at
-that date; `just check` now reports seventeen modules and twelve fixtures) pass
-with Agda 2.6.4.3 under `--safe --without-K --no-libraries`, without warnings.
-The additional canonical Echo integration proves both representation round
-trips and agreement of lowering; its standard-library dependencies emit Cubical
-compatibility warnings. See link:docs/continuity-foundations.adoc[] for commands,
-scope, and remaining runtime and combined-language obligations.
-
-== Earlier semantic proof-transport correction — 2026-09-07
-
-The token-only proof-status construction has been replaced. `proofSound`
-derives an explicit `Meaning holder artifact claim` from every proof status.
-The verifier supplies a Boolean check and a proof of acceptance soundness;
-proof construction requires its successful-check equality. No global soundness
-axiom is added.
-
-Reproduced with Agda 2.6.4.3: `just check` passes the full 10-module library
-and four semantic rejection controls. Examples prove legitimate acceptance
-and rejection of bad payloads, altered artefacts, false claims, opaque modes,
-and missing checking resources. Holder-dependent transfer is explicitly
-qualified. The older `proofNeedsChecker` theorem remains a weaker structural
-projection; its former semantic interpretation was unsupported.
-
-At that stage ReadConsistency/store coherence and EchoBridge/index constraints
-were still open; the later correction above addresses their model-level gaps.
-External-store and runtime correspondence remain open.
-
-== Earlier reproduced baseline
-
-* Command: `agda --safe -i src src/EpistemicTypes/All.agda` → **exit 0**.
-* All **10/10** modules declare `{-# OPTIONS --safe #-}`; **zero `postulate`**,
-  zero `believe_me`/`primTrustMe`.
-* Agda used here: **2.6.3** (the repo's `CONTRIBUTING.md` targets 2.8.0; the
-  development uses only `Agda.Builtin`/`Agda.Primitive`, so it checks under both).
-
-Modules (`src/EpistemicTypes/`): `Base`, `Access`, `Warrant`, `ReadConsistency`,
-`ProofTransport` (+ `ProofTransportExample`), `EchoBridge`, `SurrealBridge`,
-`Examples`, `All`.
-
-Reproduce:
-[source,sh]
+[source,shell]
 ----
-just check        # = agda --no-libraries -i src src/EpistemicTypes/All.agda
-# or, enforcing --safe explicitly:
-agda --safe -i src src/EpistemicTypes/All.agda
+bash tests/check-policy.sh
+bash tests/check-proofs.sh
+bash tests/check-rejections.sh
 ----
 
-== Honest scope
+Every first-party Agda entry point is invoked with the canonical theory profile
+`--safe --without-K --cubical-compatible --exact-split --no-sized-types
+--no-guardedness`. Positive source checks use `--no-libraries --double-check
+--ignore-interfaces -W error`. Agda 2.6.4.3's
+`UnsupportedIndexedMatch` category is disabled in that strict pass only because
+its 23 existing warning spans are checked separately against the exact manifest
+in `tests/check-proofs.sh`. A new, moved, or stale location fails the gate. The
+safe proofs check, but no Cubical transport-computation claim is made for those
+indexed eliminations, including `Kripke.Belief.believed`. The policy gate also
+compares all 22 source modules, 13 rejection fixtures, and the integration
+witness with exact path manifests; rejects additional `OPTIONS` pragmas, proof
+escape hatches, and non-core imports; and verifies a generated negative
+control: `--safe` must reject a planted postulate with Agda's expected
+diagnostic and exit code.
 
-* Status: **prototype (v0.1.0)** — a deliberately small, honest formalisation of
-  standpoint-indexed modal / epistemic / echo-like type formers.
-* `EchoBridge` and `SurrealBridge` remain self-contained. The optional integration
-  test imports canonical Echo sources and proves a residue correspondence; no
-  full surreal-number library or combined-runtime verification is claimed.
-* The library is self-contained by design (`--no-libraries`); it does not depend
-  on the standard library.
+The most recent hosted receipt before adoption of the explicit
+`--cubical-compatible` CLI requirement is Proof Safety run
+https://github.com/hyperpolymath/epistemic-types/actions/runs/40445723481[40445723481]
+at source commit `5422cd5bf1418c44321bf0f77e894737a451d8f5` (Agda 2.6.4.3), where both
+`Proof core and rejection controls` and `Canonical Echo correspondence` passed.
+Because that command did not spell out the new CLI flag, it is retained as
+historical evidence, not as the receipt for the 2026-11-01 profile.
 
-== Licence
+The fresh canonical-profile receipt is Proof Safety run
+https://github.com/hyperpolymath/epistemic-types/actions/runs/41326349568[41326349568]
+at checked revision `bf9c75a38794d744ce466574e6323062e7d22533` on 2026-11-01.
+Both `Proof core and rejection controls` and `Canonical Echo correspondence`
+passed with Agda 2.6.4.3. The core job ran the policy preflight, all 22 source
+modules, and all 13 intended rejections; the separate integration job checked
+the pinned Echo witness.
 
-* **`LICENSE` present (MPL-2.0).** Previously flagged here as missing; the owner
-  has since added a REUSE-style `LICENSE` + `LICENSES/{MPL-2.0,CC-BY-SA-4.0}.txt`,
-  matching the estate sole-owner policy.
+Current profile status: `AGDA-VERIFIED`; the checked revision is *Mathesis
+Grade 3*. The immediately following status/metadata receipt update changes no
+Agda source, fixture, gate, option, or dependency pin and is itself rerun by the
+same PR workflow. No missing tool, import failure, or unexpected rejection
+counts as a pass.
+
+== Local proof ledger
+
+All `PROVEN` rows below describe the Agda model only. They are covered by the
+canonical hosted receipt above; they do not thereby establish an external
+runtime or an unlisted mathematical correspondence.
+
+[cols="1,4,1,3",options="header"]
+|===
+| ID | Exact scope | Status | Source
+
+| L-1
+| Map-only standpoint modality; lawful, factive, belief, return, and
+  accessibility capabilities remain separate records. No generic `bind` or
+  `extract` exists.
+| PROVEN
+| `Base.agda`, `Access.agda`
+
+| L-2
+| Warrant evidence does not imply its claim. Extraction requires the separate
+  `SoundWarrant.sound` field; concrete contradiction witnesses refute generic
+  reflection for belief and warrant.
+| PROVEN
+| `Warrant.agda`, `Examples.agda`
+
+| L-3
+| Proof transport derives `Meaning holder artifact claim` only from an accepted
+  sound checker. Transmission moves bytes to a receipt, not proofhood; public
+  transfer and designated-holder transfer have distinct premises.
+| PROVEN
+| `ProofTransport.agda`, `ProofTransportExample.agda`
+
+| L-4
+| Pure finite store histories tie reads to indexed contents; writes stale old
+  caches; synchronisation restores model-level freshness; fact transport needs
+  an explicit stability proof.
+| PROVEN
+| `ReadConsistency.agda`, `ContinuityExamples.agda`
+
+| L-5
+| Echo residue certificates, source compatibility, recovery, migration,
+  collision obstruction, and measured upper bounds are separate. Echo is not a
+  resource instance and the epistemic modality is not collapsed into Echo.
+| PROVEN
+| `EchoBridge.agda`, `ContinuityExamples.agda`
+
+| L-6
+| The finite-day `SurrealAccess` instance supports bound weakening and preserves
+  residue data. It is not the Conway proper class and proves no physical-cost
+  statement.
+| PROVEN
+| `SurrealBridge.agda`
+
+| L-7
+| The order-generic RapidNJ Q-criterion row bound and generated skip warrant are
+  proved over `OrderedGroup`; the integer instance and worked scan discharge
+  that scope.
+| PROVEN
+| `Applications/*.agda`
+
+| K-1
+| World-indexed modalities and the one-world reduction `toModality`; this is a
+  construction, not a formal impossibility theorem about every alternative
+  encoding in the unindexed API.
+| PROVEN
+| `Kripke/Indexed.agda`
+
+| K-2
+| `Frame`, `Box`, and its map action.
+| PROVEN
+| `Kripke/Frame.agda`
+
+| K-3
+| Constructively: reflexive iff the `Box` T/factivity map exists; transitive iff
+  the `Box` 4/positive-introspection map exists; Euclidean implies 5; serial
+  implies D.
+| PROVEN
+| `Kripke/Frame.agda:T`, `T⁻¹`, `Four`, `Four⁻¹`, `Five`, `D`
+
+| K-4
+| Converse 5 and converse D.
+| OPEN
+| No declaration; classical reasoning would be required
+
+| K-5
+| A non-reflexive two-world frame carries a `Box` witness and an
+  epistemic-types `Warrant` for a proposition false at the current world; no
+  soundness map for that evidence exists.
+| PROVEN
+| `Kripke/Belief.agda`
+
+| K-6
+| Residual candidates are represented as a `Box`; a three-world witness proves
+  presence without identification.
+| PROVEN
+| `Kripke/Residual.agda`
+
+| K-7
+| Two contexts can have pointwise-equivalent candidate interpretations while
+  proper dependence differs, in the local faithful mirror.
+| PROVEN
+| `Kripke/Dependence.agda`
+
+| K-8
+| The local dependence mirror is propositionally identical to
+  residual-evidence-types' current owning record.
+| ASSUMED
+| Documentary comparison only; no imported owning definition
+
+| C-1
+| Every one of the 13 intended-invalid constructions is rejected for its
+  enumerated semantic type mismatch. This is negative-control evidence, not a
+  positive theorem.
+| TESTED
+| `tests/check-rejections.sh`, `tests/reject/*.agda`
+
+| C-2
+| The local residue representation round-trips to pinned canonical Echo and
+  lowering agrees at the pinned source revision. This is source-level
+  correspondence only, not a full graded-comonad or runtime theorem.
+| TESTED
+| `tests/integration/CanonicalEcho.agda`; Echo pin
+  `46cd1a32d4dcf1020f01dd1aab41f816742da10e`
+|===
+
+== External pinned evidence, not local closure
+
+Choreographic-types reports machine-checked K-CUT results for its explicitly
+finite, binary-choice, plain-merge fragment, including K-CUT-LOSS, the
+directional K-CUT-WARRANT bound, transport, and asynchronous variants. It also
+reports `SoundWarrant` for warrants determined by that type-level frame.
+Data-dependent warrants, recursion, full merge, and the wider asynchronous
+forms remain open there. The previously recorded pinned E-6 receipt remains
+external evidence; this repository does not generalise it into global warrant
+soundness and does not count it as a locally rechecked theorem.
+
+The current cross-repository status statements in
+`docs/what-epistemic-is.adoc` are documentary pointers. They are not imports,
+build dependencies, or independent proof legs for this repository.
+
+== Mathesis grade and independent proof legs
+
+Mathesis Grade 3 means that the Agda source checks under the strict profile at a
+recorded revision, without an independent foundational translation. Hosted run
+`41326349568` closes that requirement for checked revision `bf9c75a`; this
+proof corpus is *Mathesis Grade 3*.
+
+No theorem in this repository currently has a theorem-by-theorem Rocq or Lean
+leg with an exact statement comparison:
+
+[cols="2,1,3",options="header"]
+|===
+| Leg | Status | Consequence
+| Agda canonical profile | AGDA-VERIFIED | Grade 3 receipt: run `41326349568`, revision `bf9c75a`
+| Rocq/Coq | OPEN / NOT-INVENTORIED | No Grade 2i/2ii credit
+| Lean | OPEN / NOT-INVENTORIED | No Grade 2i/2ii credit
+| Proposition/semantics bridge | BRIDGE-PENDING | No claim of reconciliation
+| Runtime refinement | OPEN | Model theorems do not verify an implementation
+|===
+
+The standards corpus has no repository-specific `epistemic-types` T3 stub. Its
+current theory mapping therefore governs: Agda is the source of truth, with
+Rocq and Lean rechecks as open future obligations. A repository-tier label is
+not inferred from the Mathesis grade.
+
+== Explicit open obligations
+
+* Complete epistemic logic beyond the implemented constructive frame fragment,
+  including any desired classical converses for 5 and D.
+* Soundness for data-dependent warrants; no global extraction rule is assumed.
+* Re-proof the dependence result against residual-evidence-types' owning
+  definitions if that external correspondence is to be claimed.
+* Rational input or a proved common-denominator rescaling transport for the
+  RapidNJ application; row insertion and cross-iteration bound reuse.
+* Law-bearing instances where records currently expose laws as caller-supplied
+  fields; no generic monad/comonad commitment.
+* Full Conway-surreal semantics, full graded-loss/comonad semantics, external
+  store/scheduler/attestation/runtime refinement, and physical guarantees.
+* The theorem-level Rocq and Lean inventory, independent checks, and explicit
+  proposition bridges needed for Mathesis Grade 2 or stronger.
+
+See `PROOF-NEEDS.adoc` for the executable next-proof queue.

@@ -6,9 +6,10 @@
 `.devcontainer/Containerfile` builds a Debian 13 image pinned to the same base
 digest as the repository's Proof Safety workflow, and installs the same Agda
 (`agda-bin=2.6.4.3-1+b2`) plus `bash`, `git`, `just`, `make` and `ripgrep`
-(`tests/check-rejections.sh` needs `rg`). `devcontainer.json` runs `just check`
-once, after creation, so a fresh container either reproduces the positive and
-expected-rejection proof gates or reports the failing gate.
+(`tests/check-policy.sh` and `tests/check-rejections.sh` need `rg`).
+`devcontainer.json` runs `just check` once after creation, so a fresh container
+reproduces the policy guard, all 22 positive modules and all 13
+expected-rejection controls, or reports the failing gate.
 
 == Usage
 

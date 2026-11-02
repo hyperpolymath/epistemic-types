@@ -5,7 +5,7 @@ project = "epistemic-types"
 ecosystem = "hyperpolymath"
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-06-15"
+last-updated = "2026-11-01"
 
 [position]
 type = "formal-methods-library"
@@ -13,11 +13,11 @@ purpose = "A small, deliberately honest Agda formalization of standpoint-indexed
 
 [stack]
 language = "Agda 2.6.4.3"
-options = "--safe --without-K"
-libraries = "none — built with 'agda --no-libraries' against Agda.Builtin.* and Agda.Primitive only"
+options = "--safe --without-K --cubical-compatible; source also declares --exact-split --no-sized-types --no-guardedness"
+libraries = "core: none — --no-libraries against Agda.Builtin.*, Agda.Primitive and local modules; optional CanonicalEcho integration has pinned external source/stdlib"
 machine-readable = "a2ml + Nickel/k9"
 docs = "AsciiDoc"
-check = "just check  ==  agda --no-libraries -i src src/EpistemicTypes/All.agda"
+check = "just check == policy inventory/negative control + all 22 source modules + all 13 expected rejections"
 notes = "Single-tool Agda library. The core has no runtime dependencies; CI uses a pinned Debian verification container."
 
 [core]
@@ -32,7 +32,10 @@ modules = [
   "EpistemicTypes.Examples",
   "EpistemicTypes.ProofTransport — standpoint-indexed proof transport across trust boundaries",
   "EpistemicTypes.ProofTransportExample — a K9-SVC / A2ML attestation scenario",
-  "EpistemicTypes.All — re-export aggregator"
+  "EpistemicTypes.ReadConsistency and ContinuityExamples — pure store history, freshness and continuity witnesses",
+  "EpistemicTypes.Applications.* — six modules for the RapidNJ bound, integer instance and skip warrants",
+  "EpistemicTypes.Kripke.* — five modules for indexed Box/frame correspondences, non-factive belief, residual candidates and dependence",
+  "EpistemicTypes.All — full-graph import; public re-export is deliberately narrower"
 ]
 
 [proof-transport]
@@ -43,8 +46,11 @@ no-smuggling = "proofNeedsChecker: no checker-free Proof -> Proof transport is e
 
 [related-projects]
 projects = [
-  { name = "echo-types", relationship = "sibling-formalism", notes = "Agda loss-with-residue (min-plus graded) formalism. EpistemicTypes.EchoBridge's 'Echo C y' composes with it; kept deliberately distinct from the epistemic E κ A modality (no collapse)." },
+  { name = "echo-types", relationship = "sibling-formalism", notes = "Agda proof-relevant fibre/residue formalism. Canonical Echo can be lowered one-way into separately measured resource evidence, but Echo is not a resource instance. The local bridge checks representation/lowering at a pin and does not collapse Echo into E κ A." },
   { name = "ephapax", relationship = "sibling-formal-language", notes = "Sibling formal language; its four-layer redesign carries echo obligations. Echo / standpoint vocabulary is shared at the conceptual level, not via a code dependency." },
+  { name = "choreographic-types", relationship = "external-proof-consumer", notes = "Imports the warrant interface and proves scoped finite binary/plain-merge K-CUT results, including asynchronous variants. Data-dependent warrants and generalized fragments remain open; not a local dependency." },
+  { name = "residual-evidence-types", relationship = "research-neighbour", notes = "Operated in production; its mathematical/API maturity remains early research with no stable API despite checked composition/revision/finite-checker progress. The local dependence result is a mirror, not an imported identity." },
+  { name = "secret-types", relationship = "standalone-boundary", notes = "Owns confidentiality labels and generic TINI. No Secret API or IFC theorem belongs here; termination-sensitive noninterference and declassification remain open there." },
   { name = "standards", relationship = "estate-foundation", notes = "Estate RSR / standards repo plus k9-svc and a2ml tooling. Supplies the descriptiles layout and the contractile / k9 rendering conventions this repo's .machine_readable mirrors." },
   { name = "a2ml + k9", relationship = "rendering-target", notes = "Machine-readable a2ml + Nickel/k9 contractile tooling. The engineering rendering target for ProofTransport: the standpoint-indexed proof-transport core is rendered to a2ml/k9 under .machine_readable/proof-transport/." }
 ]

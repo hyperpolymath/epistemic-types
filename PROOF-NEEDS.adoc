@@ -1,0 +1,103 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= epistemic-types — proof needs
+:revdate: 2026-11-01
+:toc:
+
+This queue records only obligations that remain relevant to this repository.
+It does not widen the map-only API, merge independent type families, or import
+sibling research merely to make a status table look complete. Completed
+results and exact limits are in link:PROOF-STATUS.adoc[].
+
+== P0 — current verification profile
+
+[cols="1,3,1",options="header"]
+|===
+| ID | Obligation | Status
+| P0-1 | Run all 22 source modules with Agda 2.6.4.3 under explicit
+`--safe --without-K --cubical-compatible`, double checking, no libraries, no
+interfaces, and warnings as errors except the exact-location-audited
+`UnsupportedIndexedMatch` transport-computation manifest | CLOSED — run
+`41326349568`, revision `bf9c75a`; exact 23-span audit added on 2026-11-01 and
+awaiting its final-head hosted receipt
+| P0-2 | Run all 13 rejection fixtures and require the intended type mismatch,
+Agda exit 42, and no import/tool failure | CLOSED — run `41326349568`
+| P0-3 | Run the proof-policy inventory, banned-construct/import checks, and the
+planted-postulate negative control | CLOSED — run `41326349568`
+| P0-4 | Recheck pinned canonical Echo correspondence under the explicit profile
+| CLOSED — run `41326349568`
+|===
+
+Closing P0 establishes Mathesis Grade 3 for the checked Agda revision. It does
+not establish independent cross-prover agreement.
+
+== P1 — theorem-level independent rechecks
+
+The estate theory policy requires theorem-by-theorem Rocq and Lean legs. These
+must start from exact propositions, not matching filenames or theorem names.
+
+[cols="1,3,1",options="header"]
+|===
+| ID | Obligation | Status
+| P1-1 | Assign stable theorem IDs and record exact Agda propositions,
+premises, universes, source revision, Agda version, and imports | OPEN
+| P1-2 | Re-prove or transport each selected theorem into Rocq without Mathlib
+or unrecorded axioms; record route and checker receipt | OPEN / NOT-INVENTORIED
+| P1-3 | Re-prove or transport each selected theorem into Lean without Mathlib
+or unrecorded axioms; record route and checker receipt | OPEN / NOT-INVENTORIED
+| P1-4 | Check proposition correspondence, including equality, universe,
+modality, totality, and assumption translations | BRIDGE-PENDING
+| P1-5 | Record every residual assumption and quarantine any mismatch rather
+than weakening the Agda statement | OPEN
+|===
+
+No Grade 2i, Grade 2ii, Grade 1, or `RECONCILED` claim is made until the
+applicable rows close.
+
+== P2 — local mathematical obligations
+
+[cols="1,3,1",options="header"]
+|===
+| ID | Obligation | Status
+| P2-1 | Soundness for data-dependent warrants, with the evidence-to-claim map
+proved for each concrete source of evidence | OPEN
+| P2-2 | Re-prove the dependence result against residual-evidence-types' owning
+record if an external identity/correspondence is to be claimed | OPEN
+| P2-3 | Rational `OrderedGroup`/order instance or a common-denominator
+rescaling theorem connecting rational RapidNJ input to the checked integer
+certificate | OPEN
+| P2-4 | Row-insertion preservation and cross-iteration reuse of the RapidNJ
+skip bound | OPEN
+| P2-5 | Any desired converse of modal 5 or D, with its classical assumptions
+made explicit | OPEN
+| P2-6 | Any law-bearing modality instance beyond the existing concrete
+examples; laws must be proved or remain explicit fields | OPEN
+|===
+
+== P3 — correspondence and implementation obligations
+
+[cols="1,3,1",options="header"]
+|===
+| ID | Obligation | Status
+| P3-1 | Authoritative external-store refinement for `ReadConsistency` | OPEN
+| P3-2 | Runtime refinement for proof transport, including the checker,
+artefact, holder, and trust-boundary semantics | OPEN
+| P3-3 | Scheduler/resource interpretation for measured Echo bounds | OPEN
+| P3-4 | Any full Conway-surreal or physical-cost interpretation | OPEN
+| P3-5 | Full graded-comonad/graded-loss correspondence | OPEN
+|===
+
+None of P3 follows from a model typecheck. Echo retention, epistemic
+availability, and resource accounting stay separate unless an explicit bridge
+is proved.
+
+== Explicit non-obligations
+
+The following are not scheduled work for this repository:
+
+* generic `bind` or `extract` for `E`;
+* identifying Echo with a resource instance;
+* confidentiality labels or noninterference (owned by standalone
+  `hyperpolymath/secret-types`);
+* stabilising residual-evidence-types' API from here;
+* extending choreographic-types' K-CUT fragment from this repository;
+* claiming that externally reported proofs are local rechecks.

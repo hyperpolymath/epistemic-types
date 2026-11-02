@@ -1,6 +1,6 @@
 == Security Policy
 
-_Last updated: 2026-06-15 — version 0.1.0 (prototype)_
+_Last updated: 2026-11-01 — version 0.1.0 (prototype)_
 
 === Scope and threat model
 
@@ -12,10 +12,12 @@ formers. It is a single-tool, library-only project:
 only "`execution`" is Agda type-checking the source.
 * *No network, no secrets, no I/O.* The library reads no input and
 writes no output beyond what the type-checker reports.
-* *No dependencies.* It compiles under
-`+{-# OPTIONS --safe --without-K #-}+` with *no postulates* and *no Agda
+* *No core dependencies.* The source library compiles under
+`+{-# OPTIONS --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness #-}+` with *no postulates* and *no Agda
 standard library* (built with `+agda --no-libraries+`, using only
-`+Agda.Builtin.*+` / `+Agda.Primitive+`).
+`+Agda.Builtin.*+`, `+Agda.Primitive+`, and local modules). The separately
+pinned canonical-Echo integration check imports sibling source and the Agda
+standard library; it is not part of the standalone core.
 
 Because there is no runtime surface, the meaningful "`attack surface`"
 is the *proofs and machine-readable specifications themselves*. A
@@ -25,14 +27,14 @@ example:
 * a proof that type-checks but encodes a false or misleading claim;
 * an unintended use of a postulate, `+--type-in-type+`, an `+unsafe+`
 pragma, or some other escape hatch that would weaken the
-`+--safe --without-K+` guarantee;
+`+--safe --without-K --cubical-compatible+` guarantee;
 * a flaw in the `+ProofTransport+` discipline that lets an attestation
 claim more than it should — e.g. something that lets a receiver-bound
 (designated) proof be treated as portable, or a receipt-only artifact be
 treated as a certifying proof, contrary to the `+proofNeedsChecker+`
-"`no-smuggling`" invariant. The same applies to the `+EchoBridge+`
-graded loss/residue accounting and the `+SurrealBridge+` birthday-tower
-carriers.
+"`no-smuggling`" invariant. The same applies to `+EchoBridge+` residue
+certificates and separately measured bounds, and to the finite-day
+`+SurrealBridge+` carriers.
 * a divergence between the Agda formalization and its engineering
 rendering in `+.machine_readable/proof-transport/+` (a2ml / Nickel-k9)
 that would let the machine-readable spec be read as guaranteeing
@@ -70,14 +72,16 @@ withdraw a claim_ rather than ship a patch to running software, the
 resolution may take the form of a documentation correction, a proof
 revision, or an honest note that a stated property does not hold.
 
-There is no automated CI on this repository (see `+AUDIT.adoc+`), so
-verification is manual: the canonical check is
+Proof and security CI are enabled (see `AUDIT.adoc` and
+`docs/ci-safety.adoc`). The canonical local/CI proof entry point is:
 
-....
-just check   # == agda --no-libraries -i src src/EpistemicTypes/All.agda
-....
+[source,shell]
+----
+just check   # policy guard + 22 source modules + 13 expected rejections
+----
 
-with *Agda 2.8.0*.
+CI pins *Agda 2.6.4.3* and explicitly invokes
+`--safe --without-K --cubical-compatible`.
 
 === Supported versions
 
@@ -101,9 +105,9 @@ report responsibly and avoid privacy violations or destructive testing.
 === Related projects
 
 Findings here may also be relevant to sibling formal-methods work in the
-estate — in particular `+echo-types+` (the loss-with-residue formalism
-that `+EchoBridge+` composes with), `+ephapax+` (sibling formal language
-with echo obligations), and the `+standards+` / `+a2ml+` / `+k9+`
+estate — in particular `+echo-types+` (the proof-relevant Echo source used by
+the pinned representation/one-way-lowering check), `+ephapax+` (sibling formal
+language with echo obligations), and the `+standards+` / `+a2ml+` / `+k9+`
 tooling that `+ProofTransport+`’s machine-readable rendering targets.
 Where appropriate, a report against one may be cross-referenced to the
 others.

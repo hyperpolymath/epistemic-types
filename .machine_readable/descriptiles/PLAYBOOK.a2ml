@@ -5,7 +5,7 @@
 [metadata]
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-06-15"
+last-updated = "2026-11-01"
 repo = "hyperpolymath/epistemic-types"
 single-tool = "agda"
 
@@ -13,27 +13,27 @@ single-tool = "agda"
 method = "library (no deploy)"
 target = "library"
 notes = "Constructive Agda formalization consumed by reading and re-checking the source. Nothing is built into an artifact, served, or shipped. Downstream use = import the modules and typecheck."
-ci = "not enabled (see AUDIT.adoc)"
+ci = "Proof and security CI enabled; see docs/ci-safety.adoc"
 
 [gate]
 # The single source of truth for 'is the library healthy?'.
 command = "just check"
-expands-to = "agda --no-libraries -i src src/EpistemicTypes/All.agda"
+expands-to = "tests/check-policy.sh; tests/check-proofs.sh over all 22 source modules; tests/check-rejections.sh over all 13 fixtures"
 agda-version = "2.6.4.3"
-options = "--safe --without-K"
-dependencies = "none (only Agda.Builtin.* / Agda.Primitive; no standard library; no postulates)"
-green-means = "All.agda re-exports every module and the whole library typechecks."
+options = "--safe --without-K --cubical-compatible; source hardening --exact-split --no-sized-types --no-guardedness"
+dependencies = "core: Agda builtins/primitive and local modules only; optional canonical integration pins Echo source and stdlib"
+green-means = "Policy guard passes, every source module checks, and every enumerated malformed construction fails for its intended reason."
 
 [incident-response]
 # 'Incident' here = the library stopped typechecking.
 steps = [
   "1. Read .machine_readable/descriptiles/STATE.a2ml for current status, assumptions, and the module list.",
-  "2. Run `just check` to reproduce the failure (same as `agda --no-libraries -i src src/EpistemicTypes/All.agda`).",
-  "3. Read the Agda error: it names the failing module under src/EpistemicTypes/ and the offending goal or type.",
-  "4. Open and inspect that failing module; fix the definition or the field standing in for a not-yet-derived law.",
-  "5. Re-run `just check` until green; the whole library must typecheck via All.agda."
+  "2. Run `just check` to reproduce the same policy, positive-proof and expected-rejection gates as core CI.",
+  "3. Identify whether the policy inventory, a positive module, or an intended rejection failed; missing tools/imports are failures, not evidence.",
+  "4. Fix the source or status record without weakening flags, widening the map-only API, or turning an assumption into a theorem.",
+  "5. Re-run `just check` until all three gates are green; update PROOF-STATUS.adoc when proof scope changes."
 ]
-honesty-rule = "Never silence a failure with a postulate or by weakening --safe/--without-K. Laws appear as explicit fields when they are not derivable."
+honesty-rule = "Never silence a failure with a postulate or by weakening --safe/--without-K/--cubical-compatible. Laws appear as explicit fields when they are not derivable."
 boundary-rule = "Do not collapse Echo C y (certified residue and separately measured bounds) into E κ A (standpoint/warrant/access). Their composition is meaningful; they are not the same modality."
 
 [release-process]
@@ -43,17 +43,18 @@ steps = [
   "3. Update CHANGELOG.adoc with the changes for this version.",
   "4. Tag the release at the green commit."
 ]
-preconditions = "`just check` is green; no postulates introduced; --safe --without-K still hold."
+preconditions = "`just check` and the pinned integration gate are green at the release revision; no postulates; canonical strict profile still holds."
 
 [maintenance-operations]
 gate = "`just check`"
 description = "`just check` is the maintenance gate. Any change to src/EpistemicTypes/** is only complete once `just check` is green again."
 routine = [
   "After editing any module, run `just check`.",
-  "When adding a module, re-export it from EpistemicTypes.All so the gate covers it.",
-  "Keep modules small and typecheck frequently (incremental, one module at a time)."
+  "When adding a module, update the source graph, policy inventory, STATE module list and current counts; recursive checking does not depend on public re-export.",
+  "Keep modules small and typecheck frequently (incremental, one module at a time).",
+  "Keep PROOF-STATUS and PROOF-NEEDS aligned with exact theorem scope and external trust boundaries."
 ]
-no-build-system = "There is no separate build, lint, test, container, or security pipeline beyond the typechecker; the proof obligation IS the test."
+no-runtime = "There is no deployed service. Proof, rejection, policy, canonical correspondence, governance, CodeQL and secret-scanning gates are separate and must not be conflated."
 
 [ecosystem]
 # Sibling repos this library relates to (no automated coupling).

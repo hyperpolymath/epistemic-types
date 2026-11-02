@@ -9,18 +9,30 @@ The owner explicitly authorized maintaining these CI and merge safeguards on
 
 `Proof core and rejection controls` checks every file under
 `src/EpistemicTypes/`, including a file accidentally omitted from `All.agda`.
-It uses Agda 2.6.4.3 with `--safe --without-K --double-check
---ignore-interfaces -W error --no-libraries`. It also runs all enumerated
-false-claim controls (twelve at the time of writing). The rejection runner requires Agda's type-error exit code
-and the intended semantic diagnostic; import and environment failures do not pass.
+It uses Agda 2.6.4.3 with explicit
+`--safe --without-K --cubical-compatible --exact-split --no-sized-types
+--no-guardedness --double-check --ignore-interfaces -W error --no-libraries`.
+The strict pass disables `UnsupportedIndexedMatch`, then a second pass requires
+that category to occur at exactly the 23 reviewed spans listed in
+`tests/check-proofs.sh`; a new, moved, or stale warning fails. The proofs remain
+safe, but those indexed eliminations are not claimed to compute when applied to
+Cubical transports. The policy preflight compares exactly 22 source paths, 13
+rejection paths and one integration path with authoritative manifests; requires
+every first-party module to contain exactly one complete strict pragma; scans
+the positive proof tree for escape hatches and non-core imports; and requires
+`--safe` to reject a generated postulate. Search-tool errors fail closed. The
+rejection runner then requires every fixture's type-error exit code and intended
+semantic diagnostic. Import and environment failures do not pass.
 
 `Canonical Echo correspondence` imports the actual `echo-types` source pinned to
 `46cd1a32d4dcf1020f01dd1aab41f816742da10e`. It checks both residue-conversion round
 trips and agreement of lowering. Its standard library is Debian's Agda stdlib
-2.1-4. Only `UnsupportedIndexedMatch`, the already-reviewed warning about Cubical
-transport compatibility, is suppressed for this integration. Safe mode,
-without-K, internal double checking and all other warnings-as-errors remain.
-The claim is ordinary Agda correspondence, not Cubical computation compatibility.
+2.1-4. The same warning category is disabled because the reviewed external
+Echo/stdlib sources also emit it. Safe mode, without-K, cubical-compatible
+mode, internal double checking and all other warnings-as-errors remain. The
+claim is the named pinned-source
+correspondence, not full Cubical computation compatibility of those external
+dependencies.
 
 The Debian 13 container is pinned by digest; the Agda packages are pinned by
 version and installed through authenticated Debian repositories. There are no

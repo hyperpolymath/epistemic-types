@@ -19,7 +19,7 @@
 ;; `scripts/check.sh` falls back to this environment when no Agda is on PATH.
 ;; The Agda in Guix may differ from the version CI pins (2.6.4.3); the script
 ;; reports the version it uses. ripgrep and findutils are required by
-;; tests/check-rejections.sh and tests/check-proofs.sh.
+;; tests/check-policy.sh, tests/check-rejections.sh and tests/check-proofs.sh.
 (package
   (name "epistemic-types")
   (version "0.1.0")

@@ -1,7 +1,11 @@
 = Explain Me: Epistemic Types
+:revdate: 2026-11-01
 
-This project is a compact Agda sketch of standpoint-indexed epistemic modal
-types.  It favors mathematical honesty over a large API.
+This project is a compact constructive Agda formalisation of
+standpoint-indexed epistemic modal types. It favours mathematical honesty over
+a large API. The exact proof ledger and current checker receipt are in
+link:PROOF-STATUS.adoc[]; link:EXPLAINME.adoc[] supplies the detailed
+claim-by-claim evidence table.
 
 == Core choice
 
@@ -30,9 +34,9 @@ belief-reflection function would produce an inhabitant of the empty type.
 
 == Warrant
 
-`Warrant κ A` is proof-relevant: it tells us what counts as an evidence token
-for `A` at `κ`.  `Epi κ A` packages a warrant and a token.  This still does not
-prove `A`.  A sound warrant is a separate record with an explicit soundness
+`Warrant K κ A` is proof-relevant: it tells us what counts as an evidence token
+for `A` at `κ`. `Epi K κ A` packages a warrant and a token. This still does not
+prove `A`. A sound warrant is a separate record with an explicit soundness
 function.
 
 == Reads and retained information
@@ -87,13 +91,25 @@ acceptance, and refutes false claims. It does not claim that a physical action
 occurred. The older token-only model lacked semantic soundness; the strengthened
 interface is a breaking correction documented in link:docs/proof-transport.adoc[].
 
-== Roadmap
+== Constructive Kripke scope
 
-* First keep the tiny core stable and type-checking.
-* Next add small concrete models: Kripke accessibility, evidence-state
-  semantics, and observation rules.
-* Then add law-bearing records for proven functoriality, access transport, and
-  optional soundness.
-* Add richer day-bounded surreal fragments as concrete bridge instances.
-* Finally connect to the larger echo-type story through bridge modules that
-  preserve the distinction between grades and standpoints.
+The five modules under `src/EpistemicTypes/Kripke/` provide a world-indexed
+`Box`, constructive T and 4 in both directions, Euclidean-to-5,
+serial-to-D, a concrete non-factive warrant, a residual-candidate frame, and a
+local dependence mirror. They do not claim a complete epistemic logic,
+classical converse 5/D, or global warrant soundness. Data-dependent warrant
+soundness and correspondence with residual-evidence-types' owning record remain
+open.
+
+== Verification and roadmap
+
+`just check` first enforces the complete strict source profile and the exact
+22-source/13-rejection inventory, then checks each source module and each
+intended rejection. CI pins Agda 2.6.4.3. The current Mathesis grade is not
+inferred from prose; see `PROOF-STATUS.adoc` for the hosted receipt state.
+
+Remaining local work includes concrete data-dependent sound warrants, the
+rational/rescaling and update obligations for the RapidNJ example, any desired
+law-bearing modality instances, and richer finite-day bridge models. Generic
+`bind`/`extract`, Echo-as-resource, sibling API stabilisation, and
+confidentiality/IFC are not commitments of this repository.

@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "Epistemic Types"
-abstract: "Constructive Agda prototype for standpoint-indexed epistemic modalities, separating knowledge (factive) from belief and warrant. Provides a tropical-graded bridge from standpoint access to echo-type residues, and a compositional proof-transport calculus with a no-smuggling guarantee across trust boundaries."
+abstract: "Constructive Agda prototype for standpoint-indexed epistemic modalities, separating factive knowledge from belief and warrant. It provides certified Echo residues with separately measured resource bounds, a finite-day access adapter, scoped constructive Kripke semantics, and proof transport sound relative to an explicit claim meaning across trust boundaries."
 authors:
   - family-names: "Jewell"
     given-names: "Jonathan D.A."

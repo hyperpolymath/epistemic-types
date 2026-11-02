@@ -12,8 +12,13 @@ actual_files=$(rg --files tests/reject -g '*.agda' | sort)
 [[ "$actual_files" == "$expected_files" ]] || { echo 'FAIL: rejection manifest differs from files'; exit 1; }
 for fixture in "${fixtures[@]}"; do
   status=0
-  diagnostic=$(agda --no-libraries --safe --without-K --double-check --ignore-interfaces -W error -W noUnsupportedIndexedMatch \
-    -i src -i tests/reject "tests/reject/$fixture.agda" 2>&1) || status=$?
+  # Source warning locations are audited by check-proofs.sh; this suppression
+  # only lets each negative fixture reach the exact mismatch asserted below.
+  diagnostic=$(agda --no-libraries --safe --without-K --cubical-compatible \
+    --exact-split --no-sized-types --no-guardedness \
+    --double-check --ignore-interfaces \
+    -W error -W noUnsupportedIndexedMatch -i src -i tests/reject \
+    "tests/reject/$fixture.agda" 2>&1) || status=$?
   if [[ "$status" -eq 0 ]]; then
     printf 'FAIL: %s unexpectedly type-checked\n' "$fixture"
     exit 1

@@ -52,9 +52,10 @@ Monadic (`bind`) and comonadic (`extract`) structure are *not* provided by defau
 
 A warrant records the *type of evidence* for a claim without assuming the evidence is valid:
 
-* `Warrant κ A` — the type of evidence tokens for `A` from standpoint `κ`.
-* `Epi κ A` — an evidence token paired with its warrant type.
-* `SoundWarrant` — a separate interface adding a soundness map (`evidence → A`). Not assumed by default.
+* `Warrant K κ A` — the type of evidence tokens for `A` from standpoint `κ`.
+* `Epi K κ A` — an evidence token paired with its warrant type.
+* `SoundWarrant` — a separate interface adding a soundness map from that
+  warrant's `Evidence` to `A`. Not assumed by default.
 
 This separates "I have a receipt for A" from "A is true."
 
@@ -161,8 +162,8 @@ interface is a breaking correction documented in link:docs/proof-transport.adoc[
 | Standard
 | `EpistemicTypes.Base`
 
-| Knowledge (factivity) vs. Belief distinction
-| Standard (modal logic S5 vs. KD45)
+| Knowledge (factivity) vs. non-factive belief distinction
+| Standard distinction; this minimal API does not claim S5 or KD45
 | `EpistemicTypes.Base`
 
 | Warrant types without assumed soundness
@@ -190,7 +191,7 @@ interface is a breaking correction documented in link:docs/proof-transport.adoc[
 
 [NOTE]
 ====
-2026-10-12: Kripke semantics, the frame-condition correspondences, a non-factive model (`Warrant ≠ SoundWarrant` witnessed), the residual-evidence frame and the dependence test now live under `src/EpistemicTypes/Kripke/`; see link:docs/kripke-status-2026-10-12.adoc[]. Global warrant soundness for type-determined warrants is proved externally in choreographic-types, at the recorded revision `d8536184366f4ac4567aa066c5dbcb9220e3607a` with a successful CI type-check, and is not re-checked here (E-6). Soundness for data-dependent warrants remains an assumption.
+2026-10-12: Kripke semantics, the frame-condition correspondences, a non-factive model (`Warrant ≠ SoundWarrant` witnessed), the residual-evidence frame and the dependence test now live under `src/EpistemicTypes/Kripke/`; see link:docs/kripke-status-2026-10-12.adoc[]. Choreographic-types externally proves soundness for type-determined warrants in its finite binary/plain-merge fragment at the recorded revision `d8536184366f4ac4567aa066c5dbcb9220e3607a`, with a successful CI type-check; that result is not re-checked or generalised here (E-6). Soundness for data-dependent warrants remains open and is not assumed by this repository.
 ====
 
 [CAUTION]
@@ -223,7 +224,7 @@ This is a prototype, not a complete epistemic logic. The following are **intenti
 
 [source,bash]
 ----
-just check  # positive proofs and expected rejection controls
+just check  # policy guard + 22 positive modules + 13 expected rejections
 ----
 
 `just check` calls `scripts/check.sh`: it uses a local `agda` when one is on
@@ -245,12 +246,24 @@ To check a single module or the aggregate directly:
 
 [source,bash]
 ----
-agda --no-libraries -i src src/EpistemicTypes/All.agda
+agda --no-libraries --safe --without-K --cubical-compatible \
+  --double-check --ignore-interfaces \
+  -W error -W noUnsupportedIndexedMatch \
+  -i src src/EpistemicTypes/All.agda
 ----
+
+Agda 2.6.4.3's `UnsupportedIndexedMatch` category is disabled in the strict
+pass, then rerun without warnings-as-errors and compared with the exact 23-span
+manifest in `tests/check-proofs.sh`. A warning at a new location, or a stale
+manifest entry, fails the gate. The proofs check in safe mode; the repository
+does not claim that those indexed eliminations compute when applied to Cubical
+transports. All other warnings remain errors.
 
 == Documentation
 
-* link:EXPLAINME.adoc[EXPLAINME] — claim-by-claim receipts and known gaps
+* link:EXPLAINME.adoc[EXPLAINME] — claim-by-claim receipts and proof ledger
+* link:PROOF-STATUS.adoc[Proof status] / link:PROOF-NEEDS.adoc[proof needs] — current verification grade, trust boundaries, and open proof legs
+* link:docs/kripke-status-2026-10-12.adoc[Kripke status] — exact constructive frame scope and warrant boundary
 * link:docs/continuity-foundations.adoc[Continuity foundations] — store coherence, retained information, bounds, and next obligations
 * link:docs/proof-transport.adoc[Proof transport] — semantic verification across boundaries
 * link:docs/applications/rapidnj-q-criterion.adoc[Applications: the RapidNJ Q-criterion] — the bound, the skip warrant, the exact-arithmetic obligation

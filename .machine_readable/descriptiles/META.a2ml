@@ -3,7 +3,7 @@
 
 [metadata]
 version = "0.1.0"
-last-updated = "2026-10-04"
+last-updated = "2026-11-01"
 
 [project-info]
 name = "epistemic-types"
@@ -20,7 +20,7 @@ summary = "A small, deliberately honest Agda formalization of standpoint-indexed
 adrs = [
   { id = "ADR-001", title = "No postulates: laws are record fields when not derivable", status = "accepted", date = "2026-06-15" },
   { id = "ADR-002", title = "Separate FactiveModality from BeliefModality; no generic reflect/return", status = "accepted", date = "2026-06-15" },
-  { id = "ADR-003", title = "Compile under --safe --without-K", status = "accepted", date = "2026-06-15" },
+  { id = "ADR-003", title = "Compile under the strict canonical Agda profile", status = "accepted", date = "2026-06-15", updated = "2026-11-01" },
   { id = "ADR-004", title = "No Agda standard library; build with agda --no-libraries", status = "accepted", date = "2026-06-15" },
   { id = "ADR-005", title = "Keep certified residues and resource bounds distinct from epistemic standpoints", status = "accepted", date = "2026-06-15" },
   { id = "ADR-006", title = "ProofTransport: no smuggling by construction", status = "accepted", date = "2026-06-15" },
@@ -42,18 +42,18 @@ decision = "The base interface `E : K -> Set ℓ -> Set ℓ` is a plain indexed 
 consequence = "No monad/comonad structure is assumed. Factive extraction is available exactly where factivity has been declared, and nowhere else."
 
 [architecture-decisions.ADR-003]
-title = "Compile under --safe --without-K"
+title = "Compile under the strict canonical Agda profile"
 status = "accepted"
-context = "`--safe` rejects postulates and unsafe pragmas; `--without-K` keeps the development compatible with proof-relevant / HoTT-friendly foundations."
-decision = "Every module carries `{-# OPTIONS --safe --without-K #-}` and the aggregate `All.agda` type-checks under those options."
-consequence = "Reinforces ADR-001 mechanically (no `--safe`-violating escape hatches) and constrains pattern matching to be K-free."
+context = "`--safe` rejects postulates and unsafe pragmas; `--without-K` preserves proof relevance; `--cubical-compatible` is the estate canonical theory profile."
+decision = "Every first-party module declares `--safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness`. The command line explicitly repeats the canonical first three flags, and the recursive gate checks every source module rather than trusting only the aggregate."
+consequence = "Reinforces ADR-001 mechanically, keeps pattern matching K-free, and makes profile drift and omitted modules gate failures. tests/check-policy.sh supplies the planted-postulate negative control."
 
 [architecture-decisions.ADR-004]
 title = "No Agda standard library; build with agda --no-libraries"
 status = "accepted"
-context = "Depending on `agda-stdlib` adds a large surface and a version-pinning burden for a deliberately small prototype."
-decision = "Build with `agda --no-libraries`, using only `Agda.Builtin.*` and `Agda.Primitive`. No third-party Agda library is imported."
-consequence = "The project is self-contained and reproducible with just an Agda binary, at the cost of re-deriving small primitives in-tree."
+context = "Depending on `agda-stdlib` would add a large surface to the deliberately small core; the optional canonical-Echo witness is a separate integration boundary."
+decision = "Build core source with `agda --no-libraries`, using only `Agda.Builtin.*`, `Agda.Primitive`, and local modules. The integration job explicitly pins sibling source and stdlib inputs."
+consequence = "The core remains self-contained and reproducible with just an Agda binary; external correspondence cannot be mistaken for a core import."
 
 [architecture-decisions.ADR-005]
 title = "Keep certified residues and resource bounds distinct from epistemic standpoints"
@@ -74,7 +74,7 @@ title = "Secret types and information-flow control are specified outside this re
 status = "accepted"
 context = "Issue #29 preserved a secret-types research note here; issue #32 then proposed an in-repository security model. On 2026-10-04 the owner ruled that hyperpolymath/secret-types is the standalone home, with D153 (a secret type is a value whose flow is constrained by a confidentiality label with explicit declassification, registered in the type-family map on that boundary) and D154 (reuse an existing lattice, two-point first then general; prove noninterference; declassify only at explicit audited points)."
 decision = "This repository adds no Secret API and no information-flow implementation. docs/secret-types.adoc is retained as the boundary/history note; the specification itself (canonical text in hyperpolymath/secret-types docs/secret-types.adoc; placement in docs/decisions/0004-standalone-repo-and-scope.adoc, PR #4 d1122d8), lattice reuse, the noninterference theorem, and audited declassification belong to hyperpolymath/secret-types."
-consequence = "The epistemic core keeps its scope: no confidentiality claim attaches to BeliefModality, Echo grades, or Access. epistemic-types#29 stays closed. Issue #32 was closed on 2026-10-05 as delivered here - no transfer and no duplicate; do not reopen it. Its successor guard is epistemic-types#39. The standalone repository is no longer specification-only: at ccdcb3ec42792337a9ab6047e1f99de9d20a4f96 (2026-10-19) TINI at the two-point lattice and over a Lattice record are PROVEN and its proof gate is green; declassification is not yet implemented. See docs/secret-types.adoc section Status update 2026-10-25."
+consequence = "The epistemic core keeps its scope: no confidentiality claim attaches to BeliefModality, Echo retention, measured resource bounds, or Access. epistemic-types#29 stays closed. Issue #32 was closed on 2026-10-05 as delivered here - no transfer and no duplicate; do not reopen it. Its successor guard is epistemic-types#39. Source-reviewed at standalone secret-types f581f8295bdee854f76291ab884a16cc8114dc6f on 2026-11-01: generic TINI over a Lattice record/down-closed observer and the two-point instance are PROVEN in its ledger; termination-sensitive noninterference and declassification remain OPEN. No theorem is imported here."
 
 [development-practices]
 build-tool = "just"
@@ -90,10 +90,10 @@ posture = "Mathematical honesty over API size. The library is small on purpose: 
 base-interface = "`E : K -> Set ℓ -> Set ℓ`, read `E κ A` = 'A is epistemically available at standpoint κ'. The base is a plain indexed endofunctor (map only) — not a monad or comonad — so no return/reflect is assumed for free."
 factivity = "Factive knowledge and non-factive belief are distinct interfaces (FactiveModality vs BeliefModality), preventing belief from being read as knowledge."
 access = "`Access` adds a preorder over standpoints and an `AccessibleModality` whose `increase` transports availability along the preorder."
-echo = "`EchoBridge` supplies a min-plus-graded loss/residue modality `Echo C y`, kept structurally distinct from epistemic availability; the two compose but never collapse (see ADR-005)."
+echo = "`EchoBridge` supplies certified residue `Echo C y`; `BoundedEcho` separately adds a measured upper bound. Neither is identified with epistemic availability or made a resource instance (see ADR-005)."
 surreal = "`SurrealBridge` offers an abstract `SurrealAccess` carrier with a `GradedSurrealModality` and a finite-birthday tower `daySurrealAccess`, as instances of the abstract access interface rather than a full surreal-number library."
 proof-transport = "`ProofTransport` formalizes standpoint-indexed proof transport across trust boundaries with statuses Data/Code/Claimed/Receipt/Proof/ProofUnder and modes Public/Designated/IssuerMediated/EnvironmentMediated/OpaqueReceipt; no-smuggling is by construction (see ADR-006)."
-modules = "Base, Warrant, Access, EchoBridge, SurrealBridge, Examples, ProofTransport, ProofTransportExample, with All re-exporting the development."
+modules = "22 Agda source modules: map-only core and examples, proof transport, store/continuity, certified Echo and finite-day resource adapter, six application modules, and five scoped Kripke modules. All imports the full graph; the recursive gate checks every file."
 
 [ecosystem]
 # Real sibling projects in the estate.

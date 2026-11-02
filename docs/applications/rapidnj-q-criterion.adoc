@@ -229,7 +229,8 @@ exact comparison decides it.
 
 == What is proved, and what is not
 
-Proved (all machine-checked under `--safe --without-K`, no postulates):
+Proved (machine-checked with Agda 2.6.4.3 under the repository's strict
+`--safe --without-K --cubical-compatible` profile, with no postulates):
 
 * `qBound-≤-Q`, `qBound-≤-suffix`, `noBetter-weaken`, `noBetter-append`;
 * `skipWarrant` / `skipSoundWarrant` construction and `skip-known`,
