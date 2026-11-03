@@ -57,7 +57,7 @@ repo:
   owner: "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
   version: "0.1.0"
   status: "prototype"
-  last_updated: "2026-11-01"
+  last_updated: "2026-11-03"
   kind: "single-tool Agda library"
 
 # Paths the session machinery must treat as load-bearing. Changes under these
@@ -70,7 +70,7 @@ protected_paths:
   - path: ".machine_readable/"
     role: "a2ml + Nickel/k9 machine-readable surface (descriptiles/, proof-transport/)"
   - path: "tests/"
-    role: "proof-policy gate, 13 expected rejections and pinned integration witness"
+    role: "proof-policy gate, 17 expected rejections and pinned integration witness"
   - path: "PROOF-STATUS.adoc"
     role: "current proof ledger and Mathesis grade boundary"
   - path: "Justfile"
@@ -83,7 +83,7 @@ invariants:
   - id: "build-green"
     statement: "The library typechecks: `just check` succeeds."
     command: "just check"
-    expands_to: "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+    expands_to: "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh && bash tests/check-approval-seal-mutations.sh"
     tool: "Agda 2.6.4.3"
   - id: "no-postulates"
     statement: "No postulates or escape hatches. Every first-party module declares --safe --without-K --cubical-compatible --exact-split --no-sized-types --no-guardedness."
