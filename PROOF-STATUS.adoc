@@ -1,19 +1,34 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 = epistemic-types — proof status
-:revdate: 2026-11-01
+:revdate: 2026-11-03
 :toc:
 :sectnums:
 
 [abstract]
 This is the current, source-anchored verification record for the Agda
-formalisation. The authoritative positive tree contains *22 source modules* and
-the negative-control manifest contains *13 expected-rejection fixtures*. The
+formalisation. The authoritative positive tree contains *23 source modules* and
+the negative-control manifest contains *17 expected-rejection fixtures*. The
+2026-11-03 extension adds one module and four fixtures to the previous verified
+22-module/13-fixture baseline, plus four isolated mutation controls. The
 source is constructive, builtins-only, map-only at its base interface, and has
 no postulates or proof escape hatches. Exact theorem scope and trust boundaries
 are recorded below; historical snapshots remain in `AFFIRMATION.adoc` and are
 not current inventory.
 
 == Status vocabulary
+
+The 2026-11-03 approval-seal extension is locally *AGDA-VERIFIED* under Agda
+2.6.4.3 and the canonical safety profile. `Applications/ApprovalSeal.agda` defines AS-1..AS-8:
+exact approval binding, agent-trace anchor preservation, an irreversible
+observed-write flag, rejection after a write, local-reference irrelevance,
+and clean-state acceptance. See link:docs/applications/approval-seal.adoc[] for
+the exact threat model and the positive counterexample when the adversary can
+replace the root. The baseline gate and extended gate both passed locally;
+23 modules, all 17 expected rejections and 4/4 deterministic mutants were checked.
+The new module needs no warning exception; the existing 23-span warning manifest
+is unchanged. Hosted receipts below cover the preceding 22-module,
+13-rejection corpus only; a fresh hosted receipt is pending. No runtime,
+independent-review or cryptographic closure is claimed.
 
 This document uses the estate proof-policy vocabulary:
 
@@ -37,6 +52,7 @@ The policy entry point is `scripts/check.sh`. It runs:
 bash tests/check-policy.sh
 bash tests/check-proofs.sh
 bash tests/check-rejections.sh
+bash tests/check-approval-seal-mutations.sh
 ----
 
 Every first-party Agda entry point is invoked with the canonical theory profile
