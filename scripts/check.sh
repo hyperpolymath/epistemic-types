@@ -16,6 +16,7 @@ run_gates() {
   bash tests/check-policy.sh
   bash tests/check-proofs.sh
   bash tests/check-rejections.sh
+  bash tests/check-approval-seal-mutations.sh
 }
 
 # Recursion guard: the Guix environment may resolve a differently named binary;
