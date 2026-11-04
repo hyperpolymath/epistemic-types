@@ -51,7 +51,11 @@ Debian `agda-bin` and `libghc-agda-dev` packages at version `2.6.4.3-1+b2`.
 The unchanged baseline gate passed (22 modules, 13 rejections); the extended
 gate passed (23 modules, 17 rejections). The new module also passed standalone
 with warnings as errors and no warning suppression. The existing source-warning
-manifest remains unchanged. Hosted rechecking is pending.
+manifest remains unchanged. Hosted Proof Safety run
+https://github.com/hyperpolymath/epistemic-types/actions/runs/41708617511[41708617511]
+passed at `91038dd6c2a535947178d429fc80ff543f0f32fe`, including the four
+mutation controls. See `PROOF-STATUS.adoc` for the separate failing CI checks
+and open independent-review boundary.
 
 `bash tests/check-approval-seal-mutations.sh` first checks the unchanged module,
 then rejects four fixed, isolated semantic mutants: always accepting broken
