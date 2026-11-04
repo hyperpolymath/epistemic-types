@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 = epistemic-types — proof needs
-:revdate: 2026-11-01
+:revdate: 2026-11-04
 :toc:
 
 This queue records only obligations that remain relevant to this repository.
