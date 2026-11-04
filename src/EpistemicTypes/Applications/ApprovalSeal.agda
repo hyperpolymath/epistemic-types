@@ -56,14 +56,19 @@ data AgentAction : Set where
   writeArtifact : Nat -> AgentAction
   writeLocalReference : Nat -> AgentAction
 
+-- An artifact write breaks the seal, even if the identity is unchanged.
+-- A local-reference write leaves the artifact and seal unchanged.
 step : AgentAction -> State -> State
 step (writeArtifact x) s = state (anchor s) x (localReference s) true
 step (writeLocalReference x) s = state (anchor s) (artifact s) x (broken s)
 
+-- Apply actions in list order; an empty trace leaves the state unchanged.
 run : List AgentAction -> State -> State
 run [] s = s
 run (a ∷ rest) s = run rest (step a s)
 
+-- Start with the given identity as anchor, artifact and local reference, and
+-- an intact seal.
 initial : Nat -> State
 initial x = state x x x false
 
@@ -74,15 +79,19 @@ matchVerdict : Bool -> Verdict
 matchVerdict true = accepted
 matchVerdict false = mismatch
 
+-- A broken seal takes precedence; otherwise accept exactly when the artifact
+-- matches the anchor, returning mismatch when it does not.
 gate : State -> Verdict
 gate (state a x _ false) = matchVerdict (same x a)
 gate (state _ _ _ true) = sealBroken
 
--- A deliberately inadequate comparator: both arguments are agent-writable.
+-- A deliberately inadequate comparator: both the artifact and the local
+-- reference are agent-writable, and the seal is ignored.
 localGate : State -> Bool
 localGate s = same (artifact s) (localReference s)
 
--- A protected endpoint comparator still cannot detect intermediate writes.
+-- Compare the artifact with the anchor, ignoring the seal; this endpoint
+-- comparator cannot detect intermediate writes.
 endpointGate : State -> Bool
 endpointGate s = same (artifact s) (anchor s)
 
