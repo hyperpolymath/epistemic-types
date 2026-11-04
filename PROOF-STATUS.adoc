@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 = epistemic-types — proof status
-:revdate: 2026-11-03
+:revdate: 2026-11-04
 :toc:
 :sectnums:
 
@@ -26,8 +26,9 @@ the exact threat model and the positive counterexample when the adversary can
 replace the root. The baseline gate and extended gate both passed locally;
 23 modules, all 17 expected rejections and 4/4 deterministic mutants were checked.
 The new module needs no warning exception; the existing 23-span warning manifest
-is unchanged. Hosted receipts below cover the preceding 22-module,
-13-rejection corpus only; a fresh hosted receipt is pending. No runtime,
+is unchanged. Proof Safety run 41708617511 checked the extended corpus at
+`91038dd6c2a535947178d429fc80ff543f0f32fe`; the earlier receipts below
+remain historical evidence for the preceding 22-module/13-rejection corpus. No runtime,
 independent-review or cryptographic closure is claimed.
 
 This document uses the estate proof-policy vocabulary:
@@ -64,7 +65,7 @@ its 23 existing warning spans are checked separately against the exact manifest
 in `tests/check-proofs.sh`. A new, moved, or stale location fails the gate. The
 safe proofs check, but no Cubical transport-computation claim is made for those
 indexed eliminations, including `Kripke.Belief.believed`. The policy gate also
-compares all 22 source modules, 13 rejection fixtures, and the integration
+compares all 23 source modules, 17 rejection fixtures, and the integration
 witness with exact path manifests; rejects additional `OPTIONS` pragmas, proof
 escape hatches, and non-core imports; and verifies a generated negative
 control: `--safe` must reject a planted postulate with Agda's expected
@@ -91,6 +92,22 @@ Grade 3*. The immediately following status/metadata receipt update changes no
 Agda source, fixture, gate, option, or dependency pin and is itself rerun by the
 same PR workflow. No missing tool, import failure, or unexpected rejection
 counts as a pass.
+
+== Approval-seal hosted receipt
+
+Proof Safety run
+https://github.com/hyperpolymath/epistemic-types/actions/runs/41708617511[41708617511]
+at `91038dd6c2a535947178d429fc80ff543f0f32fe` passed both
+`Proof core and rejection controls` and `Canonical Echo correspondence`.
+The core job checked 23 source modules, 17 expected semantic rejections,
+and all four isolated approval-seal mutants under Agda 2.6.4.3.
+This receipt covers that exact revision, not subsequent edits by implication.
+
+Governance run 41708617122 and Secret Scanner run 41708617124 failed before
+starting jobs. Their failures are not waived by the proof result. Independent
+adversarial review, runtime enforcement, digest binding and authorized approval
+updates remain open. Automated documentation review is not an independent
+validation of the security specification.
 
 == Local proof ledger
 
@@ -201,7 +218,7 @@ runtime or an unlisted mathematical correspondence.
 | Documentary comparison only; no imported owning definition
 
 | C-1
-| Every one of the 13 intended-invalid constructions is rejected for its
+| Every one of the 17 intended-invalid constructions is rejected for its
   enumerated semantic type mismatch. This is negative-control evidence, not a
   positive theorem.
 | TESTED
