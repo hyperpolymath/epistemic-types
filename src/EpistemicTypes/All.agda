@@ -22,6 +22,7 @@ import EpistemicTypes.ContinuityExamples
 -- vocabulary (row entries, scan invariants, a checkability record) that has
 -- no business in the core namespace.  See docs/applications/.
 import EpistemicTypes.Applications.RapidNJExamples
+import EpistemicTypes.Applications.ApprovalSeal
 open import EpistemicTypes.SurrealBridge public
 open import EpistemicTypes.Examples public
 open import EpistemicTypes.ProofTransportExample public

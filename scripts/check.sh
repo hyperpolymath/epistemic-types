@@ -10,12 +10,13 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 
 required_agda=2.6.4.3
 
-# Run the policy, proof and rejection gates in order. A failing gate stops the
-# script with that gate's exit status.
+# Run the policy, proof, rejection and mutation gates in order. A failing gate
+# stops the script with that gate's exit status.
 run_gates() {
   bash tests/check-policy.sh
   bash tests/check-proofs.sh
   bash tests/check-rejections.sh
+  bash tests/check-approval-seal-mutations.sh
 }
 
 # Recursion guard: the Guix environment may resolve a differently named binary;

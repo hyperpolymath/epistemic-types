@@ -9,6 +9,7 @@ required_options='{-# OPTIONS --safe --without-K --cubical-compatible --exact-sp
 expected_source_modules=(
   src/EpistemicTypes/Access.agda
   src/EpistemicTypes/All.agda
+  src/EpistemicTypes/Applications/ApprovalSeal.agda
   src/EpistemicTypes/Applications/IntegerModel.agda
   src/EpistemicTypes/Applications/OrderedGroup.agda
   src/EpistemicTypes/Applications/QCriterion.agda
@@ -32,8 +33,10 @@ expected_source_modules=(
 )
 # shellcheck disable=SC2034 # consumed through require_exact_inventory namerefs
 expected_rejection_fixtures=(
+  tests/reject/AgentChangesAnchor.agda
   tests/reject/BeliefIsKnowledge.agda
   tests/reject/FakeFreshness.agda
+  tests/reject/FinalStateProvesNoTouch.agda
   tests/reject/ForgedAcceptance.agda
   tests/reject/ForgedResidue.agda
   tests/reject/ForkedHistory.agda
@@ -42,6 +45,8 @@ expected_rejection_fixtures=(
   tests/reject/MismatchedSource.agda
   tests/reject/ReplayedArtifact.agda
   tests/reject/ReplayedHolder.agda
+  tests/reject/ResealApprovesChange.agda
+  tests/reject/RestoreErasesHistory.agda
   tests/reject/StaleSample.agda
   tests/reject/UncheckedSkip.agda
   tests/reject/UnderstatedBound.agda

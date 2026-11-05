@@ -1,0 +1,139 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= Approval authority and an observed-write seal
+:revdate: 2026-11-03
+
+== Purpose and exact scope
+
+`Applications/ApprovalSeal.agda` starts the evidence-integrity programme with
+a deliberately small model of authority and observed history. It addresses the
+attack where an implementation agent changes both an artifact and a local
+reference, and the separate attack where it changes and restores the artifact.
+The model is not a deployed gate, a hash implementation, a signature scheme,
+a filesystem monitor, or a proof that an approved program is safe.
+
+The source defines a fixed approval anchor, current artifact identity, writable
+local reference, and a sticky observed-write flag. `Nat` denotes *exact model
+identity*, not a digest and not an assumption that finite hashes are injective.
+Agent actions can write the artifact or local reference. They cannot reanchor
+or clear the flag. These permissions define the threat model; Agda does not
+enforce them on an external operating system.
+
+Acceptance establishes equality with the approval anchor and an intact flag.
+It does not establish the meaning of the approved artifact. Semantic
+certification belongs to `ProofTransport.CertificateCheck`; connecting that
+checker, its exact proposition and this model is a further obligation.
+
+== Theorem inventory
+
+[cols="1,3,3",options="header"]
+|===
+|ID |Declaration |Meaning
+|AS-1 |`accepted-matches-anchor` |Accepted state has the exact anchored artifact.
+|AS-2 |`accepted-is-unbroken` |Acceptance requires an intact observed-write seal.
+|AS-3 |`run-preserves-anchor` |Every finite trace of permitted agent actions preserves the approval anchor.
+|AS-4 |`accepted-trace-matches-original` |Accepted trace endpoints match the original anchor, not a locally substituted reference.
+|AS-5 |`run-keeps-broken` |Once broken, every permitted continuation leaves the seal broken.
+|AS-6 |`write-prevents-acceptance` |An observed artifact write prevents acceptance after every permitted continuation.
+|AS-7 |`local-reseal-irrelevant` |Changing the writable local reference cannot change the protected verdict.
+|AS-8 |`initial-accepted` |All clean initial states are accepted: safety is not obtained by rejecting everything.
+|===
+
+All functions use structural recursion over finite natural values or finite
+action lists under the repository's strict Agda profile. This establishes no
+wall-clock bound, stack bound, external parser termination or arbitrary-program
+termination. Model declarations become checked results only after the recorded
+canonical checker run; the previous baseline receipt does not cover new code.
+
+== Controls and adversary permission boundary
+
+Local verification on 2026-11-03 used Agda 2.6.4.3, extracted from the official
+Debian `agda-bin` and `libghc-agda-dev` packages at version `2.6.4.3-1+b2`.
+The unchanged baseline gate passed (22 modules, 13 rejections); the extended
+gate passed (23 modules, 17 rejections). The new module also passed standalone
+with warnings as errors and no warning suppression. The existing source-warning
+manifest remains unchanged. Hosted Proof Safety run
+https://github.com/hyperpolymath/epistemic-types/actions/runs/41708617511[41708617511]
+passed at `91038dd6c2a535947178d429fc80ff543f0f32fe`, including the four
+mutation controls. See `PROOF-STATUS.adoc` for the separate failing CI checks
+and open independent-review boundary.
+
+`bash tests/check-approval-seal-mutations.sh` first checks the unchanged module,
+then rejects four fixed, isolated semantic mutants: always accepting broken
+seals, replacing the root via the local-reference operation, not latching an
+artifact write, and clearing the latch during resealing. All four returned
+Agda exit 42 with their required semantic diagnostics. Each invocation has a
+20-second timeout; timeout/tool/import failure is not a killed mutant. Only
+the isolated invalid mutants suppress `UnsupportedIndexedMatch` to reach the
+semantic mismatch; the real positive module has no warning exception.
+
+Positive reductions exhibit an attack that fools the writable local comparator;
+an edit/restore trace that fools a protected endpoint comparator; and rejection
+of both by the sticky-seal gate. Four expected-rejection fixtures attempt to
+approve the resealed artifact, erase restoration history, change the anchor
+through agent actions, and infer an intact seal from restored bytes. They must
+reach their precise semantic mismatch with Agda exit 42, not a parser/import
+failure. Existing controls and the positive initial-state theorem remain.
+
+`replacement-root-is-accepted` deliberately demonstrates the limit: if an
+actor can replace the entire state including approval authority and history,
+the newly manufactured state accepts. Record constructors remain public.
+The security statements quantify over traces from a fixed initial state;
+they do not authenticate an arbitrary record supplied by the agent.
+
+Every `writeArtifact`, including a same-value write, breaks the seal. This is
+a conservative *observed-write* policy. An operational implementation must
+decide whether it protects bytes, objects, or attempted operations. No finding
+about malicious intent follows from a broken seal. A legitimate update needs
+a separately authorized approval epoch; that transition is not implemented.
+
+== Relation to sibling work
+
+* JtV halting islands suggest restricting the checker to a total fragment.
+  Termination alone gives neither write protection nor approval authority.
+  No JtV parser, Rust transpiler or theorem is imported here.
+* Absolute Zero's state-preservation models are useful for carefully stated
+  endpoint properties. Endpoint restoration does not establish absence of an
+  intermediate write. OND concerns disclosure relative to observations, not
+  authentication or a persistent tamper latch. No Absolute Zero theorem is
+  imported or counted as an independent proof leg here.
+* Echo retention can explain why a final artifact alone loses history needed
+  by this policy. Retaining an untrusted history is insufficient: the runtime
+  must authenticate its origin and completeness. `MatchesSource` is compatibility,
+  not historical provenance.
+
+== Hashes, signatures and the external root
+
+Changing both an artifact and its local digest needs no hash collision.
+A trusted consumer must obtain its approval anchor outside the agent's write
+authority. The eventual approval must bind the artifact, approved specification,
+checker, policy/configuration and epoch. Canonical serialization and appropriate
+signature/provenance verification are implementation obligations, not consequences
+of Nat equality. An old valid signature also needs freshness/rollback policy.
+
+A final digest detects a persistent change relative to a trusted reference,
+subject to the cryptographic assumptions. It cannot detect every temporary
+edit followed by restoration. A sticky flag requires a trusted, complete event
+source whose state cannot be reset by the adversary. This module assumes the
+listed transitions are the actual observed transitions; it proves no monitor
+coverage, remote log availability, crash persistence or administrator resistance.
+
+Runtime design should reuse established trust-root/provenance mechanisms such
+as TUF/SLSA where applicable rather than invent cryptography. It must also bind
+the bytes checked to the bytes used, closing the check/use race. Deleting a
+receipt, stopping a watcher or exhausting a budget must be unavailable/incomplete,
+not a clean seal. No scanner's CLI exit contract is changed by this module.
+
+== Next bounded obligations
+
+. Independently review this threat model and the literal AS-1..AS-8 statements.
+. Bind approval to exact artifact/specification/checker/configuration/epoch,
+  with a separately authorized update transition and replay controls.
+. Connect a concrete `CertificateCheck` without allowing an agent to replace
+  its `Meaning` predicate or an approved specification.
+. Add coverage-accounting and unknown-status promotion invariants separately.
+. Refine one executable consumer gate against this model, following the estate
+  Rust/Creusot or other applicable implementation policy. Test real enforcement
+  and observed-history completeness independently of these model proofs.
+
+No universal lie detector, end-to-end scanner verification, second-prover
+reconciliation or cryptographic theorem is claimed.

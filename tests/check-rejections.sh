@@ -6,7 +6,8 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 # unrelated parse failures must fail this gate rather than count as rejection.
 fixtures=(LyingVerifier ForgedAcceptance ReplayedArtifact ReplayedHolder \
   StaleSample FakeFreshness ForkedHistory ForgedResidue MismatchedSource \
-  UnderstatedBound InventedMigration UncheckedSkip BeliefIsKnowledge)
+  UnderstatedBound InventedMigration UncheckedSkip BeliefIsKnowledge \
+  AgentChangesAnchor FinalStateProvesNoTouch ResealApprovesChange RestoreErasesHistory)
 expected_files=$(printf 'tests/reject/%s.agda\n' "${fixtures[@]}" | sort)
 actual_files=$(rg --files tests/reject -g '*.agda' | sort)
 [[ "$actual_files" == "$expected_files" ]] || { echo 'FAIL: rejection manifest differs from files'; exit 1; }
@@ -33,6 +34,9 @@ for fixture in "${fixtures[@]}"; do
     UnderstatedBound) expected='1 != 0' ;;
     InventedMigration) expected='true != .*false' ;;
     BeliefIsKnowledge) expected='w₁ != .*w₀' ;;
+    AgentChangesAnchor) expected='0 != 1' ;;
+    FinalStateProvesNoTouch) expected='true != .*false' ;;
+    ResealApprovesChange|RestoreErasesHistory) expected='sealBroken != .*accepted' ;;
   esac
   if [[ "$status" -ne 42 ]] || ! rg -q "$expected" <<< "$diagnostic" || \
       ! rg -q 'when checking' <<< "$diagnostic"; then
