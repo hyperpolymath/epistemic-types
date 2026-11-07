@@ -54,6 +54,8 @@ expected_rejection_fixtures=(
 # shellcheck disable=SC2034 # consumed through require_exact_inventory namerefs
 expected_integration_modules=(
   tests/integration/CanonicalEcho.agda
+  tests/integration/CanonicalRecovery.agda
+  tests/integration/RecoveryExamples.agda
 )
 
 collect_agda_paths() {

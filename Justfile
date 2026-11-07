@@ -14,7 +14,7 @@ check-rejections:
 
 # Optional integration gate: actual echo-types checkout and stdlib source.
 check-canonical echo_root stdlib_src:
-	agda --no-libraries --safe --without-K --cubical-compatible --double-check --ignore-interfaces -W error -W noUnsupportedIndexedMatch -i src -i tests/integration -i '{{echo_root}}/proofs/agda' -i '{{stdlib_src}}' tests/integration/CanonicalEcho.agda
+	bash scripts/check-canonical.sh '{{echo_root}}' '{{stdlib_src}}'
 
 # Build/test/validate include positive proofs and semantic rejection controls.
 build: check

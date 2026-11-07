@@ -1,0 +1,179 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Epistemic recovery and canonical Echo recovery
+:revdate: 2026-11-07
+
+== Contract and dependency boundary
+
+`tests/integration/CanonicalRecovery.agda` imports the actual owning
+`EpistemicTypes.EchoBridge.Recovery` and `EchoFiniteResidue.ExactRecovery`
+records. For a fixed `Retention A B R`, both require a total curried decoder
+and the same source-value round trip. The adapter specializes Echo's
+universe-polymorphic contract to Epistemic's `Set` carriers. It does not
+generalize the Epistemic core to arbitrary universe levels.
+
+The two adapters copy both fields. `fromToRecovery` and
+`toFromExactRecovery` prove full record inverses by record eta, including
+the supplied round-trip proofs. `decoderAgrees` covers every visible/residue
+input, including unreachable inputs. `roundtripProofAgrees` preserves the
+particular proof supplied by the caller. Neither proof uses function
+extensionality, proof irrelevance, choice, or a constructed extension from a
+partial decoder.
+
+The retention contract, its certificate family, and its soundness witness
+stay fixed. Recovery does not consume a certificate, infer its intended
+meaning, or follow from certificate validity. The existing
+`CanonicalEcho` representation conversion separately preserves the residue
+and certificate. No equality witness in the dependent fibre is reconstructed.
+
+The bridge lives in the optional integration tree so the 23-module core
+remains builtins-only. Echo does not acquire an Epistemic dependency.
+This is an identification of two existing interfaces, not a new recovery
+principle or a claim of novelty.
+
+== Transferred theorem and controls
+
+[cols="2,4",options="header"]
+|===
+|Declaration |Exact scope
+|`recoveryFiniteFibreBound`
+|An injected family of `n` sources in one observation fibre, residues in
+`Fin k`, and a supplied recovery imply `n ≤ k`. The family need not enumerate
+the fibre. This reuses Echo's finite pigeonhole theorem; cost is alphabet
+cardinality, not bits, entropy, time, or physical information loss.
+|`recoveryForbidsResidueCollision`
+|Two distinct sources with the same observation cannot have the same residue
+under a supplied exact recovery. This is a necessary condition; no general
+construction of recovery from collision-freedom is asserted.
+|`twoSymbolBound`, `twoCertificatePreserved`
+|Two sources in one visible fibre retain their own `Fin 2` values. The
+certificate restricts observations to that fibre, recovery attains `2 ≤ 2`,
+and canonical residue conversion preserves the original certificate proof.
+|`noOneSymbolRecovery`
+|The constant observation and constant one-symbol residue on `Fin 2`
+cannot support recovery, despite every generated residue being certified.
+|`emptyCertifiedDecoder`, `noEmptyRecovery`, `noEmptyExactRecovery`
+|With empty source, singleton observation/residue, and empty certificates,
+certificate-restricted decoding and its round trip are vacuous. Total
+decoding is impossible. A certified-only or reachable-only replacement would
+therefore change the contract.
+|`decodersAgreeOnImage`, `decodersDisagreeOffImage`, `adapterPreservesOffImage`
+|Two Bool decoders satisfy the same round-trip law and agree on every
+generated pair, yet differ at an unreachable pair. The adapter preserves
+that difference; on-image agreement alone does not identify total decoders.
+|===
+
+These statements concern source values and mathematical functions.
+Execution provenance, authorization, secret visibility, runtime ownership,
+linear consumption and independent proof-assistant translations remain
+separate obligations. Ordinal research is outside this work.
+
+== Reproduction
+
+Epistemic base: `a4a7a533f11996e9f57e67466566d950322b0d4f`.
+Reviewed canonical Echo pin: `ebde9ac4e1a9f115b441c642c82aced1316c5983`.
+The owning integration job retains Agda `2.6.4.3` and Debian standard-library
+package `2.1-4`; the source-only core requires no standard library.
+
+[source,shell]
+----
+bash scripts/check.sh
+bash scripts/check-canonical.sh /path/to/echo-types /path/to/stdlib/src
+----
+
+The canonical script cold-checks `RecoveryExamples`, whose import closure
+contains the existing representation bridge and the recovery adapter.
+The policy gate lists those three integration modules explicitly. Each first-party source retains
+all six canonical local options. The integration command retains the
+previous safe/without-K/cubical-compatible profile, double checking and
+`--ignore-interfaces`, with the same existing `UnsupportedIndexedMatch`
+exception to warnings-as-errors. Local source options are not imposed on
+third-party standard-library modules.
+
+Typechecking does not establish warning-free Cubical transport computation.
+The exact source revisions, executed checks and warning observations belong
+in the accompanying receipt; a future pin or compiler change needs a new one.
+
+== Local verification receipt — 2026-11-07
+
+The original Epistemic gate was reproduced with `/usr/bin/agda` from Debian
+`agda-bin=2.6.4.3-1+b2`, `agda-stdlib=2.1-4`, and `LANG=LC_ALL=C.UTF-8`.
+It checked all 23 core modules, the exact 23-span indexed-match warning
+manifest, all 17 expected semantic rejections and four approval-seal mutation
+controls. The existing `CanonicalEcho` root passed first with its original
+Echo pin `46cd1a32d4dcf1020f01dd1aab41f816742da10e`, then with `ebde9ac4`.
+Unsuppressed diagnostics on those two runs matched: 24 occurrences at four
+unique spans, with no new category or location. These are native executions
+of the workflow commands, not executions of the pinned CI container image.
+
+The updated policy gate passed with 23 source modules, 17 rejection fixtures
+and three integration modules. Source manifests confirmed that all 23 core
+modules are byte-identical to the reproduced baseline. Both the direct
+`CanonicalRecovery` root and the complete `RecoveryExamples` closure passed
+native cold checks. A separate cold check of the full closure passed with
+Agda 2.7.0.1 and stdlib 2.3 at
+`8326c7475af1fa456ca04a0203c168d5d7ff842b`.
+
+A separate unsuppressed native cold check of the expanded recovery closure
+also passed. It emitted 776 `UnsupportedIndexedMatch` diagnostics at 161
+distinct source spans, with no span in the three integration modules.
+The larger count follows the newly imported finite-bound standard-library
+cone; repeated occurrences are not separate defects. This is expressly not
+a warning-free Cubical computation result. That log's SHA256 is
+`bb18a7c395b41c0901361f0e3d35ea80c575b4230072baad58ef550a625276da`.
+
+Normalized LF source SHA256 values at those checks:
+
+[cols="1,3",options="header"]
+|===
+|Source |SHA256
+|`tests/integration/CanonicalRecovery.agda`
+|`3448f8297f3b94e2570a8c0424e95aa0ed70491b250ecaba8f2c316a8eeb77c1`
+|`tests/integration/RecoveryExamples.agda`
+|`bf288865decf52669dfa325b232da76eb7127b38b56c7990e86307d92d75524a`
+|`tests/check-policy.sh`
+|`9946df9b41a916034d53614407928520d8ba9a1307968caac51a8c0aef68aea6`
+|`scripts/check-canonical.sh`
+|`38d96565163f0c1017d0856c4f7316fa2ac94649676302b6ad0fd6950654090c`
+|===
+
+The machine's installed standard-library directory rejected interface writes.
+The successful native runs used a private writable copy whose complete Agda
+source manifest matched the installed package. The earlier attempt failed
+before theorem checking. An initial extra global `--exact-split` option also
+exposed an existing stdlib 2.1 exact-splitting diagnostic; subsequent checks
+used the actual integration command, retaining all six local first-party
+options and adding no warning-category exception. Intermittent WSL startup
+timeouts were avoided with persistent shells; they were not proof failures.
+
+Raw local logs and source manifests are retained in the coordinating
+workspace's `.echo-proof-tools/epistemic-ci-20261107/` and
+`.echo-proof-tools/recovery-adapter-20261107/`. They are local artifacts,
+not links to remotely available files. The commands, pins, source identities
+and scope above are the distributable receipt.
+
+== Required workflow repair
+
+The governance and scanner callers now use the published
+`metadatastician/standards` owner. Governance is pinned to
+`ea2f4d8a886585ed442687ae63d4ad7493379ba4`; the scanner retains
+`75bd5994470661a099df562d6d5ad2fe744dbd66`. The scanner caller ID is
+`secret-scan`, matching the existing required `secret-scan / gitleaks`
+context. No branch rule or required check was removed.
+
+The governance revision includes standards PR #1421, which corrects the
+staleness checker's API fallback to the current repository owner. The
+owner-sensitive regression fails against the previous default and passes
+with the fix; all 32 staleness cases pass. An additional inherited-override
+control confirms that the default-owner test is isolated from its environment.
+The existing explicit-unverified policy for unavailable API checks is unchanged.
+All 85 reported checks completed without failures before that upstream merge.
+
+Official `github/gh-actions-lock` v0.4.1 regenerated the supported v0.0.3
+lockfile, and both `--verify-local` and online `--verify` passed. Its
+https://github.com/github/gh-actions-lock/blob/v0.4.1/README.md#limitations[documented limitation]
+excludes external reusable workflows from locking. Their explicit SHA pins
+remain in the caller source; the lock does not certify their transitive
+dependencies. The five unrelated workflow mappings and three ordinary
+action dependency records are unchanged. Successful lock verification alone
+does not establish success of the hosted governance jobs.

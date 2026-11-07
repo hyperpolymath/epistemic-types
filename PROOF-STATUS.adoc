@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 = epistemic-types — proof status
-:revdate: 2026-11-04
+:revdate: 2026-11-07
 :toc:
 :sectnums:
 
@@ -16,6 +16,20 @@ are recorded below; historical snapshots remain in `AFFIRMATION.adoc` and are
 not current inventory.
 
 == Status vocabulary
+
+The 2026-11-07 optional recovery integration adds
+`tests/integration/CanonicalRecovery.agda` and `RecoveryExamples.agda`.
+It is locally *AGDA-VERIFIED* under the native Agda 2.6.4.3 / stdlib 2.1
+profile and separately under Echo's Agda 2.7.0.1 / stdlib 2.3 profile,
+using Echo `ebde9ac4e1a9f115b441c642c82aced1316c5983`.
+The 23-module builtins-only core is unchanged. Its original native gate was
+reproduced with all 17 semantic rejection fixtures and four mutation controls;
+the updated policy gate covers three integration modules. The adapter proves
+inverse conversions for a fixed retention contract, preserving the total
+decoder and supplied round-trip proof, and transports the finite-alphabet
+bound. See link:docs/echo-recovery-adapter.adoc[the precise contract and local
+receipt]. These local checks are distinct from the older hosted receipts
+below and do not confer independent-review or cross-prover credit.
 
 The 2026-11-03 approval-seal extension is locally *AGDA-VERIFIED* under Agda
 2.6.4.3 and the canonical safety profile. `Applications/ApprovalSeal.agda` defines AS-1..AS-8:
@@ -56,20 +70,29 @@ bash tests/check-rejections.sh
 bash tests/check-approval-seal-mutations.sh
 ----
 
-Every first-party Agda entry point is invoked with the canonical theory profile
+The core gate invokes its Agda entry points with the canonical theory profile
 `--safe --without-K --cubical-compatible --exact-split --no-sized-types
---no-guardedness`. Positive source checks use `--no-libraries --double-check
+--no-guardedness`. Core positive checks use `--no-libraries --double-check
 --ignore-interfaces -W error`. Agda 2.6.4.3's
 `UnsupportedIndexedMatch` category is disabled in that strict pass only because
 its 23 existing warning spans are checked separately against the exact manifest
 in `tests/check-proofs.sh`. A new, moved, or stale location fails the gate. The
 safe proofs check, but no Cubical transport-computation claim is made for those
 indexed eliminations, including `Kripke.Belief.believed`. The policy gate also
-compares all 23 source modules, 17 rejection fixtures, and the integration
-witness with exact path manifests; rejects additional `OPTIONS` pragmas, proof
+compares all 23 source modules, 17 rejection fixtures, and three integration
+witnesses with exact path manifests; rejects additional `OPTIONS` pragmas, proof
 escape hatches, and non-core imports; and verifies a generated negative
 control: `--safe` must reject a planted postulate with Agda's expected
 diagnostic and exit code.
+
+The separate integration command uses the existing
+`--safe --without-K --cubical-compatible` CLI profile. Each first-party
+integration module additionally declares `--exact-split --no-sized-types
+--no-guardedness` locally; those options are not imposed globally on the
+standard library. Its inherited `UnsupportedIndexedMatch` exemption is not
+bounded by the core's 23-span manifest. The expanded recovery closure has its
+own recorded unsuppressed diagnostic check; see
+link:docs/echo-recovery-adapter.adoc[the integration receipt and limitations].
 
 The most recent hosted receipt before adoption of the explicit
 `--cubical-compatible` CLI requirement is Proof Safety run
@@ -111,9 +134,10 @@ validation of the security specification.
 
 == Local proof ledger
 
-All `PROVEN` rows below describe the Agda model only. They are covered by the
-canonical hosted receipt above; they do not thereby establish an external
-runtime or an unlisted mathematical correspondence.
+All `PROVEN` rows below describe the Agda model only. Each is covered by the
+receipt indicated for that row; the historical hosted runs above do not cover
+the later C-3 integration by implication. These results do not establish an
+external runtime or an unlisted mathematical correspondence.
 
 [cols="1,4,1,3",options="header"]
 |===
@@ -230,7 +254,18 @@ runtime or an unlisted mathematical correspondence.
   correspondence only, not a full graded-comonad or runtime theorem.
 | TESTED
 | `tests/integration/CanonicalEcho.agda`; Echo pin
-  `46cd1a32d4dcf1020f01dd1aab41f816742da10e`
+  `ebde9ac4e1a9f115b441c642c82aced1316c5983`; locally rechecked 2026-11-07
+
+| C-3
+| For a fixed `Retention` at `Set`, native `Recovery` and canonical
+  `ExactRecovery` have inverse field-copy conversions, preserving the total
+  decoder and its round-trip proof. Exact recovery transfers the finite
+  single-fibre alphabet bound and forbids residue collisions within one
+  observation fibre. Certificate,
+  empty-source and off-image controls delimit the contract.
+| PROVEN — local receipt 2026-11-07
+| `tests/integration/CanonicalRecovery.agda`, `RecoveryExamples.agda`;
+  link:docs/echo-recovery-adapter.adoc[assumptions and verification scope]
 |===
 
 == External pinned evidence, not local closure

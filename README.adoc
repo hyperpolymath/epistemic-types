@@ -96,8 +96,12 @@ that discarded distinctions cannot support a migration requiring those
 distinctions. Resource grades are separate, measured upper bounds.
 
 See link:docs/continuity-foundations.adoc[the breaking API correction and proof
-boundaries]. An optional integration gate proves correspondence with the actual
-sibling `EchoResidue.EchoR`; the core remains dependency-free.
+boundaries]. The optional integration gate connects the actual sibling
+`EchoResidue.EchoR` and `EchoFiniteResidue.ExactRecovery` records. The recovery
+adapter preserves the full decoder and supplied round-trip proof, transfers
+the finite-alphabet bound, and includes certificate, collision and off-image
+controls. See link:docs/echo-recovery-adapter.adoc[the contract and reproduction
+commands]. The core remains dependency-free.
 
 == Applications: the RapidNJ Q-criterion
 
