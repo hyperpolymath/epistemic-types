@@ -9,6 +9,10 @@ image:https://img.shields.io/badge/OpenSSF-BestPractices-green[link="https://www
 
 Constructive Agda prototype for standpoint-indexed epistemic modalities, separating knowledge, belief, and warrant, with proof transport sound relative to an explicit claim meaning.
 
+The link:docs/query-recovery.adoc[query-recovery extension] distinguishes answering
+a query from recovering its source, states observer safety for generated inputs,
+and characterises sufficient residue relative to already visible information.
+
 == Overview
 
 When an agent observes a fact, the type of their access matters. Knowledge is factive; belief is not. A warrant records evidence without assuming soundness. Proof transported across a boundary becomes a receipt; a receiving proof requires a successful sound check of the receiver's claim meaning.
@@ -228,7 +232,7 @@ This is a prototype, not a complete epistemic logic. The following are **intenti
 
 [source,bash]
 ----
-just check  # policy guard + 25 positive modules + 19 expected rejections + 4 mutation controls
+just check  # policy guard + 31 positive modules + 24 expected rejections + 4 mutation controls
 ----
 
 `just check` calls `scripts/check.sh`: it uses a local `agda` when one is on

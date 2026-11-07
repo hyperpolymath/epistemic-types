@@ -8,11 +8,34 @@ fixtures=(LyingVerifier ForgedAcceptance ReplayedArtifact ReplayedHolder \
   StaleSample FakeFreshness ForkedHistory ForgedResidue MismatchedSource \
   UnderstatedBound InventedMigration UncheckedSkip BeliefIsKnowledge \
   AgentChangesAnchor FinalStateProvesNoTouch ResealApprovesChange RestoreErasesHistory \
-  CollidingPartialRecovery PartialSuccessProvesImage)
+  CollidingPartialRecovery PartialSuccessProvesImage \
+  QueryIgnoresCollision QuerySuccessInventsSource ObserverRevealsSecret \
+  OffImageStatusHidden ForgetfulResidueSufficient)
 expected_files=$(printf 'tests/reject/%s.agda\n' "${fixtures[@]}" | sort)
 actual_files=$(rg --files tests/reject -g '*.agda' | sort)
 [[ "$actual_files" == "$expected_files" ]] || { echo 'FAIL: rejection manifest differs from files'; exit 1; }
+prefix_dir=$(mktemp -d)
+trap 'rm -rf "$prefix_dir"' EXIT
 for fixture in "${fixtures[@]}"; do
+  case "$fixture" in
+    QueryIgnoresCollision|QuerySuccessInventsSource|ObserverRevealsSecret|OffImageStatusHidden|ForgetfulResidueSufficient)
+      [[ $(rg -c '^-- EXPECTED-REJECTION$' "tests/reject/$fixture.agda") == 1 ]] || {
+        printf 'FAIL: %s must have exactly one rejection boundary\n' "$fixture"
+        exit 1
+      }
+      awk '/^-- EXPECTED-REJECTION$/ {exit} {print}' "tests/reject/$fixture.agda" > "$prefix_dir/$fixture.agda"
+      status=0
+      diagnostic=$(agda --no-libraries --safe --without-K --cubical-compatible \
+        --exact-split --no-sized-types --no-guardedness --double-check --ignore-interfaces \
+        -W error -W noUnsupportedIndexedMatch -i src -i "$prefix_dir" \
+        "$prefix_dir/$fixture.agda" 2>&1) || status=$?
+      if [[ $status -ne 0 ]]; then
+        printf 'FAIL: %s valid prefix failed (exit %s)\n%s\n' "$fixture" "$status" "$diagnostic"
+        exit 1
+      fi
+      printf 'PASS: %s valid prefix accepted\n' "$fixture"
+      ;;
+  esac
   status=0
   # Source warning locations are audited by check-proofs.sh; this suppression
   # only lets each negative fixture reach the exact mismatch asserted below.
@@ -39,6 +62,8 @@ for fixture in "${fixtures[@]}"; do
     FinalStateProvesNoTouch) expected='true != .*false' ;;
     ResealApprovesChange|RestoreErasesHistory) expected='sealBroken != .*accepted' ;;
     CollidingPartialRecovery|PartialSuccessProvesImage) expected='false != .*true' ;;
+    QueryIgnoresCollision|QuerySuccessInventsSource|ObserverRevealsSecret|ForgetfulResidueSufficient) expected='false != .*true' ;;
+    OffImageStatusHidden) expected='just tt != nothing' ;;
   esac
   if [[ "$status" -ne 42 ]] || ! rg -q "$expected" <<< "$diagnostic" || \
       ! rg -q 'when checking' <<< "$diagnostic"; then

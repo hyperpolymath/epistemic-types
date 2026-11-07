@@ -6,16 +6,23 @@
 
 [abstract]
 This is the current, source-anchored verification record for the Agda
-formalisation. The authoritative positive tree contains *25 source modules* and
-the negative-control manifest contains *19 expected-rejection fixtures*. The
-partial-recovery extension adds two modules and two fixtures to the preceding
-23-module/17-fixture corpus, retaining four isolated mutation controls. The
+formalisation. The authoritative positive tree contains *31 source modules* and
+the negative-control manifest contains *24 expected-rejection fixtures*. The
+query/observer/sufficiency extension adds six modules and five fixtures to the
+preceding 25-module/19-fixture corpus, retaining four isolated mutation controls. The
 source is constructive, builtins-only, map-only at its base interface, and has
 no postulates or proof escape hatches. Exact theorem scope and trust boundaries
 are recorded below; historical snapshots remain in `AFFIRMATION.adoc` and are
 not current inventory.
 
 == Status vocabulary
+
+The query/observer/sufficiency extension is locally *AGDA-VERIFIED*: 31 source
+modules, 24 semantic rejections, five new valid-prefix controls, four mutation
+controls and the unchanged exact 23-span warning allowance passed under Agda
+2.6.4.3. Its exact assumptions and verification scope are in
+link:docs/query-recovery.adoc[]. The following partial-recovery receipt applies
+to the preceding corpus and is not a receipt for the new six modules.
 
 The partial-recovery extension is locally *AGDA-VERIFIED* by the complete
 Agda 2.6.4.3 core gate: 25 source modules, 19 intended rejections and four
@@ -92,7 +99,7 @@ its 23 existing warning spans are checked separately against the exact manifest
 in `tests/check-proofs.sh`. A new, moved, or stale location fails the gate. The
 safe proofs check, but no Cubical transport-computation claim is made for those
 indexed eliminations, including `Kripke.Belief.believed`. The policy gate also
-compares all 25 source modules, 19 rejection fixtures, and four integration
+compares all 31 source modules, 24 rejection fixtures, and four integration
 witnesses with exact path manifests; rejects additional `OPTIONS` pragmas, proof
 escape hatches, and non-core imports; and verifies a generated negative
 control: `--safe` must reject a planted postulate with Agda's expected
@@ -254,10 +261,10 @@ external runtime or an unlisted mathematical correspondence.
 | Documentary comparison only; no imported owning definition
 
 | C-1
-| Every one of the 19 intended-invalid constructions is rejected for its
+| All 24 intended-invalid constructions are rejected for their
   enumerated semantic type mismatch. This is negative-control evidence, not a
   positive theorem.
-| TESTED
+| TESTED — local receipt 2026-11-07; five new valid prefixes also accepted
 | `tests/check-rejections.sh`, `tests/reject/*.agda`
 
 | C-2
@@ -293,6 +300,29 @@ external runtime or an unlisted mathematical correspondence.
   record equalities; all carriers are Set and fibres are untruncated.
 | PROVEN — local receipt 2026-11-07
 | `PartialRecovery.agda`; link:docs/partial-recovery.adoc[exact assumptions]
+
+| QR-1
+| Query recovery implies fibre constancy; an explicit image decision and
+  constancy construct a decoder. Success-to-image evidence supplies the
+  converse image decision; compatible-source query agreement follows from
+  adequacy. Universal extraction without that evidence would decide every Set.
+| PROVEN — local receipt 2026-11-07
+| `QueryRecovery.agda`, `QueryRecoveryExamples.agda`
+
+| OS-1
+| For generated pairs and a supplied result observer/source relation,
+  noninterference is equivalent by implications to release invariance.
+  Transparent full recovery forces related sources equal. Arbitrary visible
+  requests can have different success statuses; this is not private leakage.
+| PROVEN — local receipt 2026-11-07
+| `ObserverSafety.agda`, `ObserverSafetyExamples.agda`
+
+| RS-1
+| Total residue simulation relative to visible data is a preorder. The query
+  residue is adequate and least among residues admitting total Migration for
+  that query. Stronger residue preserves adequacy. No bit/cost bound follows.
+| PROVEN — local receipt 2026-11-07
+| `ResidueSufficiency.agda`, `ResidueSufficiencyExamples.agda`
 
 | C-4
 | The local retained-pair image is definitionally canonical `Echo` of the
