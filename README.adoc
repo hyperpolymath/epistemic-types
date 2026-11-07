@@ -228,7 +228,7 @@ This is a prototype, not a complete epistemic logic. The following are **intenti
 
 [source,bash]
 ----
-just check  # policy guard + 22 positive modules + 13 expected rejections
+just check  # policy guard + 25 positive modules + 19 expected rejections + 4 mutation controls
 ----
 
 `just check` calls `scripts/check.sh`: it uses a local `agda` when one is on

@@ -7,7 +7,8 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 fixtures=(LyingVerifier ForgedAcceptance ReplayedArtifact ReplayedHolder \
   StaleSample FakeFreshness ForkedHistory ForgedResidue MismatchedSource \
   UnderstatedBound InventedMigration UncheckedSkip BeliefIsKnowledge \
-  AgentChangesAnchor FinalStateProvesNoTouch ResealApprovesChange RestoreErasesHistory)
+  AgentChangesAnchor FinalStateProvesNoTouch ResealApprovesChange RestoreErasesHistory \
+  CollidingPartialRecovery PartialSuccessProvesImage)
 expected_files=$(printf 'tests/reject/%s.agda\n' "${fixtures[@]}" | sort)
 actual_files=$(rg --files tests/reject -g '*.agda' | sort)
 [[ "$actual_files" == "$expected_files" ]] || { echo 'FAIL: rejection manifest differs from files'; exit 1; }
@@ -37,6 +38,7 @@ for fixture in "${fixtures[@]}"; do
     AgentChangesAnchor) expected='0 != 1' ;;
     FinalStateProvesNoTouch) expected='true != .*false' ;;
     ResealApprovesChange|RestoreErasesHistory) expected='sealBroken != .*accepted' ;;
+    CollidingPartialRecovery|PartialSuccessProvesImage) expected='false != .*true' ;;
   esac
   if [[ "$status" -ne 42 ]] || ! rg -q "$expected" <<< "$diagnostic" || \
       ! rg -q 'when checking' <<< "$diagnostic"; then

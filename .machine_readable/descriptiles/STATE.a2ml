@@ -1,7 +1,7 @@
 [metadata]
 project = "epistemic-types"
 version = "0.1.0"
-last-updated = "2026-11-01"
+last-updated = "2026-11-07"
 status = "prototype"  # prototype | active | paused | archived
 
 [project-context]
@@ -26,17 +26,18 @@ secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the sta
 checker = "Agda 2.6.4.3 (CI-matched)"
 command = "just check"
 entry-point = "scripts/check.sh — local agda when present, else 'guix shell -D -f build/guix.scm -- bash scripts/check.sh'"
-expands-to = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+expands-to = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh && bash tests/check-approval-seal-mutations.sh"
 dev-container = ".devcontainer/ — Debian 13 pinned to the same base image digest as CI, agda-bin=2.6.4.3-1+b2; postCreateCommand runs 'just check'"
 ci-entry-point = ".github/workflows/agda.yml asserts 'Agda version 2.6.4.3', then runs 'bash scripts/check.sh'"
 warning-policy = "-W error with only noUnsupportedIndexedMatch disabled: locally for Kripke.Belief's indexed relation elimination and at the pinned external integration boundary. No Cubical transport computation is claimed for those functions."
-proof-status = "AGDA-VERIFIED; Mathesis Grade 3. Proof Safety run 41326349568 passed both core/rejection/policy and pinned integration jobs at checked revision bf9c75a38794d744ce466574e6323062e7d22533. Rocq/Lean/bridge legs remain open."
+proof-status = "AGDA-VERIFIED; historical hosted receipt below, new local partial-recovery receipt in docs/partial-recovery.adoc. Proof Safety run 41326349568 passed both core/rejection/policy and pinned integration jobs at checked revision bf9c75a38794d744ce466574e6323062e7d22533. Rocq/Lean/bridge legs remain open."
 aggregator = "src/EpistemicTypes/All.agda imports the full source graph; the recursive gate separately checks every source file, including modules not publicly re-exported."
 
 [modules]
 # Agda modules under src/EpistemicTypes/.
 list = [
   "EpistemicTypes.Access",
+  "EpistemicTypes.Applications.ApprovalSeal",
   "EpistemicTypes.Applications.IntegerModel",
   "EpistemicTypes.Applications.OrderedGroup",
   "EpistemicTypes.Applications.QCriterion",
@@ -53,6 +54,8 @@ list = [
   "EpistemicTypes.Kripke.Frame",
   "EpistemicTypes.Kripke.Indexed",
   "EpistemicTypes.Kripke.Residual",
+  "EpistemicTypes.PartialRecovery",
+  "EpistemicTypes.PartialRecoveryExamples",
   "EpistemicTypes.ProofTransport",
   "EpistemicTypes.ProofTransportExample",
   "EpistemicTypes.ReadConsistency",
@@ -65,6 +68,7 @@ base = "Modality / LawfulModality / FactiveModality / BeliefModality / ReturnMod
 warrant = "Warrant / Epi / SoundWarrant."
 access = "Preorder + AccessibleModality transport 'increase'."
 echo-bridge = "Certified residue Echo C y, explicit source compatibility, recovery/migration laws and measured resource bounds; distinct from E κ A."
+partial-recovery = "Pair-only partial recovery; success soundness is separate. Sound partial recovery and separation plus explicit image decision construct each other. A chosen source fallback totalizes partial recovery; empty/collision/off-image controls and actual canonical Echo-fibre adapter are checked. See docs/partial-recovery.adoc for local receipt and sibling proposals."
 surreal-bridge = "SurrealAccess carrier + GradedSurrealModality + daySurrealAccess finite birthday tower."
 examples = "Worked instances exercising the interfaces."
 proof-transport = "proofSound derives Meaning holder artifact claim from an accepted sound checker. Receipts alone do not certify; transfer requires the target-holder meaning."
@@ -106,7 +110,7 @@ items = [
 ]
 
 [progress-summary]
-note = "Prototype. Authoritative inventory: 22 source modules and 13 expected-rejection fixtures. The map-only core, explicit warrant/factivity boundary, proof transport, store consistency, certified Echo residue with separate measured bounds, finite-day surreal adapter, RapidNJ integer certificate, and scoped constructive Kripke semantics are implemented. The 2026-11-01 canonical profile is --safe --without-K --cubical-compatible; hosted receipt status and Mathesis grade are in PROOF-STATUS.adoc. Open work includes data-dependent warrant soundness, residual owning-record correspondence, lawful instances, rational/rescaling and update obligations, independent Rocq/Lean legs, and runtime refinement."
+note = "Prototype. Authoritative inventory: 25 source modules and 19 expected-rejection fixtures. The map-only core, explicit warrant/factivity boundary, proof transport, store consistency, certified Echo residue with separate measured bounds, finite-day surreal adapter, RapidNJ integer certificate, and scoped constructive Kripke semantics are implemented. The 2026-11-01 canonical profile is --safe --without-K --cubical-compatible; hosted/local receipts and the proof-weight grading boundary are in PROOF-STATUS.adoc. Open work includes data-dependent warrant soundness, residual owning-record correspondence, lawful instances, rational/rescaling and update obligations, independent Rocq/Lean legs, and runtime refinement."
 
 [blockers-and-issues]
 # No active blockers.

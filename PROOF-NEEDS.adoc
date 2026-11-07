@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 = epistemic-types — proof needs
-:revdate: 2026-11-04
+:revdate: 2026-11-07
 :toc:
 
 This queue records only obligations that remain relevant to this repository.
@@ -27,8 +27,11 @@ planted-postulate negative control | CLOSED — run `41326349568`
 | CLOSED — run `41326349568`
 |===
 
-Closing P0 establishes Mathesis Grade 3 for the checked Agda revision. It does
-not establish independent cross-prover agreement.
+The P0 receipts establish `AGDA-VERIFIED` for their checked revisions, not
+independent cross-prover agreement. The earlier "Mathesis Grade 3" label is
+distinct from the canonical PWG vocabulary; see the policy clarification in
+link:PROOF-STATUS.adoc[]. The new partial-recovery local receipt is separate
+from these historical hosted runs.
 
 == P1 — theorem-level independent rechecks
 
@@ -50,8 +53,14 @@ modality, totality, and assumption translations | BRIDGE-PENDING
 than weakening the Agda statement | OPEN
 |===
 
-No Grade 2i, Grade 2ii, Grade 1, or `RECONCILED` claim is made until the
-applicable rows close.
+No independent prover or `RECONCILED` claim is made until the applicable rows
+close. For a bounded next translation, PR-1/PR-2/C-4 in the proof ledger now
+identify the partial-recovery statements: `Set` carriers, builtin intensional
+equality, untruncated Sigma fibres, pair-only Maybe decoding, separate success
+soundness, an explicit image decision and an explicit fallback source where
+used. The checked source and full assumptions are in
+link:docs/partial-recovery.adoc[]. Translating those exact statements and
+comparing their propositions in Rocq/Lean remains OPEN.
 
 == P2 — local mathematical obligations
 

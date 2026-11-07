@@ -5,6 +5,7 @@
 module RecoveryExamples where
 
 open import Data.Bool.Base using (Bool; false; true)
+open import Agda.Builtin.Maybe using (just; nothing)
 open import Data.Empty using (⊥)
 open import Data.Fin.Base using (Fin; zero; suc)
 open import Data.Nat.Base using (_≤_)
@@ -13,8 +14,11 @@ open import Data.Unit.Base using (⊤; tt)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 import CanonicalEcho as Residues
 import CanonicalRecovery as Adapter
+import CanonicalPartialRecovery as PartialAdapter
 import EchoFiniteResidue as Exact
 import EpistemicTypes.EchoBridge as Epistemic
+import EpistemicTypes.PartialRecovery as Partial
+import EpistemicTypes.PartialRecoveryExamples as PartialExamples
 
 -- Two distinct sources occupy one visible fibre. Identity retention supplies
 -- enough residue; the certificate restricts the visible index to that fibre.
@@ -135,3 +139,18 @@ adapterPreservesOffImage :
     (Adapter.fromExactRecovery {C = offImageRetention}
       (Adapter.toExactRecovery flipOffImageRecovery)) (false , true) tt ≡ true
 adapterPreservesOffImage = refl
+
+-- This decision returns actual canonical Echo fibres of the joint pair
+-- function. The adapter checks the owning definition at the reviewed pin.
+canonicalPartial : Partial.PartialRecovery PartialExamples.finiteRetention
+canonicalPartial = PartialAdapter.fromCanonicalDecision
+  {C = PartialExamples.finiteRetention}
+  PartialExamples.finiteSeparates PartialExamples.finiteImageDecision
+
+canonicalPartialGenerated : (b : Bool) ->
+  Partial.PartialRecovery.decode canonicalPartial (b , false) tt ≡ just b
+canonicalPartialGenerated b = refl
+
+canonicalPartialUnreachable : (b : Bool) ->
+  Partial.PartialRecovery.decode canonicalPartial (b , true) tt ≡ nothing
+canonicalPartialUnreachable b = refl

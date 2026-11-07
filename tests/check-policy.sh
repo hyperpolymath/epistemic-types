@@ -25,6 +25,8 @@ expected_source_modules=(
   src/EpistemicTypes/Kripke/Frame.agda
   src/EpistemicTypes/Kripke/Indexed.agda
   src/EpistemicTypes/Kripke/Residual.agda
+  src/EpistemicTypes/PartialRecovery.agda
+  src/EpistemicTypes/PartialRecoveryExamples.agda
   src/EpistemicTypes/ProofTransport.agda
   src/EpistemicTypes/ProofTransportExample.agda
   src/EpistemicTypes/ReadConsistency.agda
@@ -35,6 +37,7 @@ expected_source_modules=(
 expected_rejection_fixtures=(
   tests/reject/AgentChangesAnchor.agda
   tests/reject/BeliefIsKnowledge.agda
+  tests/reject/CollidingPartialRecovery.agda
   tests/reject/FakeFreshness.agda
   tests/reject/FinalStateProvesNoTouch.agda
   tests/reject/ForgedAcceptance.agda
@@ -43,6 +46,7 @@ expected_rejection_fixtures=(
   tests/reject/InventedMigration.agda
   tests/reject/LyingVerifier.agda
   tests/reject/MismatchedSource.agda
+  tests/reject/PartialSuccessProvesImage.agda
   tests/reject/ReplayedArtifact.agda
   tests/reject/ReplayedHolder.agda
   tests/reject/ResealApprovesChange.agda
@@ -54,6 +58,7 @@ expected_rejection_fixtures=(
 # shellcheck disable=SC2034 # consumed through require_exact_inventory namerefs
 expected_integration_modules=(
   tests/integration/CanonicalEcho.agda
+  tests/integration/CanonicalPartialRecovery.agda
   tests/integration/CanonicalRecovery.agda
   tests/integration/RecoveryExamples.agda
 )

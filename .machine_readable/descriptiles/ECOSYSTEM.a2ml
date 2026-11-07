@@ -5,7 +5,7 @@ project = "epistemic-types"
 ecosystem = "hyperpolymath"
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-11-01"
+last-updated = "2026-11-07"
 
 [position]
 type = "formal-methods-library"
@@ -17,7 +17,7 @@ options = "--safe --without-K --cubical-compatible; source also declares --exact
 libraries = "core: none — --no-libraries against Agda.Builtin.*, Agda.Primitive and local modules; optional CanonicalEcho integration has pinned external source/stdlib"
 machine-readable = "a2ml + Nickel/k9"
 docs = "AsciiDoc"
-check = "just check == policy inventory/negative control + all 22 source modules + all 13 expected rejections"
+check = "just check == policy inventory/negative control + all 25 source modules + all 19 expected rejections"
 notes = "Single-tool Agda library. The core has no runtime dependencies; CI uses a pinned Debian verification container."
 
 [core]
@@ -28,6 +28,7 @@ modules = [
   "EpistemicTypes.Warrant — Warrant / Epi / SoundWarrant",
   "EpistemicTypes.Access — Preorder + AccessibleModality transport 'increase'",
   "EpistemicTypes.EchoBridge — certified residue and separately measured bounds 'Echo C y', kept distinct from E κ A",
+  "EpistemicTypes.PartialRecovery / PartialRecoveryExamples — pair-only partial recovery, separate success soundness, explicit image decision, fallback totalization and finite boundary controls",
   "EpistemicTypes.SurrealBridge — SurrealAccess carrier + GradedSurrealModality + daySurrealAccess finite birthday tower",
   "EpistemicTypes.Examples",
   "EpistemicTypes.ProofTransport — standpoint-indexed proof transport across trust boundaries",
