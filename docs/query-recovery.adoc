@@ -1,0 +1,124 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= Query recovery, observer safety and sufficient residue
+:revdate: 2026-11-07
+
+This extension distinguishes answering a query from recovering its entire
+source. It reuses `Retention`, `Migration`, and the existing partial-recovery
+image. All carriers are `Set`; image witnesses remain proof-relevant and
+untruncated. No choice, automatic image decision, quotient, proof irrelevance,
+function extensionality or runtime secrecy property is assumed.
+
+== Query-relative recovery
+
+`QueryRecovery C q` has a pair-only `answer : B -> R -> Maybe T` and an
+adequacy law: every generated pair answers `just (q x)`. The decoder does not
+receive a source, `Case`, or consistency witness as input. Off-image behaviour
+is unconstrained by this law.
+
+[cols="1,3",options="header"]
+|===
+|Declaration in `QueryRecovery.agda` |Exact obligation/result
+|`queryConstant`, `queryComplete`
+|An adequate query agrees on every retained-pair fibre and answers any supplied
+image witness's query correctly. This does not implement a search for that witness.
+|`sourceToQuery`, `identityQueryToSource`
+|Full-source partial recovery answers every supplied query. An identity-query
+decoder recovers the source. General query recovery is weaker.
+|`migrationToQuery`, `queryToMigration`
+|Total Migration gives query recovery; an explicit target fallback totalizes a
+query decoder. The fallback is target data, not a source or an assumed inhabitant.
+|`successfulQueryAgrees`
+|Success agrees with the query of any compatible source, by adequacy alone.
+|`QuerySuccessSound`
+|The additional obligation supplies an actual image witness for each success.
+An extra query-equality field would be redundant by the preceding theorem.
+|`soundQueryDecidesImage`
+|This additional success obligation yields an explicit image decision. Failure
+refutes every image witness using adequacy.
+|`fromQueryImageDecision`, `queryImageDecisionSound`
+|Constancy on fibres plus an explicit image decision constructs a query decoder
+with the additional success obligation. These are constructive implications,
+not equalities of functions, records or proof fields.
+|===
+
+`QueryRecoveryExamples.agda` recovers a nonconstant first-bit query while the
+second bit is lost, and proves that full-source recovery is impossible for
+the same retention. A constant query needs no image decision and can succeed
+off-image, so success alone supplies no compatible source. The stronger
+`unrestrictedExtractionDecidesEveryType` is a constructive reduction: an
+extractor from arbitrary query recovery to image decision would decide every
+small type. It does not postulate that extractor or claim a formal independence
+theorem. The finite off-image example alone would not prove undecidability.
+
+== Observer safety
+
+`ObserverSafety.agda` defines `ObservationNI` for an explicit deterministic
+observer of the entire `Maybe T` result, on generated retained pairs and a
+supplied source relation. No equivalence laws for that relation are assumed.
+`releaseInvariantToNI` and `niToReleaseInvariant` relate this property to
+invariance of the observed released query. A transparent result observer forces
+equal query values; a transparent full-source result forces related sources to
+be equal. `hiddenPairForcesQueryAgreement` separately requires equality of the
+actual visible/residue pair; equal visible projections alone do not suffice.
+
+The positive example retains a second bit privately and publishes only the
+first bit of the recovered source. That public observation respects the
+first-bit source relation. Publishing both bits violates it. This is a theorem
+about the explicit result observer, not a claim that the raw input pair, logs,
+timing, memory, certificates or private residue are inaccessible at runtime.
+
+The arbitrary-request example distinguishes a generated request's success from
+an unreachable request's failure even for a constant query. The two requests
+are caller-selected and visible. This demonstrates the limit of the
+generated-input theorem; it is not itself a private-source confidentiality
+breach. A security theorem for arbitrary requests needs its own relation and
+observation contract. Neither this result nor the separate Secret Types
+fuelled-outcome counterexample establishes probabilistic or cryptographic secrecy.
+
+== Residue sufficiency
+
+`RelativeReduction f r s` means that an explicit total simulator reconstructs
+`r x` from `(f x, s x)`. Its law holds on generated inputs. Reflexivity and
+transitivity give a semantic preorder relative to the already visible `f`.
+
+`queryResidueAdequate` shows that retaining the query itself is sufficient.
+`queryResidueLeast` turns any adequate total Migration into a reduction from
+its residue to that query; `reductionToMigration` provides the converse field
+construction. Thus the query residue is least sufficient in this stated
+preorder. `migrateWithMoreResidue` preserves adequacy when additional residue
+can simulate the old one.
+
+`replaceResidue` uses a trivial certificate to expose the capability result;
+it does not transport the original certificate or claim authenticity.
+The examples show mutually simulating single and duplicate Boolean encodings,
+and that a unit residue can suffice when the visible value already supplies
+the answer but fails when visibility is constant. No minimum bit count, byte
+layout, time, cost, unique carrier, or partial-map preorder follows. Query
+minimality here is a factorization statement, not a new compression theorem.
+
+== Validation and ownership
+
+The complete four-entrypoint gate passed locally with Agda 2.6.4.3 on
+2026-11-07: `tests/check-policy.sh`, `tests/check-proofs.sh`,
+`tests/check-rejections.sh`, and `tests/check-approval-seal-mutations.sh`.
+These are the entrypoints composed by `bash scripts/check.sh`. They checked
+31 source modules, 24 intended semantic rejections, five new valid-prefix
+controls, and the existing four mutation controls.
+The existing exact 23-span warning allowance is unchanged. The four canonical
+Echo integration modules and their source pins are unchanged; their historical
+receipts remain in `partial-recovery.adoc`.
+
+The source and gates were copied byte-for-byte to an isolated ext4 directory
+because WSL startup and the mounted workspace were intermittent. A persistent
+WSL session completed the checks. The missing diagnostic matcher was supplied
+by a user-local extraction of Debian's authenticated `ripgrep=14.1.1-1+b4`
+package; no substitute matcher or warning exception was used. Local logs,
+compiler/tool hashes and source hashes are retained under `_build/`.
+Hosted checks and any later sibling adapters have separate receipts.
+
+These constructions are standard deterministic constructive factorization
+arguments packaged into the owning Epistemic API. The independent source
+review identified and removed a redundant success premise and narrowed the
+arbitrary-request example's claim. Compilation and source review are distinct.
+No new sibling adapter or complete Secret Types semantics bridge is claimed.
+Ordinal work remains excluded.

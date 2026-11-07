@@ -25,11 +25,17 @@ expected_source_modules=(
   src/EpistemicTypes/Kripke/Frame.agda
   src/EpistemicTypes/Kripke/Indexed.agda
   src/EpistemicTypes/Kripke/Residual.agda
+  src/EpistemicTypes/ObserverSafety.agda
+  src/EpistemicTypes/ObserverSafetyExamples.agda
   src/EpistemicTypes/PartialRecovery.agda
   src/EpistemicTypes/PartialRecoveryExamples.agda
   src/EpistemicTypes/ProofTransport.agda
   src/EpistemicTypes/ProofTransportExample.agda
+  src/EpistemicTypes/QueryRecovery.agda
+  src/EpistemicTypes/QueryRecoveryExamples.agda
   src/EpistemicTypes/ReadConsistency.agda
+  src/EpistemicTypes/ResidueSufficiency.agda
+  src/EpistemicTypes/ResidueSufficiencyExamples.agda
   src/EpistemicTypes/SurrealBridge.agda
   src/EpistemicTypes/Warrant.agda
 )
@@ -42,11 +48,16 @@ expected_rejection_fixtures=(
   tests/reject/FinalStateProvesNoTouch.agda
   tests/reject/ForgedAcceptance.agda
   tests/reject/ForgedResidue.agda
+  tests/reject/ForgetfulResidueSufficient.agda
   tests/reject/ForkedHistory.agda
   tests/reject/InventedMigration.agda
   tests/reject/LyingVerifier.agda
   tests/reject/MismatchedSource.agda
+  tests/reject/ObserverRevealsSecret.agda
+  tests/reject/OffImageStatusHidden.agda
   tests/reject/PartialSuccessProvesImage.agda
+  tests/reject/QueryIgnoresCollision.agda
+  tests/reject/QuerySuccessInventsSource.agda
   tests/reject/ReplayedArtifact.agda
   tests/reject/ReplayedHolder.agda
   tests/reject/ResealApprovesChange.agda
