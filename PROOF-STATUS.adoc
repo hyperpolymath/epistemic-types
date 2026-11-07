@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 = epistemic-types — proof status
-:revdate: 2026-11-04
+:revdate: 2026-11-07
 :toc:
 :sectnums:
 
@@ -16,6 +16,20 @@ are recorded below; historical snapshots remain in `AFFIRMATION.adoc` and are
 not current inventory.
 
 == Status vocabulary
+
+The 2026-11-07 optional recovery integration adds
+`tests/integration/CanonicalRecovery.agda` and `RecoveryExamples.agda`.
+It is locally *AGDA-VERIFIED* under the native Agda 2.6.4.3 / stdlib 2.1
+profile and separately under Echo's Agda 2.7.0.1 / stdlib 2.3 profile,
+using Echo `ebde9ac4e1a9f115b441c642c82aced1316c5983`.
+The 23-module builtins-only core is unchanged. Its original native gate was
+reproduced with all 17 semantic rejection fixtures and four mutation controls;
+the updated policy gate covers three integration modules. The adapter proves
+inverse conversions for a fixed retention contract, preserving the total
+decoder and supplied round-trip proof, and transports the finite-alphabet
+bound. See link:docs/echo-recovery-adapter.adoc[the precise contract and local
+receipt]. These local checks are distinct from the older hosted receipts
+below and do not confer independent-review or cross-prover credit.
 
 The 2026-11-03 approval-seal extension is locally *AGDA-VERIFIED* under Agda
 2.6.4.3 and the canonical safety profile. `Applications/ApprovalSeal.agda` defines AS-1..AS-8:
@@ -230,7 +244,17 @@ runtime or an unlisted mathematical correspondence.
   correspondence only, not a full graded-comonad or runtime theorem.
 | TESTED
 | `tests/integration/CanonicalEcho.agda`; Echo pin
-  `46cd1a32d4dcf1020f01dd1aab41f816742da10e`
+  `ebde9ac4e1a9f115b441c642c82aced1316c5983`; locally rechecked 2026-11-07
+
+| C-3
+| For a fixed `Retention` at `Set`, native `Recovery` and canonical
+  `ExactRecovery` have inverse field-copy conversions, preserving the total
+  decoder and its round-trip proof. Exact recovery transfers the finite
+  single-fibre alphabet bound and forbids residue collisions. Certificate,
+  empty-source and off-image controls delimit the contract.
+| PROVEN — local receipt 2026-11-07
+| `tests/integration/CanonicalRecovery.agda`, `RecoveryExamples.agda`;
+  link:docs/echo-recovery-adapter.adoc[assumptions and verification scope]
 |===
 
 == External pinned evidence, not local closure
