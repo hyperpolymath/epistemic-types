@@ -260,7 +260,8 @@ external runtime or an unlisted mathematical correspondence.
 | For a fixed `Retention` at `Set`, native `Recovery` and canonical
   `ExactRecovery` have inverse field-copy conversions, preserving the total
   decoder and its round-trip proof. Exact recovery transfers the finite
-  single-fibre alphabet bound and forbids residue collisions. Certificate,
+  single-fibre alphabet bound and forbids residue collisions within one
+  observation fibre. Certificate,
   empty-source and off-image controls delimit the contract.
 | PROVEN — local receipt 2026-11-07
 | `tests/integration/CanonicalRecovery.agda`, `RecoveryExamples.agda`;

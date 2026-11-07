@@ -156,10 +156,18 @@ and scope above are the distributable receipt.
 
 The governance and scanner callers now use the published
 `metadatastician/standards` owner. Governance is pinned to
-`ba640e9a57f22608710ffecdca282074eac55a0b`; the scanner retains
+`ea2f4d8a886585ed442687ae63d4ad7493379ba4`; the scanner retains
 `75bd5994470661a099df562d6d5ad2fe744dbd66`. The scanner caller ID is
 `secret-scan`, matching the existing required `secret-scan / gitleaks`
 context. No branch rule or required check was removed.
+
+The governance revision includes standards PR #1421, which corrects the
+staleness checker's API fallback to the current repository owner. The
+owner-sensitive regression fails against the previous default and passes
+with the fix; all 32 staleness cases pass. An additional inherited-override
+control confirms that the default-owner test is isolated from its environment.
+The existing explicit-unverified policy for unavailable API checks is unchanged.
+All 85 reported checks completed without failures before that upstream merge.
 
 Official `github/gh-actions-lock` v0.4.1 regenerated the supported v0.0.3
 lockfile, and both `--verify-local` and online `--verify` passed. Its
