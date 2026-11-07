@@ -65,6 +65,12 @@ authority.
 
 == Continuity foundations
 
+link:partial-recovery.adoc[] defines recovery from the visible/residue pair
+with possible failure, the separate success-soundness law, the constructive
+image-decision boundary, explicit fallback totalization and canonical fibre
+correspondence. It includes finite counterexamples and a pinned sibling
+source review with proposed follow-ups kept separate from checked adapters.
+
 link:continuity-foundations.adoc[] documents store-coherent reads, certified
 residues, source compatibility, migration sufficiency, resource bounds, and the
 optional canonical Echo integration gate.
@@ -112,8 +118,8 @@ link:applications/rapidnj-q-criterion.adoc[].
 == Notes
 
 * `Echo C y`, `BoundedEcho C measure budget y`, and `E κ A` have separate roles.
-* `just check` enforces the policy profile, checks all 22 source modules
-  (including applications and Kripke), and validates 13 semantic rejection
-  fixtures.
+* `just check` enforces the policy profile, checks all 25 source modules
+  (including applications and Kripke), validates 19 semantic rejection
+  fixtures, and runs four mutation controls.
 * `just check-canonical` separately checks correspondence against actual sibling
   Echo sources; it requires an explicit standard-library source path.

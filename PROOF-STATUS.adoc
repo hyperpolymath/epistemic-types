@@ -6,16 +6,29 @@
 
 [abstract]
 This is the current, source-anchored verification record for the Agda
-formalisation. The authoritative positive tree contains *23 source modules* and
-the negative-control manifest contains *17 expected-rejection fixtures*. The
-2026-11-03 extension adds one module and four fixtures to the previous verified
-22-module/13-fixture baseline, plus four isolated mutation controls. The
+formalisation. The authoritative positive tree contains *25 source modules* and
+the negative-control manifest contains *19 expected-rejection fixtures*. The
+partial-recovery extension adds two modules and two fixtures to the preceding
+23-module/17-fixture corpus, retaining four isolated mutation controls. The
 source is constructive, builtins-only, map-only at its base interface, and has
 no postulates or proof escape hatches. Exact theorem scope and trust boundaries
 are recorded below; historical snapshots remain in `AFFIRMATION.adoc` and are
 not current inventory.
 
 == Status vocabulary
+
+The partial-recovery extension is locally *AGDA-VERIFIED* by the complete
+Agda 2.6.4.3 core gate: 25 source modules, 19 intended rejections and four
+mutation controls, with the existing exact 23-span warning manifest unchanged.
+`PartialRecovery` and separate `SuccessSound` construct separation and an
+image decision; conversely those two obligations construct sound partial
+recovery. An explicit fallback totalizes it. No new warning exemption,
+independent-review credit or cross-prover result is claimed. The canonical
+fibre integration passed under Agda 2.6.4.3/stdlib 2.1 and separately under
+Agda 2.7.0.1/stdlib 2.3. Its detailed local receipt is recorded in
+link:docs/partial-recovery.adoc[].
+
+The following paragraphs are historical receipts for the preceding corpus.
 
 The 2026-11-07 optional recovery integration adds
 `tests/integration/CanonicalRecovery.agda` and `RecoveryExamples.agda`.
@@ -79,7 +92,7 @@ its 23 existing warning spans are checked separately against the exact manifest
 in `tests/check-proofs.sh`. A new, moved, or stale location fails the gate. The
 safe proofs check, but no Cubical transport-computation claim is made for those
 indexed eliminations, including `Kripke.Belief.believed`. The policy gate also
-compares all 23 source modules, 17 rejection fixtures, and three integration
+compares all 25 source modules, 19 rejection fixtures, and four integration
 witnesses with exact path manifests; rejects additional `OPTIONS` pragmas, proof
 escape hatches, and non-core imports; and verifies a generated negative
 control: `--safe` must reject a planted postulate with Agda's expected
@@ -110,11 +123,10 @@ passed with Agda 2.6.4.3. The core job ran the policy preflight, all 22 source
 modules, and all 13 intended rejections; the separate integration job checked
 the pinned Echo witness.
 
-Current profile status: `AGDA-VERIFIED`; the checked revision is *Mathesis
-Grade 3*. The immediately following status/metadata receipt update changes no
-Agda source, fixture, gate, option, or dependency pin and is itself rerun by the
-same PR workflow. No missing tool, import failure, or unexpected rejection
-counts as a pass.
+That hosted revision is `AGDA-VERIFIED`; the earlier ledger called it
+"Mathesis Grade 3". The canonical policy uses PWG labels, as clarified below,
+and the receipt covers its exact revision. No missing tool, import failure,
+or unexpected rejection counts as a pass.
 
 == Approval-seal hosted receipt
 
@@ -242,7 +254,7 @@ external runtime or an unlisted mathematical correspondence.
 | Documentary comparison only; no imported owning definition
 
 | C-1
-| Every one of the 17 intended-invalid constructions is rejected for its
+| Every one of the 19 intended-invalid constructions is rejected for its
   enumerated semantic type mismatch. This is negative-control evidence, not a
   positive theorem.
 | TESTED
@@ -266,6 +278,28 @@ external runtime or an unlisted mathematical correspondence.
 | PROVEN — local receipt 2026-11-07
 | `tests/integration/CanonicalRecovery.agda`, `RecoveryExamples.agda`;
   link:docs/echo-recovery-adapter.adoc[assumptions and verification scope]
+
+| PR-1
+| Pair-only partial recovery implies source separation; total recovery
+  constructs partial recovery; an explicit source fallback totalizes it.
+  Empty-source and collision counterexamples delimit those constructions.
+| PROVEN — local receipt 2026-11-07
+| `PartialRecovery.agda`, `PartialRecoveryExamples.agda`
+
+| PR-2
+| Partial recovery plus separate success soundness constructs separation and
+  an image decision. Conversely, these two obligations construct sound
+  partial recovery. These are mutual existence implications, not inverse
+  record equalities; all carriers are Set and fibres are untruncated.
+| PROVEN — local receipt 2026-11-07
+| `PartialRecovery.agda`; link:docs/partial-recovery.adoc[exact assumptions]
+
+| C-4
+| The local retained-pair image is definitionally canonical `Echo` of the
+  retained-pair function. Conversions preserve the source and equality path;
+  the canonical image decision constructs the checked finite partial decoder.
+| PROVEN — local receipt 2026-11-07
+| `tests/integration/CanonicalPartialRecovery.agda`, `RecoveryExamples.agda`
 |===
 
 == External pinned evidence, not local closure
@@ -283,12 +317,16 @@ The current cross-repository status statements in
 `docs/what-epistemic-is.adoc` are documentary pointers. They are not imports,
 build dependencies, or independent proof legs for this repository.
 
-== Mathesis grade and independent proof legs
+== Proof-weight grading and independent proof legs
 
-Mathesis Grade 3 means that the Agda source checks under the strict profile at a
-recorded revision, without an independent foundational translation. Hosted run
-`41326349568` closes that requirement for checked revision `bf9c75a`; this
-proof corpus is *Mathesis Grade 3*.
+Earlier receipts used "Mathesis Grade 3" for one Agda verification leg.
+The https://github.com/metadatastician/standards/blob/b8f60511e76c9015d86990317162dce653c92fe1/3-practice/PROOF-POLICY.adoc[owning standards proof policy, section 8]
+uses the canonical labels `PWG-3`,
+`PWG-2i`, `PWG-2ii` and `PWG-1`. Mathesis is a discovery index; its separate
+architecture proposal does not override the standards policy. This extension
+records `AGDA-VERIFIED` for the explicitly checked source and profile, without
+claiming a new PWG assessment, policy completion, independent review or
+cross-prover reconciliation.
 
 No theorem in this repository currently has a theorem-by-theorem Rocq or Lean
 leg with an exact statement comparison:
@@ -296,9 +334,9 @@ leg with an exact statement comparison:
 [cols="2,1,3",options="header"]
 |===
 | Leg | Status | Consequence
-| Agda canonical profile | AGDA-VERIFIED | Grade 3 receipt: run `41326349568`, revision `bf9c75a`
-| Rocq/Coq | OPEN / NOT-INVENTORIED | No Grade 2i/2ii credit
-| Lean | OPEN / NOT-INVENTORIED | No Grade 2i/2ii credit
+| Agda canonical profile | AGDA-VERIFIED | Exact hosted and local receipts above; no automatic coverage of later edits
+| Rocq/Coq | OPEN / NOT-INVENTORIED | No independent prover credit
+| Lean | OPEN / NOT-INVENTORIED | No independent prover credit
 | Proposition/semantics bridge | BRIDGE-PENDING | No claim of reconciliation
 | Runtime refinement | OPEN | Model theorems do not verify an implementation
 |===
@@ -322,6 +360,6 @@ not inferred from the Mathesis grade.
 * Full Conway-surreal semantics, full graded-loss/comonad semantics, external
   store/scheduler/attestation/runtime refinement, and physical guarantees.
 * The theorem-level Rocq and Lean inventory, independent checks, and explicit
-  proposition bridges needed for Mathesis Grade 2 or stronger.
+  proposition bridges needed for an independently reconciled result.
 
 See `PROOF-NEEDS.adoc` for the executable next-proof queue.

@@ -11,6 +11,8 @@ import EpistemicTypes.Kripke.Belief
 import EpistemicTypes.Kripke.Residual
 import EpistemicTypes.Kripke.Dependence
 open import EpistemicTypes.EchoBridge public
+import EpistemicTypes.PartialRecovery
+import EpistemicTypes.PartialRecoveryExamples
 -- Imported (checked) but NOT re-exported publicly: ReadConsistency keeps
 -- its own self-contained ⊥/¬_ (matching the Examples.agda convention),
 -- which would clash with Examples' identically-named helpers if both were

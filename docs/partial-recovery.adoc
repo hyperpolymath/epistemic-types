@@ -1,0 +1,246 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Partial recovery from the retained pair
+:revdate: 2026-11-07
+
+== Problem and exact contract
+
+`EchoBridge.Recovery C` requires a total decoder on every visible/residue
+pair, including pairs that no source produces. The optional canonical
+adapter identifies that existing contract with Echo's `ExactRecovery`.
+The new `EpistemicTypes.PartialRecovery` module adds a separate contract:
+
+[source,agda]
+----
+decode    : B -> R -> Maybe A
+roundtrip : (x : A) -> decode (observe x) (retain x) ≡ just x
+----
+
+The decoder receives only the visible value and residue. It receives no
+source, certificate or inhabitant of a fibre. All carriers are `Set`; the
+existing `Retention A B R`, including its arbitrary certificate family,
+stays fixed. The new theorem does not infer recovery from certificate
+validity and does not turn a standpoint into an access-control label.
+
+`PartialRecovery` alone says nothing about successful decoding at an
+unreachable pair. `SuccessSound rec` is the separate law that every
+successful output reproduces the input pair. Keeping these laws separate
+is necessary: converting an arbitrary total recovery to `just` preserves
+the source round trip but can succeed on an unreachable input.
+
+This is standard constructive mathematics about left inverses and
+decidable images. The contribution is a checked API boundary and its
+correspondence with the owning Echo definition, not a new fibre theorem,
+a novel type primitive or a claim of minimum information cost.
+
+== Constructive characterization
+
+Write `pair x = (observe x, retain x)`. The module defines:
+
+* `Image C y r = Σ A (λ x -> pair x ≡ (y , r))`, an ordinary
+  proof-relevant fibre containing an actual source and an equality path.
+* `Separates C`: equal retained pairs imply equal sources.
+* `ImageDecision C`: for each pair, return either a concrete inhabitant of
+  its fibre or a function refuting every inhabitant.
+
+The following constructive maps prove both existence implications between
+a partial recovery with `SuccessSound` and the pair of obligations
+`Separates C` and `ImageDecision C`:
+
+[cols="2,4",options="header"]
+|===
+|Declaration |Proved obligation
+|`partialSeparates`
+|Every partial recovery separates sources. The proof uses the decoder's
+two round trips and injectivity of `just`.
+|`soundPartialDecidesImage`
+|Partial recovery plus success soundness decides the fibre: `just x`
+supplies the source and matching path; `nothing` contradicts the round trip
+of any proposed source witness.
+|`fromImageDecision`
+|Separation plus an explicit image decision constructs partial recovery.
+A positive decision chooses a source internally; separation proves that
+the chosen source equals the original on every generated pair.
+|`imageDecisionSound`, `imageDecisionComplete`
+|For this construction, successful output exactly corresponds to a
+matching source. Completeness recovers every supplied inhabitant of the
+fibre; soundness returns the matching equality for each successful output.
+|===
+
+These are existence constructions, not inverse equalities between records,
+decision procedures or proof fields. No equality of all certificates or
+equality paths, proof irrelevance, function extensionality, choice axiom,
+propositional truncation or quotient is assumed. Image decidability does
+not follow from separation, a certificate, or the name of the retention
+contract. A concrete decision procedure is an explicit input.
+
+The proof-relevant image is useful as a specification, but its projection
+is not a decoder from the pair alone. Even a constant map on two sources
+has witnesses containing either source. `witnessProjectionRoundtrip`
+checks this trivial projection; `witnessProjectionDependsOnWitness` and
+`noCollidingPartial` show why it cannot establish the pair-only contract.
+
+== Totality and its boundary
+
+`totalToPartial` wraps the existing total decoder in `just`.
+`partialToTotal` fills failed outputs with a caller-supplied source
+`fallback : A`. The source round trip ensures that the fallback is never
+used on a generated pair. `totalPartialDecoder` proves that converting an
+existing total decoder to partial and back preserves all its outputs,
+pointwise, including off-image outputs.
+
+The opposite composition may replace `nothing` with `just fallback`;
+no two-sided isomorphism is claimed. A fallback is sufficient, not asserted
+to be necessary for every possible carrier. In particular, an empty source
+with inhabited visible/residue space admits an always-failing partial
+recovery but no total recovery. This refutes unconditional totalization.
+
+== Executable finite controls
+
+`PartialRecoveryExamples.agda` checks the complete two-Boolean visible
+space with source `Bool` and a singleton residue. Observation sends `b`
+to `(b, false)`. An explicit image decision succeeds on the two generated
+pairs and rejects the two unreachable pairs. The decoder and reconstructed
+image decision reduce on both branches. Two fallback choices agree on all
+generated pairs and differ off-image.
+
+The same module also proves:
+
+* Empty-source partial recovery exists while total recovery is impossible.
+* Constant observation and residue on `Bool` forbid every partial recovery,
+  even though every generated residue is certified and witness projection
+  has a trivial round trip.
+* A valid total decoder wrapped in `just` succeeds on an unreachable input
+  whose returned source is incompatible with that input.
+
+The expected-rejection gate includes `CollidingPartialRecovery` and
+`PartialSuccessProvesImage`. They must reach their intended Boolean type
+mismatch with Agda exit 42; a tool, import or parse failure does not count.
+These finite controls supplement the generic proofs. They do not claim
+runtime refinement or performance bounds.
+
+== Canonical ownership and sibling boundaries
+
+`tests/integration/CanonicalPartialRecovery.agda` imports the actual
+`Echo.Echo` and identifies `Image C y r` with
+`Echo (retainedPair C) (y , r)` by definitional equality. The two conversions
+and their record-free inverse laws preserve the particular source and path.
+`fromCanonicalDecision` uses a decision over that owning fibre. The existing
+`RecoveryExamples` root executes its finite generated and unreachable cases.
+Echo acquires no Epistemic dependency; the builtins-only core imports no
+standard library or sibling module.
+
+The following source review guides bounded future work. Only the Echo and
+Epistemic imports above are compiled by this bridge's checks. These sibling
+observations are not imported theorem claims or completed adapters.
+
+[cols="1,2,3",options="header"]
+|===
+|Owning source |Observed boundary |Possible next operation
+|https://github.com/hyperpolymath/Mathesis/blob/1a582f2e860bb395207b4b181f9fdfb2fa313fa8/README.adoc[Mathesis README]
+|Discovery index; textual census candidates are not kernel verdicts.
+|Index exact theorem, assumption and checker receipts after validation.
+|https://github.com/hyperpolymath/residual-evidence-types/blob/14c93f4e19aaacbcfeca91bf5f2368d3e7b5a4bc/src/ResidualEvidence/Core.agda[Residual Evidence Core]
+|Candidates refine an observation fibre by evidence; `Case` carries a
+consistency witness, and `Identified` requires agreement of all candidates.
+|An adapter from pair separation to source identification for an inhabited
+Case over that pair observation. A Case witness is not a recovery algorithm.
+|https://github.com/hyperpolymath/choreographic-types/blob/5a2a6cf1c657d7819558bf38b85ed11e2170ad1b/src/Choreographic/AsyncKnowledge.agda[Choreographic AsyncKnowledge]
+|Delivered and in-flight worlds can have the same sender view.
+|With an explicitly identical residue, instantiate a collision obstruction
+for whole-world recovery. A target-relative query needs its own statement.
+|https://github.com/hyperpolymath/secret-types/blob/42ac315bc8ec1f8d9ce30e4b8d97c02830645bd9/src/SecretTypes/Witness.agda[Secret Types Witness]
+|Termination-insensitive noninterference does not identify the observable
+`nothing`/`just` behaviour of a secret-dependent loop.
+|A security adapter must state two-run observations, including whether
+decoding success is visible. Partial recovery is no confidentiality theorem.
+|https://github.com/hyperpolymath/tropical-types/blob/168f09d1df8bc239d41bc0f9d9d18575b2c9c9d5/Resource/EchoBridge.lean[Tropical EchoBridge]
+|Resource measurement has separate `measure_empty`/`measure_combine` laws.
+Its residue carrier has no associativity/identity fields despite monoid wording.
+|Review that wording or supply carrier laws separately. Equal measured cost
+does not imply recoverability; no Tropical code is changed here.
+|===
+
+Confidentiality, declassification, historical provenance, source ownership,
+linear consumption and independent Rocq/Lean correspondences remain separate
+obligations. Ordinal research is outside this cycle.
+
+== Reproduction
+
+Epistemic base: `b2ebe09832814cdb6330742f9a5fccad97651c8d`.
+Canonical Echo pin: `ebde9ac4e1a9f115b441c642c82aced1316c5983`.
+The integration workflow's pin and toolchain remain unchanged.
+
+[source,shell]
+----
+bash scripts/check.sh
+bash scripts/check-canonical.sh /path/to/echo-types /path/to/stdlib/src
+----
+
+The core gate checks every source root with interfaces ignored, all expected
+semantic rejections, policy controls and four existing mutation controls.
+The canonical command cold-checks the complete four-module integration
+closure. Each first-party source retains all six strict local options.
+The existing indexed-match warning boundary is not a warning-free Cubical
+transport-computation claim.
+
+== Local verification receipt — 2026-11-07
+
+The base core gate was reproduced before editing: 23 source modules,
+17 intended semantic rejections, the exact 23-span warning audit and all
+four approval-seal mutants passed. The candidate core gate passed with
+25 source modules, 19 intended semantic rejections and the same four mutants.
+The exact 23-span warning manifest is unchanged. The policy gate covers
+all four integration modules; no proof option or warning exception was added.
+
+The complete `RecoveryExamples` integration closure passed natively with:
+
+* Debian `agda-bin=2.6.4.3-1+b2` and `agda-stdlib=2.1-4`.
+* Agda `2.7.0.1` and standard library `2.3` at
+  `8326c7475af1fa456ca04a0203c168d5d7ff842b`.
+
+Both runs used the canonical Echo pin above, `--no-libraries --safe
+--without-K --cubical-compatible --double-check --ignore-interfaces
+-W error -W noUnsupportedIndexedMatch`, the explicit `src` and
+`tests/integration` include roots, and the pinned Echo and standard-library
+source roots. First-party files retain their strict local options. These
+are native WSL Debian executions, not executions of the pinned CI container.
+The private writable standard-library 2.1 copy has an Agda-source manifest
+identical to the installed Debian package.
+
+A separate unsuppressed cold run of that complete closure under Agda
+2.6.4.3 also passed. It reported 776 `UnsupportedIndexedMatch` occurrences
+at 161 unique spans; none is in either new core module or the new canonical
+adapter. This matches the preceding integration receipt's counts; repeated
+occurrences are not independent defects. The compiler's observed `Checking`
+cone contains 148 distinct modules; the retained manifest records each path
+and source digest, with compiler builtins belonging to the recorded toolchain.
+These diagnostics are not a claim of warning-free Cubical computation.
+
+The checked native sources, secondary-profile sources and working sources
+were compared byte-for-byte after LF normalization. Key SHA256 values:
+
+[cols="2,3",options="header"]
+|===
+|Source |SHA256, LF-normalized
+|`src/EpistemicTypes/PartialRecovery.agda`
+|`a42d6f7a58c808b9cb12f8d455faa309997f887a70739429f1c5c8f90d542995`
+|`src/EpistemicTypes/PartialRecoveryExamples.agda`
+|`ca21fad6366459fdffaed8558fecda8fdecdad57a5130b0b2ed2dd06cb7ad862`
+|`tests/integration/CanonicalPartialRecovery.agda`
+|`ee893ff0793112f8938c5ab08f7a03df533a63a3864c4bcf395b91c59c414754`
+|`tests/integration/RecoveryExamples.agda`
+|`6272ae42fe347cc10e33900c894f33c36b3440fb0ba0ae84addcf91297019f99`
+|===
+
+The candidate core log SHA256 is
+`d223de07eecdf0549d7d93f9443eb49db7b9570dcec6f837f9831328510df0d9`;
+the complete unsuppressed integration log SHA256 is
+`4fd07b2d2757a9dbc30fecdc9e25be99176061391b7c8be783cf2bd23a849a03`.
+Logs, the import cone, the source manifests, the warning spans and command
+records are retained in the coordinating workspace's
+`bridge-cycle-20261107/foundation-receipt/`. Those are local artifacts, not
+remotely accessible links. The commands, pins, hashes and scope above are
+the distributable receipt. Hosted checks of the published candidate,
+independent review, Rocq and Lean rechecks and proposition reconciliation
+remain separate obligations; this local receipt does not imply their success.

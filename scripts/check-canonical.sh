@@ -22,9 +22,9 @@ done
 # Success does not assert Cubical transport computation for indexed matches.
 # Each first-party module also declares exact-split/no-sized-types/no-guardedness.
 # Do not impose those local options on the independently maintained stdlib.
-# RecoveryExamples imports both CanonicalEcho and CanonicalRecovery: one cold
-# closure checks all three policy-manifest modules without rechecking the
-# same standard library three times.
+# RecoveryExamples imports CanonicalEcho, CanonicalRecovery and
+# CanonicalPartialRecovery: one cold closure checks all four policy-manifest
+# modules without rechecking the same standard library four times.
 "$prover" --no-libraries --safe --without-K --cubical-compatible \
   --double-check --ignore-interfaces \
   -W error -W noUnsupportedIndexedMatch -i src -i tests/integration \

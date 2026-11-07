@@ -5,7 +5,7 @@
 [metadata]
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-11-01"
+last-updated = "2026-11-07"
 repo = "hyperpolymath/epistemic-types"
 single-tool = "agda"
 
@@ -18,7 +18,7 @@ ci = "Proof and security CI enabled; see docs/ci-safety.adoc"
 [gate]
 # The single source of truth for 'is the library healthy?'.
 command = "just check"
-expands-to = "tests/check-policy.sh; tests/check-proofs.sh over all 22 source modules; tests/check-rejections.sh over all 13 fixtures"
+expands-to = "tests/check-policy.sh; tests/check-proofs.sh over all 25 source modules; tests/check-rejections.sh over all 19 fixtures; tests/check-approval-seal-mutations.sh over four fixed mutants"
 agda-version = "2.6.4.3"
 options = "--safe --without-K --cubical-compatible; source hardening --exact-split --no-sized-types --no-guardedness"
 dependencies = "core: Agda builtins/primitive and local modules only; optional canonical integration pins Echo source and stdlib"

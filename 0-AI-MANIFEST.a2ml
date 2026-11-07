@@ -4,7 +4,7 @@ title = "epistemic-types — universal AI agent entry point"
 version = "0.1.0"
 format = "a2ml"
 status = "prototype"
-last-updated = "2026-11-01"
+last-updated = "2026-11-07"
 
 [project]
 name = "epistemic-types"
@@ -36,12 +36,12 @@ format = "AsciiDoc (.adoc) is the default. README.adoc is the overview, explainm
 machine-readable-location = "Project specifications live under .machine_readable/. The root 0-AI-MANIFEST.a2ml universal pointer and coordination.k9 session entry point are the explicit operational exceptions."
 license = "MPL-2.0"
 build = "just check"
-build-expansion = "bash scripts/check.sh → policy gate + all 22 source modules + all 13 expected rejections"
+build-expansion = "bash scripts/check.sh → policy gate + all 25 source modules + all 19 expected rejections + four approval-seal mutation controls"
 agda-options = "--safe --without-K --cubical-compatible plus source hardening --exact-split --no-sized-types --no-guardedness; -W error with UnsupportedIndexedMatch disabled only alongside an exact 23-source-span audit; no postulates; core imports only builtins/primitive/local modules"
 agda-version = "2.6.4.3"
 echo-distinction = "Do not collapse Echo C y and E κ A. Echo retains certified residues; epistemic types are standpoint/warrant/access modalities. Their composition is meaningful; they are not the same modality."
 ci = "Proof and security workflows configured; required merge checks are described in docs/ci-safety.adoc"
-proof-status = "AGDA-VERIFIED; Mathesis Grade 3. Canonical Proof Safety receipt 41326349568 at checked revision bf9c75a38794d744ce466574e6323062e7d22533. Independent Rocq/Lean/bridge legs remain open."
+proof-status = "AGDA-VERIFIED; historical hosted receipt below, new local partial-recovery receipt in docs/partial-recovery.adoc. Canonical Proof Safety receipt 41326349568 at checked revision bf9c75a38794d744ce466574e6323062e7d22533. Independent Rocq/Lean/bridge legs remain open."
 secret-types = "Owner decision 2026-10-04: hyperpolymath/secret-types is the standalone production home (D153/D154). Do not add a Secret API, IFC implementation or confidentiality theorem here. #29 stays closed; #32 closed on 2026-10-05 with no transfer and must not be reopened/duplicated (guard #39). Source-reviewed at standalone f581f8295bdee854f76291ab884a16cc8114dc6f on 2026-11-01: generic TINI and its two-point instance are PROVEN; termination-sensitive noninterference and declassification remain OPEN. No theorem is imported here."
 
 [first-run]
@@ -55,6 +55,7 @@ aggregator = "src/EpistemicTypes/All.agda"
 modules = [
   "EpistemicTypes.Access",
   "EpistemicTypes.All",
+  "EpistemicTypes.Applications.ApprovalSeal",
   "EpistemicTypes.Applications.IntegerModel",
   "EpistemicTypes.Applications.OrderedGroup",
   "EpistemicTypes.Applications.QCriterion",
@@ -70,6 +71,8 @@ modules = [
   "EpistemicTypes.Kripke.Frame",
   "EpistemicTypes.Kripke.Indexed",
   "EpistemicTypes.Kripke.Residual",
+  "EpistemicTypes.PartialRecovery",
+  "EpistemicTypes.PartialRecoveryExamples",
   "EpistemicTypes.ProofTransport",
   "EpistemicTypes.ProofTransportExample",
   "EpistemicTypes.ReadConsistency",
@@ -82,6 +85,7 @@ Base = "Modality / LawfulModality / FactiveModality / BeliefModality / ReturnMod
 Warrant = "Warrant / Epi / SoundWarrant — explicit warrant objects."
 Access = "Preorder plus AccessibleModality transport ('increase') across the access preorder."
 EchoBridge = "Certified Echo C y residues, explicit migration/recovery and separately measured resource bounds."
+PartialRecovery = "Pair-only Maybe decoder, separate success soundness, constructive image-decision characterization, explicit fallback totalization and finite boundary controls; see docs/partial-recovery.adoc."
 SurrealBridge = "SurrealAccess carrier plus GradedSurrealModality plus daySurrealAccess finite-birthday tower."
 Examples = "Worked instances of the abstract interfaces."
 ProofTransport = "Standpoint-indexed proof transport across trust boundaries."
@@ -112,7 +116,7 @@ step-3 = "Read .machine_readable/descriptiles/META.a2ml for architecture and des
 step-4 = "Read .machine_readable/descriptiles/ECOSYSTEM.a2ml for ecosystem position and sibling repos."
 step-5 = "Read .machine_readable/descriptiles/AGENTIC.a2ml, NEUROSYM.a2ml, and PLAYBOOK.a2ml for agent guidance."
 step-6 = "Read README.adoc and explainme.adoc for the human-facing overview."
-step-7 = "Run 'just check' (→ scripts/check.sh: local Agda or Guix/dev container) to enforce policy, check all 22 source modules and validate all 13 expected rejections before and after changes."
+step-7 = "Run 'just check' (→ scripts/check.sh: local Agda or Guix/dev container) to enforce policy, check all 25 source modules and validate all 19 expected rejections plus four mutation controls before and after changes."
 
 [policy]
 rules = [

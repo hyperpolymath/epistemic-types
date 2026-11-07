@@ -7,7 +7,7 @@ repository = "hyperpolymath/epistemic-types"
 author = "Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
 version = "0.1.0"
 status = "prototype"
-last-updated = "2026-11-01"
+last-updated = "2026-11-07"
 
 [agent-permissions]
 can-edit-source = true        # Agda modules under src/EpistemicTypes/
@@ -57,10 +57,10 @@ release-claim-requires-hard-pass = true
 [verification]
 # The single source of truth for "does it hold".
 command = "just check"
-underlying = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh"
+underlying = "bash tests/check-policy.sh && bash tests/check-proofs.sh && bash tests/check-rejections.sh && bash tests/check-approval-seal-mutations.sh"
 agda-version = "2.6.4.3"
 entrypoint = "scripts/check.sh (recursive source gate; All.agda is the aggregate module)"
-expected = "22 source modules accepted, 13 intended rejections, strict profile/import/escape-hatch policy and planted-postulate control pass"
+expected = "25 source modules accepted, 19 intended rejections, strict profile/import/escape-hatch policy and planted-postulate control pass"
 
 [automation-hooks]
 # on-enter: Read 0-AI-MANIFEST.a2ml, then STATE.a2ml.
