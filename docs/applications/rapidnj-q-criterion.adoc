@@ -219,7 +219,9 @@ and neither is claimed here:
   seam.
 
 *What is excluded.* Floating point. A Float64 carrier is not a model of the
-four `OrderedGroup` laws: addition is not associative and NaN is unordered.
+four `OrderedGroup` laws: NaN is unordered, so `≤-refl` fails. (The
+record does not ask for associativity, so non-associative float addition is
+not itself the obstruction.)
 The bound would also be about float-computed Q rather than exact Q. (An
 earlier version of this paragraph said rounding is not monotone and cited
 `RapidNJExamples.no-always-true`. Round-to-nearest *is* monotone, and
