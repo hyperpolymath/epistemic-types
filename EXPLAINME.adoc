@@ -112,8 +112,11 @@ is the integer model: `IntegerModel` proves every law the bound consumes, and
 `RapidNJExamples` runs a worked scan by computation. Making rational input
 first-class needs either a rational carrier instance or the common-denominator
 rescaling transport; the bound itself never multiplies or divides carrier
-elements, so no field law is needed either way. Anything rounded cannot meet
-the `Checkable` reflection law, as `no-always-true` shows. See
+elements, so no field law is needed either way. Floating point is excluded
+because a Float64 carrier is not a model of the four `OrderedGroup` laws
+(`+` is not associative, NaN is not ordered) and because the bound would be
+about float-computed Q, not exact Q. (`no-always-true` only refutes a
+comparison that always answers true; it says nothing about rounding.) See
 link:docs/applications/rapidnj-q-criterion.adoc[].
 
 == Dogfooded Across The Account

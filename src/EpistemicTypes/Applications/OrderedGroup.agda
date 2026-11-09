@@ -29,9 +29,9 @@
 --
 --  * Any model of these four laws certifies the bound, so the bound does not
 --    depend on the *representation* of rationals, only on exactness.
---  * A Float64 implementation does not satisfy `≤-⊕`: rounding is not
---    monotone for every pair of operands, so `x ≤ y` can hold while
---    `x + z > y + z` holds under rounding.  That is the seam documented in
+--  * A Float64 implementation is not a model of these laws: `+` is not
+--    associative and NaN is unordered (round-to-nearest itself is
+--    monotone; corrected 2026-11-09).  That is the seam documented in
 --    link:docs/applications/rapidnj-q-criterion.adoc[], and the reason the
 --    reflection lemma in `RapidNJSkip` is the single non-negotiable
 --    obligation of an executable implementation.

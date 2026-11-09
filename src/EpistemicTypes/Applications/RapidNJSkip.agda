@@ -71,8 +71,8 @@ module Skip (G : OrderedGroup) where
   -- A decision procedure whose `true` verdicts *reflect* the order.  This is
   -- the single seam between the proof and a running program: an
   -- implementation with exact arithmetic (integers, or rationals with
-  -- cross-multiplied comparisons) can supply it; one with rounding cannot,
-  -- because rounding is not monotone for every pair of operands.
+  -- cross-multiplied comparisons) can supply it; a Float64 one is excluded
+  -- because Float64 is not a model of the OrderedGroup laws (2026-11-09).
   record Checkable : Set₁ where
     field
       decide      : (x y : Carrier) -> Bool

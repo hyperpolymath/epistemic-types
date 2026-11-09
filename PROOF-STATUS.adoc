@@ -74,6 +74,34 @@ This document uses the estate proof-policy vocabulary:
   rechecked by this repository;
 * `OPEN` — not discharged.
 
+[NOTE]
+.Design and receipt audit (2026-11-09)
+====
+* *Receipts.* The "local receipt 2026-11-07" rows (C-1, C-3, C-4, PR-1,
+  PR-2, QR-1, OS-1, RS-1) cite logs and hashes kept under `_build/`, which
+  is gitignored, so those receipts cannot be retrieved from the repository.
+  Hosted Proof Safety passed on `main` at `dcd4648` (2026-11-07), which
+  covers the current corpus; record that run here as the receipt. Every
+  theorem is `ungraded` under PROOF-POLICY §8 (no per-theorem PWG-3
+  receipt; no Rocq or Lean leg).
+* *Fixtures.* `ReplayedHolder` and `UnderstatedBound` fail on an index
+  mismatch (holder, budget), not on the property they are named for; the
+  positive `noSilentHolderTransport` and `noUnderstatedBound` carry that
+  evidence. C-1's "semantic type mismatch" holds for the error text, not
+  for every property named.
+* *Definitional results.* OS-1's equivalence holds for every decoder on
+  generated inputs (adequacy fixes the answer), and "noninterference" there
+  is a decoder-relative property, not information-flow noninterference,
+  which README lists as out of scope. RS-1's "least" holds by definition
+  (`Migration` and `RelativeReduction` have the same fields).
+  `status-of-skip-is-factive` is `refl` on a constant.
+* *C-2* round-trips with `EchoResidue.EchoR` (a certificate-carrying
+  residue), not with the canonical `Echo` fibre; the fibre correspondence
+  is C-4.
+* *Floating point.* The earlier argument that rounding is not monotone was
+  wrong; see `docs/applications/rapidnj-q-criterion.adoc`.
+====
+
 The separate cross-prover labels `AGDA-PENDING`, `AGDA-VERIFIED`,
 `COQ-CHECKED`, `LEAN-CHECKED`, `BRIDGE-PENDING`, and `RECONCILED` describe
 verification legs; they do not strengthen the proof-policy status.
