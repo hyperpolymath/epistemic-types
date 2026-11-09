@@ -22,8 +22,9 @@
 -- arithmetic fact consumed is the order-monotonicity budget of
 -- `OrderedGroup` (no ring identities, hence no ℚ-specific law).  The
 -- resulting knowledge is therefore valid in any exact model, and an
--- implementation whose arithmetic is not exact fails at exactly one place:
--- supplying `Checkable` (see the Float64 seam in
+-- implementation whose arithmetic is not exact fails in two places: it is
+-- not a model of `OrderedGroup` (IEEE order is not reflexive at NaN), and its
+-- comparison is not a sound `Checkable` for exact Q (see the Float64 seam in
 -- link:docs/applications/rapidnj-q-criterion.adoc[]).
 --
 -- The same run, held without a soundness map, is belief: `Epi` packages a
