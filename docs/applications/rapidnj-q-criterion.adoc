@@ -231,7 +231,9 @@ about rounding. Audit note 2026-11-09.) The practical rule for the runtime
 is therefore:
 the moment a rounding-tolerant `Float64` value participates in a *bound
 comparison*, the claim cannot be `:Factive`; record it as `:Belief` until an
-exact comparison decides it.
+exact comparison decides it. "Exact" means recomputed from the exact inputs
+(or bounded by a proved error term), not an exact comparison of values that
+were already rounded: `2^53 + 1` and `2^53` round to the same Float64.
 
 == What is proved, and what is not
 

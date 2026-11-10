@@ -80,15 +80,21 @@ This document uses the estate proof-policy vocabulary:
 * *Receipts.* The "local receipt 2026-11-07" rows (C-1, C-3, C-4, PR-1,
   PR-2, QR-1, OS-1, RS-1) cite logs and hashes kept under `_build/`, which
   is gitignored, so those receipts cannot be retrieved from the repository.
-  Hosted Proof Safety passed on `main` at `dcd4648` (2026-11-07), which
-  covers the current corpus; record that run here as the receipt. Every
+  Hosted Proof Safety passed on `main` at `dcd4648` (2026-11-07, run
+  42395802116). That run is historical evidence for the corpus at that
+  commit, including the earlier `ReplayedHolder` and `UnderstatedBound`
+  fixtures; it does not cover the rewritten fixtures, whose receipt is the
+  pinned-toolchain gate on the commit that carries them. Every
   theorem is `ungraded` under PROOF-POLICY §8 (no per-theorem PWG-3
   receipt; no Rocq or Lean leg).
-* *Fixtures.* `ReplayedHolder` and `UnderstatedBound` fail on an index
+* *Fixtures.* `ReplayedHolder` and `UnderstatedBound` previously failed on an index
   mismatch (holder, budget), not on the property they are named for; the
   positive `noSilentHolderTransport` and `noUnderstatedBound` carry that
-  evidence. C-1's "semantic type mismatch" holds for the error text, not
-  for every property named.
+  evidence. *Resolved 2026-11-09:* both fixtures now have an
+  `EXPECTED-REJECTION` boundary with a checked valid prefix. `ReplayedHolder`
+  fails at the checker's soundness obligation `Bob ≡ Alice` (the
+  holder-sensitive meaning), and `UnderstatedBound` fails at the `within`
+  obligation `1 ≤ 0`.
 * *Definitional results.* OS-1's equivalence holds for every decoder on
   generated inputs (adequacy fixes the answer), and "noninterference" there
   is a decoder-relative property, not information-flow noninterference,
