@@ -18,7 +18,7 @@ prefix_dir=$(mktemp -d)
 trap 'rm -rf "$prefix_dir"' EXIT
 for fixture in "${fixtures[@]}"; do
   case "$fixture" in
-    QueryIgnoresCollision|QuerySuccessInventsSource|ObserverRevealsSecret|OffImageStatusHidden|ForgetfulResidueSufficient)
+    QueryIgnoresCollision|QuerySuccessInventsSource|ObserverRevealsSecret|OffImageStatusHidden|ForgetfulResidueSufficient|ReplayedHolder|UnderstatedBound)
       [[ $(rg -c '^-- EXPECTED-REJECTION$' "tests/reject/$fixture.agda") == 1 ]] || {
         printf 'FAIL: %s must have exactly one rejection boundary\n' "$fixture"
         exit 1
@@ -51,11 +51,11 @@ for fixture in "${fixtures[@]}"; do
   case "$fixture" in
     LyingVerifier|ForgedAcceptance) expected='false != .*true' ;;
     ReplayedArtifact) expected='true != .*false' ;;
-    ReplayedHolder) expected='Alice != .*Bob' ;;
+    ReplayedHolder) expected='Bob != .*Alice' ;;
     StaleSample|ForkedHistory|ForgedResidue|MismatchedSource) expected='false != .*true' ;;
     UncheckedSkip) expected='false != .*true' ;;
     FakeFreshness) expected='initial .*false !=' ;;
-    UnderstatedBound) expected='1 != 0' ;;
+    UnderstatedBound) expected='suc _[^ ]* != zero of type Nat' ;;
     InventedMigration) expected='true != .*false' ;;
     BeliefIsKnowledge) expected='w₁ != .*w₀' ;;
     AgentChangesAnchor) expected='0 != 1' ;;

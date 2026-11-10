@@ -22,8 +22,9 @@
 -- arithmetic fact consumed is the order-monotonicity budget of
 -- `OrderedGroup` (no ring identities, hence no ℚ-specific law).  The
 -- resulting knowledge is therefore valid in any exact model, and an
--- implementation whose arithmetic is not exact fails at exactly one place:
--- supplying `Checkable` (see the Float64 seam in
+-- implementation whose arithmetic is not exact fails in two places: it is
+-- not a model of `OrderedGroup` (IEEE order is not reflexive at NaN), and its
+-- comparison is not a sound `Checkable` for exact Q (see the Float64 seam in
 -- link:docs/applications/rapidnj-q-criterion.adoc[]).
 --
 -- The same run, held without a soundness map, is belief: `Epi` packages a
@@ -71,8 +72,8 @@ module Skip (G : OrderedGroup) where
   -- A decision procedure whose `true` verdicts *reflect* the order.  This is
   -- the single seam between the proof and a running program: an
   -- implementation with exact arithmetic (integers, or rationals with
-  -- cross-multiplied comparisons) can supply it; one with rounding cannot,
-  -- because rounding is not monotone for every pair of operands.
+  -- cross-multiplied comparisons) can supply it; a Float64 one is excluded
+  -- because Float64 is not a model of the OrderedGroup laws (2026-11-09).
   record Checkable : Set₁ where
     field
       decide      : (x y : Carrier) -> Bool

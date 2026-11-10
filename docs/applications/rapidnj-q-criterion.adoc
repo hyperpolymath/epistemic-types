@@ -218,14 +218,22 @@ and neither is claimed here:
   four group laws, plus the `Checkable` obligation. More proof work, same
   seam.
 
-*What is excluded.* Floating point. `Checkable.decide-true` is a reflection
-law, and rounded arithmetic does not satisfy it in general; the abstract
-obstruction is made precise by `RapidNJExamples.no-always-true`, which shows
-that a comparison answering `true` for every pair would prove that every
-integer is below every other. The practical rule for the runtime is therefore:
+*What is excluded.* Floating point. A Float64 carrier is not a model of the
+four `OrderedGroup` laws: NaN is unordered, so `≤-refl` fails. (The
+record does not ask for associativity, so non-associative float addition is
+not itself the obstruction.)
+The bound would also be about float-computed Q rather than exact Q. (An
+earlier version of this paragraph said rounding is not monotone and cited
+`RapidNJExamples.no-always-true`. Round-to-nearest *is* monotone, and
+`no-always-true` only shows that a comparison answering `true` for every
+pair would prove that every integer is below every other; it says nothing
+about rounding. Audit note 2026-11-09.) The practical rule for the runtime
+is therefore:
 the moment a rounding-tolerant `Float64` value participates in a *bound
 comparison*, the claim cannot be `:Factive`; record it as `:Belief` until an
-exact comparison decides it.
+exact comparison decides it. "Exact" means recomputed from the exact inputs
+(or bounded by a proved error term), not an exact comparison of values that
+were already rounded: `2^53 + 1` and `2^53` round to the same Float64.
 
 == What is proved, and what is not
 
