@@ -9,10 +9,10 @@
 ;; --proof-receipt-json). Rows, statements and scope are in PROOF-STATUS.adoc,
 ;; "Local proof ledger".
 ;;
-;; Every claim is PWG-3: no Rocq or Lean leg exists. C-3 and C-4 are
+;; Graded claims are PWG-3: no Rocq or Lean leg exists. C-3 and C-4 are
 ;; checked by the echo job, the other rows by the core job. C-1 (rejection
 ;; fixtures) and C-2 (labelled TESTED) are not theorems at PROVEN and are not
-;; claims here.
+;; claims here. K-4 (OPEN) and K-8 (ASSUMED) are listed as ungraded.
 ;;
 ;; The Agda input set is the union of both jobs' cones (§8.5.1: one set per
 ;; commit and prover), so every claim carries the same manifest and imports.
@@ -3901,4 +3901,11 @@
                (axioms)))
     (leg :prover rocq :route unavailable :reason "no Rocq or Lean development states this theorem yet (PROOF-STATUS, explicit open obligations)")
     (leg :prover lean :route unavailable :reason "no Rocq or Lean development states this theorem yet (PROOF-STATUS, explicit open obligations)"))
-)
+  (claim :id "K-4" :pwg ungraded :foundation-diverse #f
+    (leg :prover agda :route source :token open :state AGDA-PENDING)
+    (leg :prover rocq :route unavailable :reason "the claim is OPEN in Agda: converse 5 and converse D have no declaration")
+    (leg :prover lean :route unavailable :reason "the claim is OPEN in Agda: converse 5 and converse D have no declaration"))
+  (claim :id "K-8" :pwg ungraded :foundation-diverse #f
+    (leg :prover agda :route source :token argued :state BRIDGE-PENDING)
+    (leg :prover rocq :route unavailable :reason "ASSUMED in the ledger: a documentary comparison with residual-evidence-types, no imported owning definition")
+    (leg :prover lean :route unavailable :reason "ASSUMED in the ledger: a documentary comparison with residual-evidence-types, no imported owning definition")))

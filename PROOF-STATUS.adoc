@@ -427,9 +427,10 @@ on that commit, where both jobs passed with Agda 2.6.4.3.
 * standards `deed_lint.js --proof-receipt-json` and
   `scripts/check-proof-receipt.sh` both pass on the receipt.
 
-Census of the ledger rows above: 22 rows. 20 are `PWG-3` (L-1..L-7, K-1,
+Census of the ledger rows above: 24 rows. 20 are `PWG-3` (L-1..L-7, K-1,
 K-2, K-3, K-5, K-6, K-7, PR-1, PR-2, QR-1, OS-1, RS-1, C-3, C-4); 0 `PWG-2i`,
-0 `PWG-2ii`, 0 `PWG-1`. C-1 and C-2 are `TESTED`, not theorems at
+0 `PWG-2ii`, 0 `PWG-1`; 2 `ungraded` (K-4, `OPEN`; K-8, `ASSUMED`), which
+the receipt also lists. C-1 and C-2 are `TESTED`, not theorems at
 `PROVEN`, so they carry no grade. The open obligations below are not
 graded. The scope notes in the audit note above (OS-1 decoder-relative, RS-1
 "least" by definition) still apply to the graded rows.
