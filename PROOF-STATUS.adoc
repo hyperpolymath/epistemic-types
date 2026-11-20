@@ -85,8 +85,9 @@ This document uses the estate proof-policy vocabulary:
   commit, including the earlier `ReplayedHolder` and `UnderstatedBound`
   fixtures; it does not cover the rewritten fixtures, whose receipt is the
   pinned-toolchain gate on the commit that carries them. Every
-  theorem is `ungraded` under PROOF-POLICY §8 (no per-theorem PWG-3
-  receipt; no Rocq or Lean leg).
+  theorem was `ungraded` under PROOF-POLICY §8 (no per-theorem PWG-3
+  receipt; no Rocq or Lean leg). *Superseded 2026-11-17:* 20 rows are
+  `PWG-3`; see "PWG receipt" below.
 * *Fixtures.* `ReplayedHolder` and `UnderstatedBound` previously failed on an index
   mismatch (holder, budget), not on the property they are named for; the
   positive `noSilentHolderTransport` and `noUnderstatedBound` carry that
@@ -388,9 +389,9 @@ The https://github.com/metadatastician/standards/blob/b8f60511e76c9015d869903171
 uses the canonical labels `PWG-3`,
 `PWG-2i`, `PWG-2ii` and `PWG-1`. Mathesis is a discovery index; its separate
 architecture proposal does not override the standards policy. This extension
-records `AGDA-VERIFIED` for the explicitly checked source and profile, without
-claiming a new PWG assessment, policy completion, independent review or
-cross-prover reconciliation.
+records `AGDA-VERIFIED` for the explicitly checked source and profile. The
+PWG grades below are derived from the receipt; they claim no policy
+completion, independent review or cross-prover reconciliation.
 
 No theorem in this repository currently has a theorem-by-theorem Rocq or Lean
 leg with an exact statement comparison:
@@ -404,6 +405,38 @@ leg with an exact statement comparison:
 | Proposition/semantics bridge | BRIDGE-PENDING | No claim of reconciliation
 | Runtime refinement | OPEN | Model theorems do not verify an implementation
 |===
+
+=== PWG receipt (2026-11-17)
+
+The receipt is
+link:verification/receipts/epistemic-types-proofs_praxis.deed[`verification/receipts/epistemic-types-proofs_praxis.deed`]
+(PROOF-POLICY §8.5.1). It describes source commit `bfcee6e` and Proof Safety
+run https://github.com/hyperpolymath/epistemic-types/actions/runs/42743187886[42743187886]
+on that commit, where both jobs passed with Agda 2.6.4.3.
+
+* The core job checks the 31 source modules with `--no-libraries`. Their cone
+  is those modules and 8 modules supplied with Agda.
+* The echo job checks `tests/integration/RecoveryExamples.agda` against
+  echo-types at `ebde9ac` and agda-stdlib. CI takes the stdlib from Debian
+  `agda-stdlib` 2.1-4. That package has no source patch, and its `src/` is
+  byte-identical to upstream tag `v2.1` (`97bc55e`), so the receipt records
+  that commit as an import.
+* A comment-aware postulate scan of both cones, using the Agda 2.6.4.3
+  builtin sources, finds only the four `Agda.Primitive` level postulates.
+  The receipt lists them as its trusted base.
+* standards `deed_lint.js --proof-receipt-json` and
+  `scripts/check-proof-receipt.sh` both pass on the receipt.
+
+Census of the ledger rows above: 24 rows. 20 are `PWG-3` (L-1..L-7, K-1,
+K-2, K-3, K-5, K-6, K-7, PR-1, PR-2, QR-1, OS-1, RS-1, C-3, C-4); 0 `PWG-2i`,
+0 `PWG-2ii`, 0 `PWG-1`; 2 `ungraded` (K-4, `OPEN`; K-8, `ASSUMED`), which
+the receipt also lists. C-1 and C-2 are `TESTED`, not theorems at
+`PROVEN`, so they carry no grade. The open obligations below are not
+graded. The scope notes in the audit note above (OS-1 decoder-relative, RS-1
+"least" by definition) still apply to the graded rows.
+
+A later commit that changes a file in the receipt's manifests is not
+described by it.
 
 The standards corpus has no repository-specific `epistemic-types` T3 stub. Its
 current theory mapping therefore governs: Agda is the source of truth, with
